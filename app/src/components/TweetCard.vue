@@ -1,7 +1,7 @@
 <script setup>
 import { ref, toRefs, computed } from 'vue'
 import { useWorkspace } from '@/composables'
-import { deletePost } from '@/api'
+import { DeletePost } from '@/api'
 import TweetFormUpdate from './TweetFormUpdate'
 
 const emit = defineEmits(['delete']);
@@ -23,7 +23,7 @@ const authorRoute = computed(() => {
 const isEditing = ref(false)
 
 const onDelete = async () => {
-    await deletePost(tweet.value);
+    await DeletePost(tweet.value);
     emit('delete', tweet.value)
 }
 </script>

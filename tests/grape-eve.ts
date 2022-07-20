@@ -8,9 +8,9 @@ describe('grape-eve', () => {
     // Configure the client cluster.
     anchor.setProvider(anchor.Provider.env());
     const program = anchor.workspace.GrapeEve as Program<GrapeEve>;
-    const sendPost = async (author, topic, content) => {
+    const SendPost = async (author, topic, content) => {
         const tweet = anchor.web3.Keypair.generate();
-        await program.rpc.sendPost(topic, content, {
+        await program.rpc.SendPost(topic, content, {
             accounts: {
                 tweet: tweet.publicKey,
                 author,
@@ -25,7 +25,7 @@ describe('grape-eve', () => {
     it('can send a new tweet', async () => {
         // Call the "SendPost" instruction.
         const tweet = anchor.web3.Keypair.generate();
-        await program.rpc.sendPost('veganism', 'Hummus, am I right?', {
+        await program.rpc.SendPost('veganism', 'Hummus, am I right?', {
             accounts: {
                 tweet: tweet.publicKey,
                 author: program.provider.wallet.publicKey,
@@ -45,9 +45,9 @@ describe('grape-eve', () => {
     });
 
     it('can send a new tweet without a topic', async () => {
-        // Call the "sendPost" instruction.
+        // Call the "SendPost" instruction.
         const tweet = anchor.web3.Keypair.generate();
-        await program.rpc.sendPost('', 'gm', {
+        await program.rpc.SendPost('', 'gm', {
             accounts: {
                 tweet: tweet.publicKey,
                 author: program.provider.wallet.publicKey,
@@ -72,9 +72,9 @@ describe('grape-eve', () => {
         const signature = await program.provider.connection.requestAirdrop(otherUser.publicKey, 1000000000);
         await program.provider.connection.confirmTransaction(signature);
 
-        // Call the "sendPost" instruction on behalf of this other user.
+        // Call the "SendPost" instruction on behalf of this other user.
         const tweet = anchor.web3.Keypair.generate();
-        await program.rpc.sendPost('veganism', 'Yay Tofu!', {
+        await program.rpc.SendPost('veganism', 'Yay Tofu!', {
             accounts: {
                 tweet: tweet.publicKey,
                 author: otherUser.publicKey,
@@ -97,7 +97,7 @@ describe('grape-eve', () => {
         try {
             const tweet = anchor.web3.Keypair.generate();
             const topicWith51Chars = 'x'.repeat(51);
-            await program.rpc.sendPost(topicWith51Chars, 'Hummus, am I right?', {
+            await program.rpc.SendPost(topicWith51Chars, 'Hummus, am I right?', {
                 accounts: {
                     tweet: tweet.publicKey,
                     author: program.provider.wallet.publicKey,
@@ -117,7 +117,7 @@ describe('grape-eve', () => {
         try {
             const tweet = anchor.web3.Keypair.generate();
             const contentWith281Chars = 'x'.repeat(281);
-            await program.rpc.sendPost('veganism', contentWith281Chars, {
+            await program.rpc.SendPost('veganism', contentWith281Chars, {
                 accounts: {
                     tweet: tweet.publicKey,
                     author: program.provider.wallet.publicKey,
@@ -177,7 +177,7 @@ describe('grape-eve', () => {
     it('can update a tweet', async () => {
         // Send a tweet and fetch its account.
         const author = program.provider.wallet.publicKey;
-        const tweet = await sendPost(author, 'web2', 'Hello World!');
+        const tweet = await SendPost(author, 'web2', 'Hello World!');
         const tweetAccount = await program.account.tweet.fetch(tweet.publicKey);
 
         // Ensure it has the right data.
@@ -185,7 +185,7 @@ describe('grape-eve', () => {
         assert.equal(tweetAccount.content, 'Hello World!');
 
         // Update the Tweet.
-        await program.rpc.updatePost('solana', 'gm everyone!', {
+        await program.rpc.UpdatePost('solana', 'gm everyone!', {
             accounts: {
                 tweet: tweet.publicKey,
                 author,
@@ -201,11 +201,11 @@ describe('grape-eve', () => {
     it('cannot update someone else\'s tweet', async () => {
         // Send a tweet.
         const author = program.provider.wallet.publicKey;
-        const tweet = await sendPost(author, 'solana', 'Solana is awesome!');
+        const tweet = await SendPost(author, 'solana', 'Solana is awesome!');
 
         // Update the Tweet.
         try {
-            await program.rpc.updatePost('eth', 'Ethereum is awesome!', {
+            await program.rpc.UpdatePost('eth', 'Ethereum is awesome!', {
                 accounts: {
                     tweet: tweet.publicKey,
                     author: anchor.web3.Keypair.generate().publicKey,
@@ -223,10 +223,10 @@ describe('grape-eve', () => {
     it('can delete a tweet', async () => {
         // Create a new tweet.
         const author = program.provider.wallet.publicKey;
-        const tweet = await sendPost(author, 'solana', 'gm');
+        const tweet = await SendPost(author, 'solana', 'gm');
 
         // Delete the Tweet.
-        await program.rpc.deletePost({
+        await program.rpc.DeletePost({
             accounts: {
                 tweet: tweet.publicKey,
                 author,
@@ -241,11 +241,11 @@ describe('grape-eve', () => {
     it('cannot delete someone else\'s tweet', async () => {
         // Create a new tweet.
         const author = program.provider.wallet.publicKey;
-        const tweet = await sendPost(author, 'solana', 'gm');
+        const tweet = await SendPost(author, 'solana', 'gm');
 
         // Try to delete the Tweet from a different author.
         try {
-            await program.rpc.deletePost({
+            await program.rpc.DeletePost({
                 accounts: {
                     tweet: tweet.publicKey,
                     author: anchor.web3.Keypair.generate().publicKey,

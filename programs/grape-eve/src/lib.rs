@@ -6,7 +6,7 @@ declare_id!("BNDCEb5uXCuWDxJW9BGmbfvR1JBMAKckfhYrEKW2Bv1W");
 #[program]
 pub mod grape_eve {
     use super::*;
-    pub fn send_post(ctx: Context<sendPost>, topic: String, content: String) -> ProgramResult {
+    pub fn send_post(ctx: Context<SendPost>, topic: String, content: String) -> ProgramResult {
         let tweet: &mut Account<Tweet> = &mut ctx.accounts.tweet;
         let author: &Signer = &ctx.accounts.author;
         let clock: Clock = Clock::get().unwrap();
@@ -31,7 +31,7 @@ pub mod grape_eve {
         Ok(())
     }
 
-    pub fn update_post(ctx: Context<updatePost>, topic: String, content: String) -> ProgramResult {
+    pub fn update_post(ctx: Context<UpdatePost>, topic: String, content: String) -> ProgramResult {
         let tweet: &mut Account<Tweet> = &mut ctx.accounts.tweet;
 
         if topic.chars().count() > 50 {
@@ -48,13 +48,13 @@ pub mod grape_eve {
         Ok(())
     }
 
-    pub fn delete_post(_ctx: Context<deletePost>) -> ProgramResult {
+    pub fn delete_post(_ctx: Context<DeletePost>) -> ProgramResult {
         Ok(())
     }
 }
 
 #[derive(Accounts)]
-pub struct sendPost<'info> {
+pub struct SendPost<'info> {
     #[account(init, payer = author, space = Tweet::LEN)]
     pub tweet: Account<'info, Tweet>,
     #[account(mut)]
@@ -65,14 +65,14 @@ pub struct sendPost<'info> {
 }
 
 #[derive(Accounts)]
-pub struct updatePost<'info> {
+pub struct UpdatePost<'info> {
     #[account(mut, has_one = author)]
     pub tweet: Account<'info, Tweet>,
     pub author: Signer<'info>,
 }
 
 #[derive(Accounts)]
-pub struct deletePost<'info> {
+pub struct DeletePost<'info> {
     #[account(mut, has_one = author, close = author)]
     pub tweet: Account<'info, Tweet>,
     pub author: Signer<'info>,

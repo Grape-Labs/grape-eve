@@ -1,7 +1,7 @@
 <script setup>
 import { computed, ref, toRefs } from 'vue'
 import { useAutoresizeTextarea, useCountCharacterLimit, useSlug } from '@/composables'
-import { updatePost } from '@/api'
+import { UpdatePost } from '@/api'
 import { useWallet } from 'solana-wallets-vue'
 
 // Props.
@@ -35,7 +35,7 @@ const canTweet = computed(() => content.value && characterLimit.value > 0)
 const emit = defineEmits(['close'])
 const update = async () => {
     if (! canTweet.value) return
-    await updatePost(tweet.value, slugTopic.value, content.value)
+    await UpdatePost(tweet.value, slugTopic.value, content.value)
     emit('close')
 }
 </script>

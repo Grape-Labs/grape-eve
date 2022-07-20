@@ -1,8 +1,8 @@
 import { useWorkspace } from '@/composables'
 
-export const deletePost = async (tweet) => {
+export const DeletePost = async (tweet) => {
     const { wallet, program } = useWorkspace()
-    await program.value.rpc.deletePost({
+    await program.value.rpc.DeletePost({
         accounts: {
             author: wallet.value.publicKey,
             tweet: tweet.publicKey,

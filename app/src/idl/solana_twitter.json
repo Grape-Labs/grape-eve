@@ -3,7 +3,7 @@
   "name": "grape_eve",
   "instructions": [
     {
-      "name": "sendPost",
+      "name": "SendPost",
       "accounts": [
         {
           "name": "tweet",
@@ -33,7 +33,7 @@
       ]
     },
     {
-      "name": "updatePost",
+      "name": "UpdatePost",
       "accounts": [
         {
           "name": "tweet",
@@ -58,7 +58,7 @@
       ]
     },
     {
-      "name": "deletePost",
+      "name": "DeletePost",
       "accounts": [
         {
           "name": "tweet",

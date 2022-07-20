@@ -1,7 +1,7 @@
 <script setup>
 import { computed, ref, toRefs } from 'vue'
 import { useAutoresizeTextarea, useCountCharacterLimit, useSlug } from '@/composables'
-import { sendPost } from '@/api'
+import { SendPost } from '@/api'
 import { useWallet } from 'solana-wallets-vue'
 
 // Props.
@@ -36,7 +36,7 @@ const canTweet = computed(() => content.value && characterLimit.value > 0)
 const emit = defineEmits(['added'])
 const send = async () => {
     if (! canTweet.value) return
-    const tweet = await sendPost(effectiveTopic.value, content.value)
+    const tweet = await SendPost(effectiveTopic.value, content.value)
     emit('added', tweet)
     topic.value = ''
     content.value = ''

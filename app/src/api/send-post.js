@@ -2,11 +2,11 @@ import { web3 } from '@project-serum/anchor'
 import { useWorkspace } from '@/composables'
 import { Tweet } from '@/models'
 
-export const sendPost = async (topic, content) => {
+export const SendPost = async (topic, content) => {
     const { wallet, program } = useWorkspace()
     const tweet = web3.Keypair.generate()
 
-    await program.value.rpc.sendPost(topic, content, {
+    await program.value.rpc.SendPost(topic, content, {
         accounts: {
             author: wallet.value.publicKey,
             tweet: tweet.publicKey,
