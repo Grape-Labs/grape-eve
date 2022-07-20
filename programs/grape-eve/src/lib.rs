@@ -7,7 +7,7 @@ declare_id!("BNDCEb5uXCuWDxJW9BGmbfvR1JBMAKckfhYrEKW2Bv1W");
 pub mod grape_eve {
     use super::*;
     pub fn send_post(ctx: Context<SendPost>, topic: String, content: String) -> ProgramResult {
-        let tweet: &mut Account<Tweet> = &mut ctx.accounts.tweet;
+        let dweet: &mut Account<Dweet> = &mut ctx.accounts.dweet;
         let author: &Signer = &ctx.accounts.author;
         let clock: Clock = Clock::get().unwrap();
 
@@ -19,20 +19,20 @@ pub mod grape_eve {
             return Err(ErrorCode::ContentTooLong.into())
         }
 
-        tweet.author = *author.key;
-        tweet.timestamp = clock.unix_timestamp;
-        tweet.topic = topic;
-        tweet.content = content;
-        //tweet.community = community;
-        //tweet.communityType = community_type;
-        //tweet.metadata = metadata;
-        //tweet.isEncrypted = is_encrypted;
+        dweet.author = *author.key;
+        dweet.timestamp = clock.unix_timestamp;
+        dweet.topic = topic;
+        dweet.content = content;
+        //dweet.community = community;
+        //dweet.communityType = community_type;
+        //dweet.metadata = metadata;
+        //dweet.isEncrypted = is_encrypted;
 
         Ok(())
     }
 
     pub fn update_post(ctx: Context<UpdatePost>, topic: String, content: String) -> ProgramResult {
-        let tweet: &mut Account<Tweet> = &mut ctx.accounts.tweet;
+        let dweet: &mut Account<Dweet> = &mut ctx.accounts.dweet;
 
         if topic.chars().count() > 50 {
             return Err(ErrorCode::TopicTooLong.into())
@@ -42,8 +42,8 @@ pub mod grape_eve {
             return Err(ErrorCode::ContentTooLong.into())
         }
 
-        tweet.topic = topic;
-        tweet.content = content;
+        dweet.topic = topic;
+        dweet.content = content;
 
         Ok(())
     }
@@ -55,8 +55,8 @@ pub mod grape_eve {
 
 #[derive(Accounts)]
 pub struct SendPost<'info> {
-    #[account(init, payer = author, space = Tweet::LEN)]
-    pub tweet: Account<'info, Tweet>,
+    #[account(init, payer = author, space = Dweet::LEN)]
+    pub dweet: Account<'info, Dweet>,
     #[account(mut)]
     pub author: Signer<'info>,
     #[account(address = system_program::ID)]
@@ -67,19 +67,19 @@ pub struct SendPost<'info> {
 #[derive(Accounts)]
 pub struct UpdatePost<'info> {
     #[account(mut, has_one = author)]
-    pub tweet: Account<'info, Tweet>,
+    pub dweet: Account<'info, Dweet>,
     pub author: Signer<'info>,
 }
 
 #[derive(Accounts)]
 pub struct DeletePost<'info> {
     #[account(mut, has_one = author, close = author)]
-    pub tweet: Account<'info, Tweet>,
+    pub dweet: Account<'info, Dweet>,
     pub author: Signer<'info>,
 }
 
 #[account]
-pub struct Tweet {
+pub struct Dweet {
     pub author: Pubkey,
     pub timestamp: i64,
     pub topic: String,
@@ -103,7 +103,7 @@ const ISENCRYPTED_LENGTH: usize = 1;
 // TODO ADD CHANNEL or COMMUNITY GATING
 // ADD LITPROTOCOL
 
-impl Tweet {
+impl Dweet {
     const LEN: usize = DISCRIMINATOR_LENGTH
         + PUBLIC_KEY_LENGTH // Author.
         + TIMESTAMP_LENGTH // Timestamp.
