@@ -24,9 +24,9 @@ pub mod grape_eve {
         tweet.topic = topic;
         tweet.content = content;
         //tweet.community = community;
-        //tweet.communityType = communityType;
+        //tweet.communityType = community_type;
         //tweet.metadata = metadata;
-        //tweet.isEncrypted = isEncrypted;
+        //tweet.isEncrypted = is_encrypted;
 
         Ok(())
     }
@@ -85,9 +85,9 @@ pub struct Tweet {
     pub topic: String,
     pub content: String,
     pub community: Pubkey,
-    pub community_type: String,
+    pub community_type: i64,
     pub metadata: String,
-    pub is_encrypted: i64
+    pub is_encrypted: bool
 }
 
 const DISCRIMINATOR_LENGTH: usize = 8;
@@ -96,9 +96,9 @@ const TIMESTAMP_LENGTH: usize = 8;
 const STRING_LENGTH_PREFIX: usize = 4; // Stores the size of the string.
 const MAX_TOPIC_LENGTH: usize = 50 * 4; // 50 chars max.
 const MAX_CONTENT_LENGTH: usize = 280 * 4; // 280 chars max.
-const COMMUNITYTYPE_LENGTH: usize = 3;
+const COMMUNITYTYPE_LENGTH: usize = 1;
 const METADATA_LENGTH: usize = 100;
-const ISENCRYPTED_LENGTH: usize = 8;
+const ISENCRYPTED_LENGTH: usize = 1;
 
 // TODO ADD CHANNEL or COMMUNITY GATING
 // ADD LITPROTOCOL
@@ -109,7 +109,9 @@ impl Tweet {
         + TIMESTAMP_LENGTH // Timestamp.
         + STRING_LENGTH_PREFIX + MAX_TOPIC_LENGTH // Topic.
         + STRING_LENGTH_PREFIX + MAX_CONTENT_LENGTH // Content.
-        + COMMUNITYTYPE_LENGTH + METADATA_LENGTH + ISENCRYPTED_LENGTH; // additional fields
+        + STRING_LENGTH_PREFIX + COMMUNITYTYPE_LENGTH 
+        + STRING_LENGTH_PREFIX + METADATA_LENGTH 
+        + ISENCRYPTED_LENGTH; // additional fields
 }
 
 #[error]
