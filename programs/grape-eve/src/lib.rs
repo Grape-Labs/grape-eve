@@ -84,10 +84,10 @@ pub struct Tweet {
     pub timestamp: i64,
     pub topic: String,
     pub content: String,
-    //pub community: Pubkey,
-    //pub comminityType: String,
-    //pub metadata: String,
-    //pub isEncrypted: Boolean
+    pub community: Pubkey,
+    pub community_type: String,
+    pub metadata: String,
+    pub is_encrypted: i64
 }
 
 const DISCRIMINATOR_LENGTH: usize = 8;
@@ -96,6 +96,10 @@ const TIMESTAMP_LENGTH: usize = 8;
 const STRING_LENGTH_PREFIX: usize = 4; // Stores the size of the string.
 const MAX_TOPIC_LENGTH: usize = 50 * 4; // 50 chars max.
 const MAX_CONTENT_LENGTH: usize = 280 * 4; // 280 chars max.
+const COMMUNITYTYPE_LENGTH: usize = 3;
+const METADATA_LENGTH: usize = 100;
+const ISENCRYPTED_LENGTH: usize = 8;
+
 // TODO ADD CHANNEL or COMMUNITY GATING
 // ADD LITPROTOCOL
 
@@ -104,7 +108,8 @@ impl Tweet {
         + PUBLIC_KEY_LENGTH // Author.
         + TIMESTAMP_LENGTH // Timestamp.
         + STRING_LENGTH_PREFIX + MAX_TOPIC_LENGTH // Topic.
-        + STRING_LENGTH_PREFIX + MAX_CONTENT_LENGTH; // Content.
+        + STRING_LENGTH_PREFIX + MAX_CONTENT_LENGTH // Content.
+        + COMMUNITYTYPE_LENGTH + METADATA_LENGTH + ISENCRYPTED_LENGTH; // additional fields
 }
 
 #[error]
