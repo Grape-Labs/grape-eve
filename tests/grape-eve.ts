@@ -25,7 +25,7 @@ describe('grape-eve', () => {
     it('can send a new thread', async () => {
         // Call the "SendPost" instruction.
         const thread = anchor.web3.Keypair.generate();
-        await program.rpc.sendPost('veganism', 'Hummus, am I right?', {
+        await program.rpc.sendPost('fruit', 'Grape, how does that sound?', {
             accounts: {
                 thread: thread.publicKey,
                 author: program.provider.wallet.publicKey,
@@ -39,8 +39,8 @@ describe('grape-eve', () => {
 
         // Ensure it has the right data.
         assert.equal(threadAccount.author.toBase58(), program.provider.wallet.publicKey.toBase58());
-        assert.equal(threadAccount.topic, 'veganism');
-        assert.equal(threadAccount.content, 'Hummus, am I right?');
+        assert.equal(threadAccount.topic, 'fruit');
+        assert.equal(threadAccount.content, 'Grape, how does that sound?');
         assert.ok(threadAccount.timestamp);
     });
 

@@ -1,8 +1,8 @@
 import { useWorkspace } from '@/composables'
-import { Tweet } from '@/models'
+import { Thread } from '@/models'
 
-export const getTweet = async (publicKey) => {
+export const getThread = async (publicKey) => {
     const { program } = useWorkspace()
-    const account = await program.value.account.tweet.fetch(publicKey);
-    return new Tweet(publicKey, account)
+    const account = await program.value.account.thread.fetch(publicKey);
+    return new Thread(publicKey, account)
 }

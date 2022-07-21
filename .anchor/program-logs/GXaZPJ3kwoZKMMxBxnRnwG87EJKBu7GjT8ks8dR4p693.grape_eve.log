@@ -1,1 +1,34 @@
 Streaming transaction logs mentioning GXaZPJ3kwoZKMMxBxnRnwG87EJKBu7GjT8ks8dR4p693. Confirmed commitment
+Transaction executed in slot 149475227:
+  Signature: 48n39pHRYyMWvQCADujS5gTxKRcx8vFDpp2bK6mSXE4At7iQKzyBCDGxgVaEu1ZxtCwXJmvqGzrDnVtQBL2UvvQ5
+  Status: Error processing Instruction 0: custom program error: 0xbbf
+  Log Messages:
+    Program GXaZPJ3kwoZKMMxBxnRnwG87EJKBu7GjT8ks8dR4p693 invoke [1]
+    Program log: Instruction: SendPost
+    Program 11111111111111111111111111111111 invoke [2]
+    Program 11111111111111111111111111111111 success
+    Program log: Custom program error: 0xbbf
+    Program GXaZPJ3kwoZKMMxBxnRnwG87EJKBu7GjT8ks8dR4p693 consumed 5578 of 200000 compute units
+    Program GXaZPJ3kwoZKMMxBxnRnwG87EJKBu7GjT8ks8dR4p693 failed: custom program error: 0xbbf
+Transaction executed in slot 149475233:
+  Signature: 4iocd1pu8rjuqYSG8pnyjM9V8gpYKgsGoh3Bh6zF74gii2cq7uQPe5gTScEMPfRuuUuTseN9X6dxzWrxgi4wLyAm
+  Status: Error processing Instruction 0: custom program error: 0xbbf
+  Log Messages:
+    Program GXaZPJ3kwoZKMMxBxnRnwG87EJKBu7GjT8ks8dR4p693 invoke [1]
+    Program log: Instruction: SendPost
+    Program 11111111111111111111111111111111 invoke [2]
+    Program 11111111111111111111111111111111 success
+    Program log: Custom program error: 0xbbf
+    Program GXaZPJ3kwoZKMMxBxnRnwG87EJKBu7GjT8ks8dR4p693 consumed 5902 of 200000 compute units
+    Program GXaZPJ3kwoZKMMxBxnRnwG87EJKBu7GjT8ks8dR4p693 failed: custom program error: 0xbbf
+Transaction executed in slot 149475241:
+  Signature: CBLazs42UXMkKGACyk6ujsqiw4CTmKb1Tdz2GUVdThbSKm7PCkZmp3pKzj5ZiYNGTk6DFo1ptYvkJ9WCjCckVi1
+  Status: Error processing Instruction 0: custom program error: 0xbbf
+  Log Messages:
+    Program GXaZPJ3kwoZKMMxBxnRnwG87EJKBu7GjT8ks8dR4p693 invoke [1]
+    Program log: Instruction: SendPost
+    Program 11111111111111111111111111111111 invoke [2]
+    Program 11111111111111111111111111111111 success
+    Program log: Custom program error: 0xbbf
+    Program GXaZPJ3kwoZKMMxBxnRnwG87EJKBu7GjT8ks8dR4p693 consumed 5808 of 200000 compute units
+    Program GXaZPJ3kwoZKMMxBxnRnwG87EJKBu7GjT8ks8dR4p693 failed: custom program error: 0xbbf

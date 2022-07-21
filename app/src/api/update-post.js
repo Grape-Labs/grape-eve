@@ -1,14 +1,14 @@
 import { useWorkspace } from '@/composables'
 
-export const UpdatePost = async (tweet, topic, content) => {
+export const UpdatePost = async (thread, topic, content) => {
     const { wallet, program } = useWorkspace()
     await program.value.rpc.UpdatePost(topic, content, {
         accounts: {
             author: wallet.value.publicKey,
-            tweet: tweet.publicKey,
+            thread: thread.publicKey,
         },
     })
 
-    tweet.topic = topic
-    tweet.content = content
+    thread.topic = topic
+    thread.content = content
 }

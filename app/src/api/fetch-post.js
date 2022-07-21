@@ -1,16 +1,16 @@
 import { useWorkspace, usePagination } from '@/composables'
-import { Tweet } from '@/models'
+import { Thread } from '@/models'
 import bs58 from 'bs58'
 import { BN } from '@project-serum/anchor'
 import { computed, ref } from 'vue'
 
-export const fetchTweets = async (filters = []) => {
+export const fetchThreads = async (filters = []) => {
     const { program } = useWorkspace()
-    const tweets = await program.value.account.tweet.all(filters);
-    return tweets.map(tweet => new Tweet(tweet.publicKey, tweet.account))
+    const thread = await program.value.account.thread.all(filters);
+    return thread.map(thread => new Thread(thread.publicKey, thread.account))
 }
 
-export const paginateTweets = (filters = [], perPage = 6, onNewPage = () => {}) => {
+export const paginateThread = (filters = [], perPage = 6, onNewPage = () => {}) => {
     filters = ref(filters)
     const { program, connection } = useWorkspace()
     const page = ref(0)
@@ -20,35 +20,35 @@ export const paginateTweets = (filters = [], perPage = 6, onNewPage = () => {}) 
         page.value = 0
 
         // Prepare the discriminator filter.
-        const tweetClient = program.value.account.tweet
-        const tweetAccountName = tweetClient._idlAccount.name
-        const tweetDiscriminatorFilter = {
-            memcmp: tweetClient.coder.accounts.memcmp(tweetAccountName)
+        const threadClient = program.value.account.thread
+        const threadAccountName = threadClient._idlAccount.name
+        const threadDiscriminatorFilter = {
+            memcmp: threadClient.coder.accounts.memcmp(threadAccountName)
         }
 
-        // Prefetch all tweets with their timestamps only.
-        const allTweets = await connection.getProgramAccounts(program.value.programId, {
-            filters: [tweetDiscriminatorFilter, ...filters.value],
+        // Prefetch all thread with their timestamps only.
+        const allThreads = await connection.getProgramAccounts(program.value.programId, {
+            filters: [threadDiscriminatorFilter, ...filters.value],
             dataSlice: { offset: 40, length: 8 },
         })
 
         // Parse the timestamp from the account's data.
-        const allTweetsWithTimestamps = allTweets.map(({ account, pubkey }) => ({
+        const allThreadsWithTimestamps = allThreads.map(({ account, pubkey }) => ({
             pubkey,
             timestamp: new BN(account.data, 'le'),
         }))
 
-        return allTweetsWithTimestamps
+        return allThreadsWithTimestamps
             .sort((a, b) => b.timestamp.cmp(a.timestamp))
             .map(({ pubkey }) => pubkey)
     }
 
     const pageCb = async (page, paginatedPublicKeys) => {
-        const tweets = await program.value.account.tweet.fetchMultiple(paginatedPublicKeys)
+        const threads = await program.value.account.thread.fetchMultiple(paginatedPublicKeys)
 
-        return tweets.reduce((accumulator, tweet, index) => {
+        return threads.reduce((accumulator, thread, index) => {
             const publicKey = paginatedPublicKeys[index]
-            accumulator.push(new Tweet(publicKey, tweet))
+            accumulator.push(new Thread(publicKey, thread))
             return accumulator
         }, [])
     }
@@ -58,9 +58,9 @@ export const paginateTweets = (filters = [], perPage = 6, onNewPage = () => {}) 
 
     const hasNextPage = computed(() => hasPage(page.value + 1))
     const getNextPage = async () => {
-        const newPageTweets = await getPage(page.value + 1)
+        const newPageThreads = await getPage(page.value + 1)
         page.value += 1
-        onNewPage(newPageTweets)
+        onNewPage(newPageThreads)
     }
 
     return { page, hasNextPage, getNextPage, ...pagination }

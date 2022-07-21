@@ -2,7 +2,7 @@
 grape_eve = "BNDCEb5uXCuWDxJW9BGmbfvR1JBMAKckfhYrEKW2Bv1W"
 
 [programs.devnet]
-grape_eve = "BNDCEb5uXCuWDxJW9BGmbfvR1JBMAKckfhYrEKW2Bv1W"
+grape_eve = "GXaZPJ3kwoZKMMxBxnRnwG87EJKBu7GjT8ks8dR4p693"
 
 [programs.mainnet]
 grape_eve = "BNDCEb5uXCuWDxJW9BGmbfvR1JBMAKckfhYrEKW2Bv1W"
