@@ -85,9 +85,9 @@ pub struct Dweet {
     pub topic: String,
     pub content: String,
     pub community: Pubkey,
-    pub community_type: i64,
+    pub community_type: i8,
     pub metadata: String,
-    pub is_encrypted: bool
+    pub is_encrypted: i8
 }
 
 const DISCRIMINATOR_LENGTH: usize = 8;
