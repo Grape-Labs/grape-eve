@@ -96,8 +96,9 @@ const TIMESTAMP_LENGTH: usize = 8;
 const STRING_LENGTH_PREFIX: usize = 4; // Stores the size of the string.
 const MAX_TOPIC_LENGTH: usize = 50 * 4; // 50 chars max.
 const MAX_CONTENT_LENGTH: usize = 280 * 4; // 280 chars max.
+const COMMUNITY_LENGTH: usize = 32;
 const COMMUNITYTYPE_LENGTH: usize = 1;
-const METADATA_LENGTH: usize = 100;
+const METADATA_LENGTH: usize = 280;
 const ISENCRYPTED_LENGTH: usize = 1;
 
 // TODO ADD CHANNEL or COMMUNITY GATING
@@ -109,7 +110,8 @@ impl Thread {
         + TIMESTAMP_LENGTH // Timestamp.
         + STRING_LENGTH_PREFIX + MAX_TOPIC_LENGTH // Topic.
         + MAX_CONTENT_LENGTH // Content.
-        + STRING_LENGTH_PREFIX + COMMUNITYTYPE_LENGTH 
+        + COMMUNITY_LENGTH // Author.
+        + COMMUNITYTYPE_LENGTH 
         + STRING_LENGTH_PREFIX + METADATA_LENGTH 
         + ISENCRYPTED_LENGTH; // additional fields
 }

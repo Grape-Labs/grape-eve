@@ -8,6 +8,7 @@ describe('grape-eve', () => {
     // Configure the client cluster.
     anchor.setProvider(anchor.Provider.env());
     const program = anchor.workspace.GrapeEve as Program<GrapeEve>;
+    
     const SendPost = async (author, topic, content) => {
         const thread = anchor.web3.Keypair.generate();
         await program.rpc.sendPost(topic, content, {
