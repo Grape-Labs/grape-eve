@@ -108,7 +108,7 @@ impl Dweet {
         + PUBLIC_KEY_LENGTH // Author.
         + TIMESTAMP_LENGTH // Timestamp.
         + STRING_LENGTH_PREFIX + MAX_TOPIC_LENGTH // Topic.
-        + STRING_LENGTH_PREFIX + MAX_CONTENT_LENGTH // Content.
+        + MAX_CONTENT_LENGTH // Content.
         + STRING_LENGTH_PREFIX + COMMUNITYTYPE_LENGTH 
         + STRING_LENGTH_PREFIX + METADATA_LENGTH 
         + ISENCRYPTED_LENGTH; // additional fields
