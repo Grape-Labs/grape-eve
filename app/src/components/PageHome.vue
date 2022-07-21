@@ -1,18 +1,18 @@
 <script setup>
 import { ref } from 'vue'
-import { paginateTweets } from '@/api'
-import TweetForm from '@/components/TweetForm'
-import TweetList from '@/components/TweetList'
+import { paginateThreads } from '@/api'
+import ThreadForm from '@/components/ThreadForm'
+import ThreadList from '@/components/ThreadList'
 
-const tweets = ref([])
-const onNewPage = newTweets => tweets.value.push(...newTweets)
-const { prefetch, hasNextPage, getNextPage, loading } = paginateTweets([], 10, onNewPage)
+const threads = ref([])
+const onNewPage = newThreads => threads.value.push(...newThreads)
+const { prefetch, hasNextPage, getNextPage, loading } = paginateThreads([], 10, onNewPage)
 prefetch().then(getNextPage)
 
-const addTweet = tweet => tweets.value.push(tweet)
+const addThread = thread => threads.value.push(thread)
 </script>
 
 <template>
-    <tweet-form @added="addTweet"></tweet-form>
-    <tweet-list v-model:tweets="tweets" :loading="loading" :has-more="hasNextPage" @more="getNextPage"></tweet-list>
+    <thread-form @added="addThread"></thread-form>
+    <thread-list v-model:threads="threads" :loading="loading" :has-more="hasNextPage" @more="getNextPage"></thread-list>
 </template>

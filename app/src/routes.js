@@ -20,9 +20,9 @@ export default [
         component: require('@/components/PageProfile').default,
     },
     {
-        name: 'Tweet',
-        path: '/tweet/:tweet',
-        component: require('@/components/PageTweet').default,
+        name: 'Thread',
+        path: '/thread/:thread',
+        component: require('@/components/PageThread').default,
     },
     {
         name: 'NotFound',

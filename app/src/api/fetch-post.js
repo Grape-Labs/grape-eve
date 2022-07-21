@@ -10,7 +10,7 @@ export const fetchThreads = async (filters = []) => {
     return thread.map(thread => new Thread(thread.publicKey, thread.account))
 }
 
-export const paginateThread = (filters = [], perPage = 6, onNewPage = () => {}) => {
+export const paginateThreads = (filters = [], perPage = 6, onNewPage = () => {}) => {
     filters = ref(filters)
     const { program, connection } = useWorkspace()
     const page = ref(0)

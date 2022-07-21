@@ -1,1 +1,1 @@
-export * from './Tweet'
+export * from './Thread'

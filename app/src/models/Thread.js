@@ -1,6 +1,6 @@
 import dayjs from "dayjs"
 
-export class Tweet
+export class Thread
 {
     constructor (publicKey, accountData) {
         this.publicKey = publicKey

@@ -30,14 +30,14 @@ const characterLimitColour = computed(() => {
 
 // Permissions.
 const { connected } = useWallet()
-const canTweet = computed(() => content.value && characterLimit.value > 0)
+const canThread = computed(() => content.value && characterLimit.value > 0)
 
 // Actions.
 const emit = defineEmits(['added'])
 const send = async () => {
-    if (! canTweet.value) return
-    const tweet = await SendPost(effectiveTopic.value, content.value)
-    emit('added', tweet)
+    if (! canThread.value) return
+    const thread = await SendPost(effectiveTopic.value, content.value)
+    emit('added', thread)
     topic.value = ''
     content.value = ''
 }
@@ -82,17 +82,17 @@ const send = async () => {
 
                 <!-- Tweet button. -->
                 <button
-                    class="text-white px-4 py-2 rounded-full font-semibold" :disabled="! canTweet"
-                    :class="canTweet ? 'bg-pink-500' : 'bg-pink-300 cursor-not-allowed'"
+                    class="text-white px-4 py-2 rounded-full font-semibold" :disabled="! canThread"
+                    :class="canThread ? 'bg-pink-500' : 'bg-pink-300 cursor-not-allowed'"
                     @click="send"
                 >
-                    Tweet
+                    Thread
                 </button>
             </div>
         </div>
     </div>
 
     <div v-else class="px-8 py-4 bg-gray-50 text-gray-500 text-center border-b">
-        Connect your wallet to start tweeting...
+        Connect your wallet to start writing...
     </div>
 </template>

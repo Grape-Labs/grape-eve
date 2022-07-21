@@ -6,13 +6,13 @@ import { useWallet } from 'solana-wallets-vue'
 
 // Props.
 const props = defineProps({
-    tweet: Object,
+    thread: Object,
 })
-const { tweet } = toRefs(props)
+const { thread } = toRefs(props)
 
 // Form data.
-const content = ref(tweet.value.content)
-const topic = ref(tweet.value.topic)
+const content = ref(thread.value.content)
+const topic = ref(thread.value.topic)
 const slugTopic = useSlug(topic)
 
 // Auto-resize the content's textarea.
@@ -29,13 +29,13 @@ const characterLimitColour = computed(() => {
 
 // Permissions.
 const { connected } = useWallet()
-const canTweet = computed(() => content.value && characterLimit.value > 0)
+const canThread = computed(() => content.value && characterLimit.value > 0)
 
 // Actions.
 const emit = defineEmits(['close'])
 const update = async () => {
-    if (! canTweet.value) return
-    await UpdatePost(tweet.value, slugTopic.value, content.value)
+    if (! canThread.value) return
+    await UpdatePost(thread.value, slugTopic.value, content.value)
     emit('close')
 }
 </script>
@@ -44,15 +44,15 @@ const update = async () => {
     <div v-if="connected">
         <div class="px-8 py-4 border-l-4 border-pink-500">
             <div class="py-1">
-                <h3 class="inline font-semibold" :title="tweet.author">
+                <h3 class="inline font-semibold" :title="thread.author">
                     <router-link :to="{ name: 'Profile' }" class="hover:underline">
-                        {{ tweet.author_display }}
+                        {{ thread.author_display }}
                     </router-link>
                 </h3>
                 <span class="text-gray-500"> • </span>
-                <time class="text-gray-500 text-sm" :title="tweet.created_at">
-                    <router-link :to="{ name: 'Tweet', params: { tweet: tweet.publicKey.toBase58() } }" class="hover:underline">
-                        {{ tweet.created_ago }}
+                <time class="text-gray-500 text-sm" :title="thread.created_at">
+                    <router-link :to="{ name: 'Thread', params: { thread: thread.publicKey.toBase58() } }" class="hover:underline">
+                        {{ thread.created_ago }}
                     </router-link>
                 </time>
             </div>
@@ -98,10 +98,10 @@ const update = async () => {
                         Cancel
                     </button>
 
-                    <!-- Tweet button. -->
+                    <!-- Thread button. -->
                     <button
-                        class="text-white px-4 py-2 rounded-full font-semibold" :disabled="! canTweet"
-                        :class="canTweet ? 'bg-pink-500' : 'bg-pink-300 cursor-not-allowed'"
+                        class="text-white px-4 py-2 rounded-full font-semibold" :disabled="! canThread"
+                        :class="canThread ? 'bg-pink-500' : 'bg-pink-300 cursor-not-allowed'"
                         @click="update"
                     >
                         Update
@@ -112,6 +112,6 @@ const update = async () => {
     </div>
 
     <div v-else class="px-8 py-4 bg-gray-50 text-gray-500 text-center border-b">
-        Connect your wallet to start tweeting...
+        Connect your wallet to start writing...
     </div>
 </template>

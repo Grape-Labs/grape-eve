@@ -1,0 +1,87 @@
+Streaming transaction logs mentioning GXaZPJ3kwoZKMMxBxnRnwG87EJKBu7GjT8ks8dR4p693. Confirmed commitment
+Transaction executed in slot 149502837:
+  Signature: 2o1CTYP4quiB7sJWrHEWt5PqoJmojkPy1g2PHc9W5DqkPaZvMSMiQb88sePh17uVKfHCBayFpbnuw91FH6V6TeWb
+  Status: Ok
+  Log Messages:
+    Program GXaZPJ3kwoZKMMxBxnRnwG87EJKBu7GjT8ks8dR4p693 invoke [1]
+    Program log: Instruction: SendPost
+    Program 11111111111111111111111111111111 invoke [2]
+    Program 11111111111111111111111111111111 success
+    Program GXaZPJ3kwoZKMMxBxnRnwG87EJKBu7GjT8ks8dR4p693 consumed 8233 of 200000 compute units
+    Program GXaZPJ3kwoZKMMxBxnRnwG87EJKBu7GjT8ks8dR4p693 success
+Transaction executed in slot 149502844:
+  Signature: 3fy4sxrfZBvTsAeRbhdFmkKRJpBueZJQ1yc9Tzm5UWkpLPAgJoGtvvKedcB7mD5fa6VCbRUWyshjpNj6Q9vopUno
+  Status: Ok
+  Log Messages:
+    Program GXaZPJ3kwoZKMMxBxnRnwG87EJKBu7GjT8ks8dR4p693 invoke [1]
+    Program log: Instruction: SendPost
+    Program 11111111111111111111111111111111 invoke [2]
+    Program 11111111111111111111111111111111 success
+    Program GXaZPJ3kwoZKMMxBxnRnwG87EJKBu7GjT8ks8dR4p693 consumed 7545 of 200000 compute units
+    Program GXaZPJ3kwoZKMMxBxnRnwG87EJKBu7GjT8ks8dR4p693 success
+Transaction executed in slot 149502854:
+  Signature: 4fGryoyTMpbgRc5h4t6D9UVbjZRt7D2Xq2d2QCjJzGeHSoVfapDreY3jDdA4RviJZbojabDvU1t8gcTGh8qVoF2e
+  Status: Ok
+  Log Messages:
+    Program GXaZPJ3kwoZKMMxBxnRnwG87EJKBu7GjT8ks8dR4p693 invoke [1]
+    Program log: Instruction: SendPost
+    Program 11111111111111111111111111111111 invoke [2]
+    Program 11111111111111111111111111111111 success
+    Program GXaZPJ3kwoZKMMxBxnRnwG87EJKBu7GjT8ks8dR4p693 consumed 8159 of 200000 compute units
+    Program GXaZPJ3kwoZKMMxBxnRnwG87EJKBu7GjT8ks8dR4p693 success
+Transaction executed in slot 149502866:
+  Signature: 4fbrPGs42Jzr7KMnPgLoUYbaGR7wNKSx7RvE3DaMT6sf9xPnkRDCjgvYcDt86rP5pUn1wdYmomHN8NJY8onFqfYb
+  Status: Ok
+  Log Messages:
+    Program GXaZPJ3kwoZKMMxBxnRnwG87EJKBu7GjT8ks8dR4p693 invoke [1]
+    Program log: Instruction: SendPost
+    Program 11111111111111111111111111111111 invoke [2]
+    Program 11111111111111111111111111111111 success
+    Program GXaZPJ3kwoZKMMxBxnRnwG87EJKBu7GjT8ks8dR4p693 consumed 8036 of 200000 compute units
+    Program GXaZPJ3kwoZKMMxBxnRnwG87EJKBu7GjT8ks8dR4p693 success
+Transaction executed in slot 149502871:
+  Signature: 43a1uhkEiQHZGa1HHQX3kV8sBkYLP7NEwvmpQom398XWi8PQjTnpBEKGYqkm9TvnHMXWoPqGKURW255LHbHwTCt5
+  Status: Ok
+  Log Messages:
+    Program GXaZPJ3kwoZKMMxBxnRnwG87EJKBu7GjT8ks8dR4p693 invoke [1]
+    Program log: Instruction: UpdatePost
+    Program GXaZPJ3kwoZKMMxBxnRnwG87EJKBu7GjT8ks8dR4p693 consumed 4075 of 200000 compute units
+    Program GXaZPJ3kwoZKMMxBxnRnwG87EJKBu7GjT8ks8dR4p693 success
+Transaction executed in slot 149502876:
+  Signature: 4FSKV5iri57NPvFwRtM5zgf4bNTX8xS8ztT6aoLhrRGTQERqZfPfPgmoZjmm4eiL771KnfRTebmEoKnM7Pj1tQYL
+  Status: Ok
+  Log Messages:
+    Program GXaZPJ3kwoZKMMxBxnRnwG87EJKBu7GjT8ks8dR4p693 invoke [1]
+    Program log: Instruction: SendPost
+    Program 11111111111111111111111111111111 invoke [2]
+    Program 11111111111111111111111111111111 success
+    Program GXaZPJ3kwoZKMMxBxnRnwG87EJKBu7GjT8ks8dR4p693 consumed 8085 of 200000 compute units
+    Program GXaZPJ3kwoZKMMxBxnRnwG87EJKBu7GjT8ks8dR4p693 success
+Transaction executed in slot 149502883:
+  Signature: 3wNjREi8MReJYLgXbe3ZSaDUmA5N6KZxXhdTyt8RP3vE9S395X2kgMVD1xVK6wHtiSebGQ59UhumvzpMrFJYZiWY
+  Status: Ok
+  Log Messages:
+    Program GXaZPJ3kwoZKMMxBxnRnwG87EJKBu7GjT8ks8dR4p693 invoke [1]
+    Program log: Instruction: SendPost
+    Program 11111111111111111111111111111111 invoke [2]
+    Program 11111111111111111111111111111111 success
+    Program GXaZPJ3kwoZKMMxBxnRnwG87EJKBu7GjT8ks8dR4p693 consumed 7890 of 200000 compute units
+    Program GXaZPJ3kwoZKMMxBxnRnwG87EJKBu7GjT8ks8dR4p693 success
+Transaction executed in slot 149502887:
+  Signature: qWDhGms5jN3QfQrKhvcaU4R5FKK9zRa6ZKtPiAFbjiER4W1yQnM8MgqtvBdfhQSx5cjCwADrkDV6bi5yt1Pk1vv
+  Status: Ok
+  Log Messages:
+    Program GXaZPJ3kwoZKMMxBxnRnwG87EJKBu7GjT8ks8dR4p693 invoke [1]
+    Program log: Instruction: DeletePost
+    Program GXaZPJ3kwoZKMMxBxnRnwG87EJKBu7GjT8ks8dR4p693 consumed 2592 of 200000 compute units
+    Program GXaZPJ3kwoZKMMxBxnRnwG87EJKBu7GjT8ks8dR4p693 success
+Transaction executed in slot 149502894:
+  Signature: 2ZPXLEvTboonNd7Hg9qY4LTTmFGuNMi89wz1j89D6dYw6oTHW7Fs78TCWCVkx32XzZHJnH4RteeL7fQWFB4hBCcT
+  Status: Ok
+  Log Messages:
+    Program GXaZPJ3kwoZKMMxBxnRnwG87EJKBu7GjT8ks8dR4p693 invoke [1]
+    Program log: Instruction: SendPost
+    Program 11111111111111111111111111111111 invoke [2]
+    Program 11111111111111111111111111111111 success
+    Program GXaZPJ3kwoZKMMxBxnRnwG87EJKBu7GjT8ks8dR4p693 consumed 7890 of 200000 compute units
+    Program GXaZPJ3kwoZKMMxBxnRnwG87EJKBu7GjT8ks8dR4p693 success

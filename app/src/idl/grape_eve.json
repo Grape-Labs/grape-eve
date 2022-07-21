@@ -6,7 +6,7 @@
       "name": "SendPost",
       "accounts": [
         {
-          "name": "tweet",
+          "name": "thread",
           "isMut": true,
           "isSigner": true
         },
@@ -36,7 +36,7 @@
       "name": "UpdatePost",
       "accounts": [
         {
-          "name": "tweet",
+          "name": "thread",
           "isMut": true,
           "isSigner": false
         },
@@ -61,7 +61,7 @@
       "name": "DeletePost",
       "accounts": [
         {
-          "name": "tweet",
+          "name": "thread",
           "isMut": true,
           "isSigner": false
         },
@@ -76,7 +76,7 @@
   ],
   "accounts": [
     {
-      "name": "Tweet",
+      "name": "Thread",
       "type": {
         "kind": "struct",
         "fields": [
@@ -113,6 +113,6 @@
     }
   ],
   "metadata": {
-    "address": "BNDCEb5uXCuWDxJW9BGmbfvR1JBMAKckfhYrEKW2Bv1W"
+    "address": "GXaZPJ3kwoZKMMxBxnRnwG87EJKBu7GjT8ks8dR4p693"
   }
 }
