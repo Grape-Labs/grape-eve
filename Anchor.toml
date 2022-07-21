@@ -11,7 +11,7 @@ grape_eve = "GXaZPJ3kwoZKMMxBxnRnwG87EJKBu7GjT8ks8dR4p693"
 url = "https://anchor.projectserum.com"
 
 [provider]
-cluster = "devnet"
+cluster = "localnet"
 wallet = "/Users/kirk/.config/solana/id.json"
 
 [scripts]

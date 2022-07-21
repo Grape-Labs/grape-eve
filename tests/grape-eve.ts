@@ -8,7 +8,7 @@ describe('grape-eve', () => {
     // Configure the client cluster.
     anchor.setProvider(anchor.Provider.env());
     const program = anchor.workspace.GrapeEve as Program<GrapeEve>;
-    
+
     const SendPost = async (author, topic, content) => {
         const thread = anchor.web3.Keypair.generate();
         await program.rpc.sendPost(topic, content, {
@@ -75,7 +75,7 @@ describe('grape-eve', () => {
 
         // Call the "SendPost" instruction on behalf of this other user.
         const thread = anchor.web3.Keypair.generate();
-        await program.rpc.sendPost('fruit', 'Yay its Grape!!!', {
+        await program.rpc.sendPost('fruit', 'Yay its Grape!', {
             accounts: {
                 thread: thread.publicKey,
                 author: otherUser.publicKey,
@@ -164,14 +164,14 @@ describe('grape-eve', () => {
                         32 + // Author public key.
                         8 + // Timestamp.
                         4, // Topic string prefix.
-                    bytes: bs58.encode(Buffer.from('veganism')),
+                    bytes: bs58.encode(Buffer.from('fruit')),
                 }
             }
         ]);
 
         assert.equal(threadAccounts.length, 2);
         assert.ok(threadAccounts.every(threadAccount => {
-            return threadAccount.account.topic === 'veganism'
+            return threadAccount.account.topic === 'fruit'
         }))
     });
 
