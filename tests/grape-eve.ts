@@ -10,7 +10,7 @@ describe('grape-eve', () => {
     const program = anchor.workspace.GrapeEve as Program<GrapeEve>;
     const SendPost = async (author, topic, content) => {
         const thread = anchor.web3.Keypair.generate();
-        await program.rpc.SendPost(topic, content, {
+        await program.rpc.sendPost(topic, content, {
             accounts: {
                 thread: thread.publicKey,
                 author,
@@ -25,7 +25,7 @@ describe('grape-eve', () => {
     it('can send a new thread', async () => {
         // Call the "SendPost" instruction.
         const thread = anchor.web3.Keypair.generate();
-        await program.rpc.SendPost('veganism', 'Hummus, am I right?', {
+        await program.rpc.sendPost('veganism', 'Hummus, am I right?', {
             accounts: {
                 thread: thread.publicKey,
                 author: program.provider.wallet.publicKey,
@@ -47,7 +47,7 @@ describe('grape-eve', () => {
     it('can send a new thread without a topic', async () => {
         // Call the "SendPost" instruction.
         const thread = anchor.web3.Keypair.generate();
-        await program.rpc.SendPost('', 'gm', {
+        await program.rpc.sendPost('', 'gm', {
             accounts: {
                 thread: thread.publicKey,
                 author: program.provider.wallet.publicKey,
@@ -74,7 +74,7 @@ describe('grape-eve', () => {
 
         // Call the "SendPost" instruction on behalf of this other user.
         const thread = anchor.web3.Keypair.generate();
-        await program.rpc.SendPost('fruit', 'Yay its Grape!!!', {
+        await program.rpc.sendPost('fruit', 'Yay its Grape!!!', {
             accounts: {
                 thread: thread.publicKey,
                 author: otherUser.publicKey,
@@ -97,7 +97,7 @@ describe('grape-eve', () => {
         try {
             const thread = anchor.web3.Keypair.generate();
             const topicWith51Chars = 'x'.repeat(51);
-            await program.rpc.SendPost(topicWith51Chars, 'Something purple, am I right?', {
+            await program.rpc.sendPost(topicWith51Chars, 'Something purple, am I right?', {
                 accounts: {
                     thread: thread.publicKey,
                     author: program.provider.wallet.publicKey,
@@ -117,7 +117,7 @@ describe('grape-eve', () => {
         try {
             const thread = anchor.web3.Keypair.generate();
             const contentWith281Chars = 'x'.repeat(281);
-            await program.rpc.SendPost('veganism', contentWith281Chars, {
+            await program.rpc.sendPost('veganism', contentWith281Chars, {
                 accounts: {
                     thread: thread.publicKey,
                     author: program.provider.wallet.publicKey,
@@ -185,7 +185,7 @@ describe('grape-eve', () => {
         assert.equal(threadAccount.content, 'Hello World!');
 
         // Update the Thread.
-        await program.rpc.UpdatePost('solana', 'gm everyone!', {
+        await program.rpc.updatePost('solana', 'gm everyone!', {
             accounts: {
                 thread: thread.publicKey,
                 author,
@@ -205,7 +205,7 @@ describe('grape-eve', () => {
 
         // Update the thread.
         try {
-            await program.rpc.UpdatePost('eth', 'Ethereum is awesome!', {
+            await program.rpc.updatePost('eth', 'Ethereum is awesome!', {
                 accounts: {
                     thread: thread.publicKey,
                     author: anchor.web3.Keypair.generate().publicKey,
@@ -226,7 +226,7 @@ describe('grape-eve', () => {
         const thread = await SendPost(author, 'solana', 'gm');
 
         // Delete the thread.
-        await program.rpc.DeletePost({
+        await program.rpc.deletePost({
             accounts: {
                 thread: thread.publicKey,
                 author,
@@ -245,7 +245,7 @@ describe('grape-eve', () => {
 
         // Try to delete the thread from a different author.
         try {
-            await program.rpc.DeletePost({
+            await program.rpc.deletePost({
                 accounts: {
                     thread: thread.publicKey,
                     author: anchor.web3.Keypair.generate().publicKey,
