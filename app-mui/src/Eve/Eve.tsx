@@ -5,8 +5,8 @@ import { useConnection, useWallet } from "@solana/wallet-adapter-react";
 import { LAMPORTS_PER_SOL, Connection, PublicKey } from '@solana/web3.js';
 import { Schema, deserializeUnchecked, deserialize } from "borsh";
 import { TokenAmount } from '../utils/grapeTools/safe-math';
-//import idl from '../../idl/grape_eve.json';
-import { GrapeEve, IDL } from "../../../target/types/grape_eve"
+import { GrapeEve, IDL } from '../../types/grape_eve';
+//import { GrapeEve, IDL } from "../../../target/types/grape_eve"
 import dayjs from "dayjs"
 var relativeTime = require('dayjs/plugin/relativeTime')
 
