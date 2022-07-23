@@ -113,12 +113,50 @@ export function EveView(props: any){
     );
 
     function created_at (date:number) {
-        return dayjs.unix(date).format('lll')
+        return moment.unix(date).format('lll');
     }
 
-    function created_ago (date:number) {
-        return date;
-        //return dayjs.unix(date).fromNow()
+    function created_ago (blockTime:number) {
+        try{
+            let prettydate = moment.unix(+blockTime).format("MMMM Do YYYY, h:mm a");
+                        //console.log("prettyForSaleDate: "+prettyForSaleDate)
+            let timeago = moment.duration(moment(new Date()).diff(moment.unix(+blockTime))).asDays().toFixed(0);
+            //console.log("Time Ago: "+timeago);
+            if (+timeago >= 1){
+                if (+timeago === 1)
+                    prettydate = timeago+' day ago';
+                else
+                    prettydate = timeago+' days ago';
+            } else{
+                let hoursago = moment.duration(moment(new Date()).diff(moment.unix(+blockTime))).asHours().toFixed(0);
+                if (+hoursago >= 1){
+                    if (+hoursago === 1)
+                        prettydate = hoursago+' hour ago';
+                    else
+                        prettydate = hoursago+' hours ago';
+                } else {
+                    let minutesAgo = moment.duration(moment(new Date()).diff(moment.unix(+blockTime))).asMinutes().toFixed(0);
+                    if (+minutesAgo >= 1){
+                        if (+minutesAgo === 1)
+                            prettydate = minutesAgo+' minute ago';
+                        else
+                            prettydate = minutesAgo+' minutes ago';
+                    } else {
+                        let secondsAgo = moment.duration(moment(new Date()).diff(moment.unix(+blockTime))).asSeconds().toFixed(0);
+                        if (+secondsAgo >= 1){
+                            if (+secondsAgo === 1)
+                                prettydate = secondsAgo+' second ago';
+                            else
+                                prettydate = secondsAgo+' seconds ago';
+                        }
+                    }
+                }
+            }  
+    
+            return prettydate;
+        }catch(e){
+            return blockTime;
+        }
     }
 
     //export const  initWorkspace = () => {
@@ -247,7 +285,7 @@ export function EveView(props: any){
                                                             variant="body2"
                                                             color="text.primary"
                                                         >
-                                                            {item?.timestamp.created_ago}
+                                                            {created_ago(+item?.timestamp)}
                                                         </Typography>
                                                         &nbsp;-&nbsp;#{item?.topic}
                                                         </React.Fragment>
