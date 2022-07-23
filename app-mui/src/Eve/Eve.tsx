@@ -7,6 +7,8 @@ import { Schema, deserializeUnchecked, deserialize } from "borsh";
 import { TokenAmount } from '../utils/grapeTools/safe-math';
 //import idl from '../../idl/grape_eve.json';
 import { GrapeEve, IDL } from "../../../target/types/grape_eve"
+import dayjs from "dayjs"
+var relativeTime = require('dayjs/plugin/relativeTime')
 
 import { Thread } from '../models'
 
@@ -110,6 +112,15 @@ export function EveView(props: any){
         [enqueueSnackbar]
     );
 
+    function created_at (date:number) {
+        return dayjs.unix(date).format('lll')
+    }
+
+    function created_ago (date:number) {
+        return date;
+        //return dayjs.unix(date).fromNow()
+    }
+
     //export const  initWorkspace = () => {
     async function initWorkspace() {  
         const clusterUrl = 'https://api.devnet.solana.com'; //'https://ssc-dao.genesysgo.net/';//process.env.VUE_APP_CLUSTER_URL
@@ -151,7 +162,9 @@ export function EveView(props: any){
 
         //console.log("t: "+JSON.stringify(thread));
         //return thread;
-        return thread.map((thread:any) => new Thread(thread.publicKey, thread.account))
+        const mptrd = thread.map((thread:any) => new Thread(thread.publicKey, thread.account))
+        mptrd.sort((a:any,b:any) => (a.timestamp < b.timestamp) ? 1 : -1);
+        return mptrd;
     }
 
     useEffect(() => {
@@ -163,7 +176,7 @@ export function EveView(props: any){
                 
                 const thrds = await fetchThreads(null);
                 setThreads(thrds);
-                console.log("threads: "+JSON.stringify(thrds))
+                //console.log("threads: "+JSON.stringify(thrds))
                 setLoading(false);
 
             /*
@@ -203,10 +216,10 @@ export function EveView(props: any){
                     >
 
                         {loading ?
-                            <>
+                            <Box sx={{ width: '100%' }}>
                                 Loading...
                                 <LinearProgress />
-                            </>
+                            </Box>
                         :
                             <>
                                 {threads &&
@@ -214,19 +227,18 @@ export function EveView(props: any){
                                         <Typography>{threads.length} thread posts</Typography>
                                         <List sx={{ width: '100%' }}>
                                         
-                                        {threads?.map((item:any) => {
-                                            <>{JSON.stringify(item.author)}</>
-                                        })}
-
-                                        {threads.map((item:any) => {
-                                            <ListItem alignItems="flex-start">
+                                        {console.log("t: "+JSON.stringify(threads))}
+                                        
+                                        {threads.map((item:any, key:number) => {
+                                            return (
+                                            <ListItem alignItems="flex-start" key={key}>
                                                 <ListItemAvatar>
                                                     <Avatar>
-                                                        {item?.author}
+                                                        {item?.author.toBase58()}
                                                     </Avatar>
                                                 </ListItemAvatar>
                                                 <ListItemText
-                                                    primary={item?.topic}
+                                                    primary={`${item?.content}`}
                                                     secondary={
                                                         <React.Fragment>
                                                         <Typography
@@ -235,14 +247,14 @@ export function EveView(props: any){
                                                             variant="body2"
                                                             color="text.primary"
                                                         >
-                                                            {item?.timestamp}
+                                                            {item?.timestamp.created_ago}
                                                         </Typography>
-                                                        {item?.content}
+                                                        &nbsp;-&nbsp;#{item?.topic}
                                                         </React.Fragment>
                                                     }
                                                 />
                                             </ListItem>
-                                        
+                                            )
                                         })}
                                         </List>
                                     </>
