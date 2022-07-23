@@ -43,6 +43,7 @@ import {
     ListSubheader,
     Button,
     ButtonGroup,
+    Divider,
     Dialog,
     DialogActions,
     DialogTitle,
@@ -57,7 +58,8 @@ import {
     Paper,
     Container,
     Radio,
-    RadioGroup
+    RadioGroup,
+    LinearProgress
 } from '@mui/material';
 
 import GrapeIcon from "../components/static/GrapeIcon";
@@ -86,40 +88,6 @@ function isImage(url:string) {
 let workspace = null
 
 export const useWorkspace = () => workspace
-
-//export const  initWorkspace = () => {
-async function initWorkspace() {  
-    const wallet = useWallet()
-    const clusterUrl = 'https://api.devnet.solana.com'; //'https://ssc-dao.genesysgo.net/';//process.env.VUE_APP_CLUSTER_URL
-    const grapeEveId = "GXaZPJ3kwoZKMMxBxnRnwG87EJKBu7GjT8ks8dR4p693";
-    const programID = new PublicKey(grapeEveId);
-    
-    const connection = new Connection(clusterUrl)
-
-    async function getProvider() {
-        /* create the provider and return it to the caller */
-        /* network set to local network for now */
-        const connection = new Connection(clusterUrl);
-        
-        //const provider = new AnchorProvider(
-        const provider = new Provider(
-                connection, wallet, {
-            commitment: "processed"
-          },
-        );
-        return provider;
-    }
-
-    const provider = await getProvider()
-    const program = new Program<GrapeEve>(IDL, programID, provider);
-
-    workspace = {
-        wallet,
-        connection,
-        provider,
-        program,
-    }
-}
   
 export function EveView(props: any){
 	const geconnection = new Connection(GRAPE_RPC_ENDPOINT);
@@ -130,11 +98,9 @@ export function EveView(props: any){
     const {handlekey} = useParams<{ handlekey: string }>();
     const [searchParams, setSearchParams] = useSearchParams();
     const urlParams = searchParams.get("storage") || searchParams.get("address") || handlekey;
+    const [threads, setThreads] = React.useState(null);
 
     const { enqueueSnackbar, closeSnackbar } = useSnackbar();
-
-    const anchor = require('@project-serum/anchor');
-    anchor.setProvider(anchor.Provider.env());
 
     const onError = useCallback(
         (error: WalletError) => {
@@ -144,38 +110,71 @@ export function EveView(props: any){
         [enqueueSnackbar]
     );
 
+    //export const  initWorkspace = () => {
+    async function initWorkspace() {  
+        const clusterUrl = 'https://api.devnet.solana.com'; //'https://ssc-dao.genesysgo.net/';//process.env.VUE_APP_CLUSTER_URL
+        const grapeEveId = "GXaZPJ3kwoZKMMxBxnRnwG87EJKBu7GjT8ks8dR4p693";
+        const programID = new PublicKey(grapeEveId);
+        
+        const connection = new Connection(clusterUrl)
+
+        async function getProvider() {
+            /* create the provider and return it to the caller */
+            /* network set to local network for now */
+            const connection = new Connection(clusterUrl);
+            
+            //const provider = new AnchorProvider(
+            const provider = new Provider(
+                    connection, wallet, {
+                commitment: "processed"
+            },
+            );
+            return provider;
+        }
+
+        const provider = await getProvider()
+        const program = new Program<GrapeEve>(IDL, programID, provider);
+
+        workspace = {
+            wallet,
+            connection,
+            provider,
+            program,
+        }
+    }
+
     const fetchThreads = async (filters = []) => {
         await initWorkspace();
-        const { program } = useWorkspace()
-        const thread = await program.value.account.thread.all(filters);
-        return thread.map((thread:any) => new Thread(thread.publicKey, thread.account))
+        const { program } = await useWorkspace()
 
+        const thread = await program.account.thread.all(filters);
+
+        //console.log("t: "+JSON.stringify(thread));
+        //return thread;
+        return thread.map((thread:any) => new Thread(thread.publicKey, thread.account))
     }
-    
 
     useEffect(() => {
 		(async () => {
-			
-
-            if (urlParams){
-                console.log("PARAMS: "+urlParams);
+            //if (urlParams){
+                //console.log("PARAMS: "+urlParams);
 
                 setLoading(true);
                 
-                // get single storage account
-                
+                const thrds = await fetchThreads(null);
+                setThreads(thrds);
+                console.log("threads: "+JSON.stringify(thrds))
                 setLoading(false);
 
+            /*
             } else if (wallet?.publicKey) {
                 setLoading(true);
-				
                 // do some magic here...
-
                 setLoading(false);
-			}
+			}*/
 
 		})();
-	}, [wallet?.publicKey, urlParams])
+	}, [])
 	
     return (
         <>
@@ -202,7 +201,54 @@ export function EveView(props: any){
                         item sm={12}
                         alignItems="center"
                     >
-                        show threads...
+
+                        {loading ?
+                            <>
+                                Loading...
+                                <LinearProgress />
+                            </>
+                        :
+                            <>
+                                {threads &&
+                                    <>
+                                        <Typography>{threads.length} thread posts</Typography>
+                                        <List sx={{ width: '100%' }}>
+                                        
+                                        {threads?.map((item:any) => {
+                                            <>{JSON.stringify(item.author)}</>
+                                        })}
+
+                                        {threads.map((item:any) => {
+                                            <ListItem alignItems="flex-start">
+                                                <ListItemAvatar>
+                                                    <Avatar>
+                                                        {item?.author}
+                                                    </Avatar>
+                                                </ListItemAvatar>
+                                                <ListItemText
+                                                    primary={item?.topic}
+                                                    secondary={
+                                                        <React.Fragment>
+                                                        <Typography
+                                                            sx={{ display: 'inline' }}
+                                                            component="span"
+                                                            variant="body2"
+                                                            color="text.primary"
+                                                        >
+                                                            {item?.timestamp}
+                                                        </Typography>
+                                                        {item?.content}
+                                                        </React.Fragment>
+                                                    }
+                                                />
+                                            </ListItem>
+                                        
+                                        })}
+                                        </List>
+                                    </>
+                                }
+                            </>
+                        }
                     </Grid>
                 </Grid>
             </Box>

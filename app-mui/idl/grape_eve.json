@@ -95,21 +95,41 @@
           {
             "name": "content",
             "type": "string"
+          },
+          {
+            "name": "community",
+            "type": "publicKey"
+          },
+          {
+            "name": "communityType",
+            "type": "i8"
+          },
+          {
+            "name": "metadata",
+            "type": "string"
+          },
+          {
+            "name": "isEncrypted",
+            "type": "i8"
           }
         ]
       }
     }
   ],
-  "errors": [
+  "types": [
     {
-      "code": 6000,
-      "name": "TopicTooLong",
-      "msg": "The provided topic should be 50 characters long maximum."
-    },
-    {
-      "code": 6001,
-      "name": "ContentTooLong",
-      "msg": "The provided content should be 280 characters long maximum."
+      "name": "ErrorCode",
+      "type": {
+        "kind": "enum",
+        "variants": [
+          {
+            "name": "TopicTooLong"
+          },
+          {
+            "name": "ContentTooLong"
+          }
+        ]
+      }
     }
   ],
   "metadata": {

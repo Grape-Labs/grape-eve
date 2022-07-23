@@ -48,6 +48,7 @@ import {
     IconButton
 } from '@mui/material';
 
+import RateReviewIcon from '@mui/icons-material/RateReview';
 import DashboardOutlinedIcon from '@mui/icons-material/DashboardOutlined';
 import SearchIcon from '@mui/icons-material/Search';
 
@@ -303,7 +304,7 @@ export function Header(props: any) {
                         <img src={MARKET_LOGO} height="40px" width="137px" className="header-logo" alt="Powered by Grape" />
                     </Typography>
                 </Button>
-                <Tooltip title={`Back to the Dashboard`}><IconButton sx={{borderRadius:'17px'}} component="a" href='https://verify.grapes.network'><DashboardOutlinedIcon/></IconButton></Tooltip>
+                <Tooltip title={`Grape Eve`}><IconButton sx={{borderRadius:'17px'}}><RateReviewIcon/></IconButton></Tooltip>
             </Box>
             <HeaderChat />
             <div className="grape-wallet-adapter">
