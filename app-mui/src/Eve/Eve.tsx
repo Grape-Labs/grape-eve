@@ -299,6 +299,15 @@ export function EveView(props: any){
                                                             <Typography variant="caption" sx={{ display: 'block' }}>
                                                                 Topic: {item?.topic}
                                                             </Typography>
+                                                            <Typography variant="caption" sx={{ display: 'block' }}>
+                                                                Community: {item?.community.toBase58()} - Type: {item?.communityType}
+                                                            </Typography>
+                                                            <Typography variant="caption" sx={{ display: 'block' }}>
+                                                                Metadata: {item?.metadata}
+                                                            </Typography>
+                                                            <Typography variant="caption" sx={{ display: 'block' }}>
+                                                                Encrypted: {item?.isEncrypted}
+                                                            </Typography>
                                                         </React.Fragment>
                                                     }
                                                 />
