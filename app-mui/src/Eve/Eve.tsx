@@ -6,6 +6,8 @@ import { LAMPORTS_PER_SOL, Connection, PublicKey } from '@solana/web3.js';
 import { Schema, deserializeUnchecked, deserialize } from "borsh";
 import { TokenAmount } from '../utils/grapeTools/safe-math';
 import { GrapeEve, IDL } from '../../types/grape_eve';
+
+import Jazzicon, { jsNumberForAddress } from 'react-jazzicon';
 //import { GrapeEve, IDL } from "../../../target/types/grape_eve"
 import dayjs from "dayjs"
 var relativeTime = require('dayjs/plugin/relativeTime')
@@ -272,7 +274,7 @@ export function EveView(props: any){
                                             <ListItem alignItems="flex-start" key={key}>
                                                 <ListItemAvatar>
                                                     <Avatar>
-                                                        {item?.author.toBase58()}
+                                                        <Jazzicon diameter={40} seed={jsNumberForAddress(item?.author.toBase58())} />
                                                     </Avatar>
                                                 </ListItemAvatar>
                                                 <ListItemText
@@ -295,7 +297,7 @@ export function EveView(props: any){
                                                         </Typography>
                                                         &nbsp;-&nbsp;{item?.author.toBase58()}
                                                             <Typography variant="caption" sx={{ display: 'block' }}>
-                                                                #{item?.topic}
+                                                                Topic: {item?.topic}
                                                             </Typography>
                                                         </React.Fragment>
                                                     }
