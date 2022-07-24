@@ -276,7 +276,13 @@ export function EveView(props: any){
                                                     </Avatar>
                                                 </ListItemAvatar>
                                                 <ListItemText
-                                                    primary={`${item?.content}`}
+                                                    primary={
+                                                        <>
+                                                            <Typography>
+                                                                {item?.content}
+                                                            </Typography>
+                                                        </>
+                                                        }
                                                     secondary={
                                                         <React.Fragment>
                                                         <Typography
@@ -287,7 +293,10 @@ export function EveView(props: any){
                                                         >
                                                             {created_ago(+item?.timestamp)}
                                                         </Typography>
-                                                        &nbsp;-&nbsp;#{item?.topic}
+                                                        &nbsp;-&nbsp;{item?.author.toBase58()}
+                                                            <Typography variant="caption" sx={{ display: 'block' }}>
+                                                                #{item?.topic}
+                                                            </Typography>
                                                         </React.Fragment>
                                                     }
                                                 />
