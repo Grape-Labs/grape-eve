@@ -100,7 +100,7 @@ export const useWorkspace = () => workspace
   
 export function EveView(props: any){
 	//const geconnection = new Connection(GRAPE_RPC_ENDPOINT);
-    const geconnection = new Connection("https://api.devnet.solana.com");
+    const geconnection = new Connection("https://api.devnet.solana.com", "confirmed");
     //const { connection } = useConnection();
 
     //const client = new LitJsSdk.LitNodeClient();
@@ -219,85 +219,24 @@ export function EveView(props: any){
         return mptrd;
     }
 
-    const newPost = async (topic:string, discussion:string, community:string, encrypted:number) => {
+    const newPost = async (topic:string, content:string, community:string, encrypted:number) => {
         await initWorkspace();
         const { wallet, provider, program } = useWorkspace()
         
         const thread = web3.Keypair.generate()
         
-        console.log("pk: "+publicKey.toBase58());
-        
-        enqueueSnackbar(`Preparing to create a new post`,{ variant: 'info' });
-        
-        const signedTransaction = await program.rpc.sendPost(topic, discussion, {
-            accounts: {
-                author: publicKey,
-                thread: thread.publicKey,
-                systemProgram: web3.SystemProgram.programId,
-            },
-            signers: [thread]
-        })
-    
-        //console.log("signature: "+JSON.stringify(signedTransaction));
-
-        const snackprogress = (key:any) => (
-            <CircularProgress sx={{padding:'10px'}} />
-        );
-        const cnfrmkey = enqueueSnackbar(`Confirming...`,{ variant: 'info', action:snackprogress, persist: true });
-        const latestBlockHash = await geconnection.getLatestBlockhash();
-        await geconnection.confirmTransaction({
-            blockhash: latestBlockHash.blockhash,
-            lastValidBlockHeight: latestBlockHash.lastValidBlockHeight,
-            signature: signedTransaction}, 
-            'finalized'
-        );
-        closeSnackbar(cnfrmkey);
-
-        const snackaction = (key:any) => (
-            <Button href={`https://explorer.solana.com/tx/${signedTransaction}`} target='_blank'  sx={{color:'white'}}>
-                {signedTransaction}
-            </Button>
-        );
-        enqueueSnackbar(`Post created`,{ variant: 'success', action:snackaction });
-        
-
-        // do a refresh this is not efficient we should simply 
-        // do a dynamic push/popup on the object and avoid the additional rpc call
-        fetchThreads();
-    }
-
-    const editPost = async (filters = []) => {
-        
-    }
-
-    function EditPost(props:any){
-        const thread = props.thread;
-
-        return (
-
-            <Button>
-                    Edit
-            </Button>
-        )
-    }
-    
-    function DeletePost(props:any){
-        const thread = props.thread;
-        
-        const deletePost = async () => {
-            await initWorkspace();
-            const { wallet, provider, program } = useWorkspace()
-    
-            console.log("deleting: "+thread.toBase58() + " from: "+publicKey.toBase58());
-
-            enqueueSnackbar(`Preparing to delete post`,{ variant: 'info' });
-            const signedTransaction = await program.rpc.deletePost({
+        try{
+            enqueueSnackbar(`Preparing to create a new post`,{ variant: 'info' });
+            
+            const signedTransaction = await program.rpc.sendPost(topic, content, {
                 accounts: {
                     author: publicKey,
-                    thread: thread,
+                    thread: thread.publicKey,
+                    systemProgram: web3.SystemProgram.programId,
                 },
+                signers: [thread]
             })
-
+        
             const snackprogress = (key:any) => (
                 <CircularProgress sx={{padding:'10px'}} />
             );
@@ -310,18 +249,125 @@ export function EveView(props: any){
                 'finalized'
             );
             closeSnackbar(cnfrmkey);
-    
+
             const snackaction = (key:any) => (
                 <Button href={`https://explorer.solana.com/tx/${signedTransaction}`} target='_blank'  sx={{color:'white'}}>
                     {signedTransaction}
                 </Button>
             );
             enqueueSnackbar(`Post created`,{ variant: 'success', action:snackaction });
-        
-            console.log("signature: "+JSON.stringify(signedTransaction));
+            
             // do a refresh this is not efficient we should simply 
             // do a dynamic push/popup on the object and avoid the additional rpc call
             fetchThreads();
+        } catch(e:any){
+            closeSnackbar();
+            enqueueSnackbar(e.message ? `${e.name}: ${e.message}` : e.name, { variant: 'error' });
+            //enqueueSnackbar(`Error: ${e}`,{ variant: 'error' });
+            console.log("Error: "+e);
+            //console.log("Error: "+JSON.stringify(e));
+        } 
+    }
+
+    const editPost = async (thread: PublicKey, topic:string, content:string, community:string, encrypted:number) => {
+        await initWorkspace();
+        const { wallet, provider, program } = useWorkspace()
+        try{
+            //const thread = web3.Keypair.generate()
+            
+            enqueueSnackbar(`Preparing to edit post`,{ variant: 'info' });
+            //enqueueSnackbar(`Preparing to edit post ${publicKey.toBase58()} from ${thread.toBase58()})`,{ variant: 'info' });
+            //enqueueSnackbar(`${topic} - Message ${content})`,{ variant: 'info' });
+            
+            const signedTransaction = await program.rpc.updatePost(topic, content, {
+                accounts: {
+                    author: publicKey,
+                    thread: thread,
+                },
+            })
+        
+            const snackprogress = (key:any) => (
+                <CircularProgress sx={{padding:'10px'}} />
+            );
+            const cnfrmkey = enqueueSnackbar(`Confirming...`,{ variant: 'info', action:snackprogress, persist: true });
+            const latestBlockHash = await geconnection.getLatestBlockhash();
+            await geconnection.confirmTransaction({
+                blockhash: latestBlockHash.blockhash,
+                lastValidBlockHeight: latestBlockHash.lastValidBlockHeight,
+                signature: signedTransaction}, 
+                'finalized'
+            );
+            closeSnackbar(cnfrmkey);
+
+            const snackaction = (key:any) => (
+                <Button href={`https://explorer.solana.com/tx/${signedTransaction}`} target='_blank'  sx={{color:'white'}}>
+                    {signedTransaction}
+                </Button>
+            );
+            enqueueSnackbar(`Post created`,{ variant: 'success', action:snackaction });
+            
+
+            // do a refresh this is not efficient we should simply 
+            // do a dynamic push/popup on the object and avoid the additional rpc call
+            fetchThreads();
+        } catch(e:any){
+            closeSnackbar();
+            enqueueSnackbar(e.message ? `${e.name}: ${e.message}` : e.name, { variant: 'error' });
+            //enqueueSnackbar(`Error: ${e}`,{ variant: 'error' });
+            console.log("Error: "+e);
+            //console.log("Error: "+JSON.stringify(e));
+        } 
+    }
+
+    function DeletePost(props:any){
+        const thread = props.thread;
+        
+        const deletePost = async () => {
+            await initWorkspace();
+            const { wallet, provider, program } = useWorkspace()
+    
+            console.log("deleting: "+thread.toBase58() + " from: "+publicKey.toBase58());
+
+            try{
+                enqueueSnackbar(`Preparing to delete post`,{ variant: 'info' });
+                const signedTransaction = await program.rpc.deletePost({
+                    accounts: {
+                        author: publicKey,
+                        thread: thread,
+                    },
+                })
+
+                const snackprogress = (key:any) => (
+                    <CircularProgress sx={{padding:'10px'}} />
+                );
+                const cnfrmkey = enqueueSnackbar(`Confirming...`,{ variant: 'info', action:snackprogress, persist: true });
+                const latestBlockHash = await geconnection.getLatestBlockhash();
+                await geconnection.confirmTransaction({
+                    blockhash: latestBlockHash.blockhash,
+                    lastValidBlockHeight: latestBlockHash.lastValidBlockHeight,
+                    signature: signedTransaction}, 
+                    'finalized'
+                );
+                closeSnackbar(cnfrmkey);
+        
+                const snackaction = (key:any) => (
+                    <Button href={`https://explorer.solana.com/tx/${signedTransaction}`} target='_blank'  sx={{color:'white'}}>
+                        {signedTransaction}
+                    </Button>
+                );
+                enqueueSnackbar(`Post created`,{ variant: 'success', action:snackaction });
+            
+                console.log("signature: "+JSON.stringify(signedTransaction));
+                // do a refresh this is not efficient we should simply 
+                // do a dynamic push/popup on the object and avoid the additional rpc call
+                fetchThreads();
+            } catch(e:any){
+                closeSnackbar();
+                enqueueSnackbar(e.message ? `${e.name}: ${e.message}` : e.name, { variant: 'error' });
+                //enqueueSnackbar(`Error: ${e}`,{ variant: 'error' });
+                console.log("Error: "+e);
+                //console.log("Error: "+JSON.stringify(e));
+            } 
         }
 
         return (
@@ -335,10 +381,13 @@ export function EveView(props: any){
     }
     
     function PostView(props:any){
+        const type = props?.type;
+        const thread = props?.thread;
         const [openPreviewDialog, setOpenPreviewDialog] = React.useState(false);
-        const [discussion, setDiscussion] = React.useState(null);
-        const [topic, setTopic] = React.useState(null);
-        const [community, setCommunity] = React.useState(null);
+        const [encrypted, setEncrypted] = React.useState(props?.encrypted || true);
+        const [message, setMessage] = React.useState(props?.message || null);
+        const [topic, setTopic] = React.useState(props?.topic || null);
+        const [community, setCommunity] = React.useState(props?.community || null);
         const {publicKey} = useWallet();
 
         const handleClickOpenPreviewDialog = () => {
@@ -353,10 +402,15 @@ export function EveView(props: any){
             event.preventDefault();
             handleClosePreviewDialog();
             
-            console.log("posting: "+topic+" - "+discussion);
+            console.log("posting: ("+topic+") "+message);
             
-            const thisthread = await newPost(topic, discussion, community, 1);
-            console.log("thisThread: "+JSON.stringify(thisthread));
+            if (type === 0){
+                const thisthread = await newPost(topic, message, community, encrypted);
+                console.log("thisThread: "+JSON.stringify(thisthread));
+            } else{
+                const thisthread = await editPost(thread, topic, message, community, encrypted);
+                console.log("thisThread: "+JSON.stringify(thisthread));
+            }
         }
 
         return (
@@ -369,7 +423,11 @@ export function EveView(props: any){
                     onClick={handleClickOpenPreviewDialog}
                     sx={{borderRadius:'24px'}}
                 >
-                    Add
+                    {type === 0 ?
+                        <>Add</>
+                    :
+                        <>Edit</>
+                    }
                 </Button>
                 }
                 <BootstrapDialog 
@@ -393,8 +451,9 @@ export function EveView(props: any){
                                 label="Start a discussion"
                                 multiline
                                 rows={4}
+                                value={message}
                                 onChange={(e: any) => {
-                                    setDiscussion(e.target.value)}
+                                    setMessage(e.target.value)}
                                 }
                                 />
                             </FormControl>
@@ -403,6 +462,7 @@ export function EveView(props: any){
                                     fullWidth 
                                     label="Topic" 
                                     id="fullWidth" 
+                                    value={topic}
                                     onChange={(e: any) => {
                                         setTopic(e.target.value)}
                                     }/>
@@ -414,11 +474,13 @@ export function EveView(props: any){
                                     labelId="demo-simple-select-label"
                                     id="demo-simple-select"
                                     label="Community"
+                                    value={community}
                                     onChange={(e: any) => {
                                         setCommunity(e.target.value)}
                                     }
                                 >
-                                    <MenuItem value={1}>Grape</MenuItem>
+                                    <MenuItem value={`1`}>Grape</MenuItem>
+                                    <MenuItem value={`11111111111111111111111111111111`}>Solana</MenuItem>
                                 </Select>
                             </FormControl>
                         
@@ -497,7 +559,7 @@ export function EveView(props: any){
                                     <>
                                         <Typography>
                                             {threads.length} thread posts
-                                            <PostView />
+                                            <PostView type={0} />
                                         </Typography>
                                         <List sx={{ width: '100%' }}>
                                         
@@ -544,7 +606,7 @@ export function EveView(props: any){
                                                                 </Typography>
                                                                 {publicKey && publicKey.toBase58() === item?.author.toBase58() &&
                                                                     <>
-                                                                        <EditPost thread={item.publicKey}/>
+                                                                        <PostView type={1} thread={item.publicKey} message={item?.content} topic={item?.topic} community={item?.community} metadata={item?.metadata} encrypted={item?.isEncrypted}  />
                                                                         <DeletePost thread={item.publicKey}/>
                                                                     </>
                                                                 }
