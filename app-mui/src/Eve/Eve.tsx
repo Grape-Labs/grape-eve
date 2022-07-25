@@ -221,32 +221,8 @@ export function EveView(props: any){
         
         const thread = web3.Keypair.generate()
         
-        
-        /*
-        const grapeEveId = "GXaZPJ3kwoZKMMxBxnRnwG87EJKBu7GjT8ks8dR4p693";
-        const programID = new PublicKey(grapeEveId);
-        const clusterUrl = 'https://api.devnet.solana.com'; //'https://ssc-dao.genesysgo.net/';//process.env.VUE_APP_CLUSTER_URL
-        const connection = new Connection(clusterUrl)
-
-        async function getProvider() {
-            const connection = new Connection(clusterUrl);
-            
-            //const provider = new AnchorProvider(
-            const provider = new Provider(
-                    connection, wallet, {
-                commitment: "processed"
-            },
-            );
-            return provider;
-        }
-
-        const provider = await getProvider()
-
-        const program = new Program<GrapeEve>(IDL, programID, provider);
-        */
-
         console.log("pk: "+publicKey.toBase58());
-        const instructions = await program.rpc.sendPost(topic, discussion, {
+        const signature = await program.rpc.sendPost(topic, discussion, {
             accounts: {
                 author: publicKey,
                 thread: thread.publicKey,
@@ -255,7 +231,10 @@ export function EveView(props: any){
             signers: [thread]
         })
     
-        console.log("instructions: "+JSON.stringify(instructions));
+        console.log("signature: "+JSON.stringify(signature));
+
+        // do a refresh this is not efficient we should simply 
+        fetchThreads();
 
         //const threadAccount = await program.value.account.thread.fetch(thread.publicKey)
         //return new Thread(thread.publicKey, threadAccount)
