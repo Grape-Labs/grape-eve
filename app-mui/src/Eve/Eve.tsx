@@ -214,6 +214,8 @@ export function EveView(props: any){
         //return thread;
         const mptrd = thread.map((thread:any) => new Thread(thread.publicKey, thread.account))
         mptrd.sort((a:any,b:any) => (a.timestamp < b.timestamp) ? 1 : -1);
+        setThreads(mptrd);
+                
         return mptrd;
     }
 
@@ -350,7 +352,7 @@ export function EveView(props: any){
             handleClosePreviewDialog();
             
             console.log("posting: "+topic+" - "+discussion);
-
+            
             const thisthread = await newPost(topic, discussion, community, 1);
             console.log("thisThread: "+JSON.stringify(thisthread));
         }
@@ -442,8 +444,7 @@ export function EveView(props: any){
                 //console.log("PARAMS: "+urlParams);
 
                 setLoading(true);
-                const thrds = await fetchThreads(null);
-                setThreads(thrds);
+                await fetchThreads(null);
                 //console.log("threads: "+JSON.stringify(thrds))
                 setLoading(false);
 
