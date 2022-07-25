@@ -316,6 +316,8 @@ export function EveView(props: any){
             enqueueSnackbar(`Post created`,{ variant: 'success', action:snackaction });
         
             console.log("signature: "+JSON.stringify(signedTransaction));
+            // do a refresh this is not efficient we should simply 
+            fetchThreads();
         }
 
         return (
