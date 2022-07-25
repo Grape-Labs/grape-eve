@@ -99,7 +99,8 @@ let workspace = null
 export const useWorkspace = () => workspace
   
 export function EveView(props: any){
-	const geconnection = new Connection(GRAPE_RPC_ENDPOINT);
+	//const geconnection = new Connection(GRAPE_RPC_ENDPOINT);
+    const geconnection = new Connection("https://api.devnet.solana.com");
     //const { connection } = useConnection();
 
     //const client = new LitJsSdk.LitNodeClient();
