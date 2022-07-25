@@ -50,6 +50,7 @@ import {
     ListSubheader,
     Button,
     ButtonGroup,
+    CircularProgress,
     Divider,
     Dialog,
     DialogActions,
@@ -222,7 +223,10 @@ export function EveView(props: any){
         const thread = web3.Keypair.generate()
         
         console.log("pk: "+publicKey.toBase58());
-        const signature = await program.rpc.sendPost(topic, discussion, {
+        
+        enqueueSnackbar(`Preparing to create a new post`,{ variant: 'info' });
+        
+        const signedTransaction = await program.rpc.sendPost(topic, discussion, {
             accounts: {
                 author: publicKey,
                 thread: thread.publicKey,
@@ -231,21 +235,96 @@ export function EveView(props: any){
             signers: [thread]
         })
     
-        console.log("signature: "+JSON.stringify(signature));
+        //console.log("signature: "+JSON.stringify(signedTransaction));
+
+        const snackprogress = (key:any) => (
+            <CircularProgress sx={{padding:'10px'}} />
+        );
+        const cnfrmkey = enqueueSnackbar(`Confirming...`,{ variant: 'info', action:snackprogress, persist: true });
+        const latestBlockHash = await geconnection.getLatestBlockhash();
+        await geconnection.confirmTransaction({
+            blockhash: latestBlockHash.blockhash,
+            lastValidBlockHeight: latestBlockHash.lastValidBlockHeight,
+            signature: signedTransaction}, 
+            'processed'
+        );
+        closeSnackbar(cnfrmkey);
+
+        const snackaction = (key:any) => (
+            <Button href={`https://explorer.solana.com/tx/${signedTransaction}`} target='_blank'  sx={{color:'white'}}>
+                {signedTransaction}
+            </Button>
+        );
+        enqueueSnackbar(`Post created`,{ variant: 'success', action:snackaction });
+        
 
         // do a refresh this is not efficient we should simply 
         fetchThreads();
-
-        //const threadAccount = await program.value.account.thread.fetch(thread.publicKey)
-        //return new Thread(thread.publicKey, threadAccount)
     }
 
     const editPost = async (filters = []) => {
         
     }
 
-    const deletePost = async (filters = []) => {
+    function EditPost(props:any){
+        const thread = props.thread;
+
+        return (
+
+            <Button>
+                    Edit
+            </Button>
+        )
+    }
+    
+    function DeletePost(props:any){
+        const thread = props.thread;
         
+        const deletePost = async () => {
+            await initWorkspace();
+            const { wallet, provider, program } = useWorkspace()
+    
+            console.log("deleting: "+thread.toBase58() + " from: "+publicKey.toBase58());
+
+            enqueueSnackbar(`Preparing to delete post`,{ variant: 'info' });
+            const signedTransaction = await program.rpc.deletePost({
+                accounts: {
+                    author: publicKey,
+                    thread: thread,
+                },
+            })
+
+            const snackprogress = (key:any) => (
+                <CircularProgress sx={{padding:'10px'}} />
+            );
+            const cnfrmkey = enqueueSnackbar(`Confirming...`,{ variant: 'info', action:snackprogress, persist: true });
+            const latestBlockHash = await geconnection.getLatestBlockhash();
+            await geconnection.confirmTransaction({
+                blockhash: latestBlockHash.blockhash,
+                lastValidBlockHeight: latestBlockHash.lastValidBlockHeight,
+                signature: signedTransaction}, 
+                'processed'
+            );
+            closeSnackbar(cnfrmkey);
+    
+            const snackaction = (key:any) => (
+                <Button href={`https://explorer.solana.com/tx/${signedTransaction}`} target='_blank'  sx={{color:'white'}}>
+                    {signedTransaction}
+                </Button>
+            );
+            enqueueSnackbar(`Post created`,{ variant: 'success', action:snackaction });
+        
+            console.log("signature: "+JSON.stringify(signedTransaction));
+        }
+
+        return (
+
+            <Button
+                onClick={deletePost}
+            >
+                    Delete
+            </Button>
+        )
     }
     
     function PostView(props:any){
@@ -338,13 +417,13 @@ export function EveView(props: any){
                         
                         </DialogContent>
                         <DialogActions>
+                            <Button variant="text" onClick={handleClosePreviewDialog}>Cancel</Button>
                             <Button 
                                 type="submit"
                                 variant="text" 
                                 title="Submit">
                                 SUBMIT
                             </Button>
-                            <Button variant="text" onClick={handleClosePreviewDialog}>Close</Button>
                         </DialogActions>
                     </form>
                 </BootstrapDialog>
@@ -360,7 +439,6 @@ export function EveView(props: any){
                 //console.log("PARAMS: "+urlParams);
 
                 setLoading(true);
-                
                 const thrds = await fetchThreads(null);
                 setThreads(thrds);
                 //console.log("threads: "+JSON.stringify(thrds))
@@ -421,47 +499,53 @@ export function EveView(props: any){
                                         
                                         {threads.map((item:any, key:number) => {
                                             return (
-                                            <ListItem alignItems="flex-start" key={key}>
-                                                <ListItemAvatar>
-                                                    <Avatar>
-                                                        <Jazzicon diameter={40} seed={jsNumberForAddress(item?.author.toBase58())} />
-                                                    </Avatar>
-                                                </ListItemAvatar>
-                                                <ListItemText
-                                                    primary={
-                                                        <>
-                                                            <Typography>
-                                                                {item?.content}
+                                                <ListItem alignItems="flex-start" key={key}>
+                                                    <ListItemAvatar>
+                                                        <Avatar>
+                                                            <Jazzicon diameter={40} seed={jsNumberForAddress(item?.author.toBase58())} />
+                                                        </Avatar>
+                                                    </ListItemAvatar>
+                                                    <ListItemText
+                                                        primary={
+                                                            <>
+                                                                <Typography>
+                                                                    {item?.content}
+                                                                </Typography>
+                                                            </>
+                                                            }
+                                                        secondary={
+                                                            <React.Fragment>
+                                                            <Typography
+                                                                sx={{ display: 'inline' }}
+                                                                component="span"
+                                                                variant="body2"
+                                                                color="text.primary"
+                                                            >
+                                                                {created_ago(+item?.timestamp)}
                                                             </Typography>
-                                                        </>
+                                                            &nbsp;-&nbsp;{item?.author.toBase58()}
+                                                                <Typography variant="caption" sx={{ display: 'block' }}>
+                                                                    Topic: {item?.topic}
+                                                                </Typography>
+                                                                <Typography variant="caption" sx={{ display: 'block' }}>
+                                                                    Community: {item?.community.toBase58()} - Type: {item?.communityType}
+                                                                </Typography>
+                                                                <Typography variant="caption" sx={{ display: 'block' }}>
+                                                                    Metadata: {item?.metadata}
+                                                                </Typography>
+                                                                <Typography variant="caption" sx={{ display: 'block' }}>
+                                                                    Encrypted: {item?.isEncrypted}
+                                                                </Typography>
+                                                                {publicKey && publicKey.toBase58() === item?.author.toBase58() &&
+                                                                    <>
+                                                                        <EditPost thread={item.publicKey}/>
+                                                                        <DeletePost thread={item.publicKey}/>
+                                                                    </>
+                                                                }
+                                                            </React.Fragment>
                                                         }
-                                                    secondary={
-                                                        <React.Fragment>
-                                                        <Typography
-                                                            sx={{ display: 'inline' }}
-                                                            component="span"
-                                                            variant="body2"
-                                                            color="text.primary"
-                                                        >
-                                                            {created_ago(+item?.timestamp)}
-                                                        </Typography>
-                                                        &nbsp;-&nbsp;{item?.author.toBase58()}
-                                                            <Typography variant="caption" sx={{ display: 'block' }}>
-                                                                Topic: {item?.topic}
-                                                            </Typography>
-                                                            <Typography variant="caption" sx={{ display: 'block' }}>
-                                                                Community: {item?.community.toBase58()} - Type: {item?.communityType}
-                                                            </Typography>
-                                                            <Typography variant="caption" sx={{ display: 'block' }}>
-                                                                Metadata: {item?.metadata}
-                                                            </Typography>
-                                                            <Typography variant="caption" sx={{ display: 'block' }}>
-                                                                Encrypted: {item?.isEncrypted}
-                                                            </Typography>
-                                                        </React.Fragment>
-                                                    }
-                                                />
-                                            </ListItem>
+                                                    />
+                                                </ListItem>
                                             )
                                         })}
                                         </List>
