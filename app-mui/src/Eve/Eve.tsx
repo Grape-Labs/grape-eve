@@ -8,6 +8,7 @@ import { TokenAmount } from '../utils/grapeTools/safe-math';
 import { GrapeEve, IDL } from '../../types/grape_eve';
 import tidl from '../../idl/grape_eve.json';
 
+import bs58 from 'bs58'
 import LitJsSdk from "lit-js-sdk";
 
 import Jazzicon, { jsNumberForAddress } from 'react-jazzicon';
@@ -204,6 +205,23 @@ export function EveView(props: any){
         }
     }
 
+    const authorFilter = authorBase58PublicKey => ({
+        memcmp: {
+            offset: 8, // Discriminator.
+            bytes: authorBase58PublicKey,
+        }
+    })
+    
+    const topicFilter = topic => ({
+        memcmp: {
+            offset: 8 + // Discriminator.
+                32 + // Author public key.
+                8 + // Timestamp.
+                4, // Topic string prefix.
+            bytes: bs58.encode(Buffer.from(topic)),
+        }
+    })
+
     const fetchThreads = async (filters = []) => {
         await initWorkspace();
         const { program } = await useWorkspace()
@@ -306,7 +324,6 @@ export function EveView(props: any){
             );
             enqueueSnackbar(`Edit complete!`,{ variant: 'success', action:snackaction });
             
-
             // do a refresh this is not efficient we should simply 
             // do a dynamic push/popup on the object and avoid the additional rpc call
             fetchThreads();
@@ -446,16 +463,17 @@ export function EveView(props: any){
                     <form onSubmit={handlePostNow}>
                         <DialogContent>
                             <FormControl fullWidth>
-                            <TextField
-                                id="filled-multiline-static"
-                                label="Start a discussion"
-                                multiline
-                                rows={4}
-                                value={message}
-                                onChange={(e: any) => {
-                                    setMessage(e.target.value)}
-                                }
-                                />
+                                <TextField
+                                    id="filled-multiline-static"
+                                    label="Start a discussion"
+                                    multiline
+                                    rows={4}
+                                    value={message}
+                                    onChange={(e: any) => {
+                                        setMessage(e.target.value)}
+                                    }
+                                    />
+                                <Typography>{280 - (message?.length | 0)} left</Typography>
                             </FormControl>
                             <FormControl fullWidth>
                                 <TextField 
@@ -490,6 +508,9 @@ export function EveView(props: any){
                             <Button 
                                 type="submit"
                                 variant="text" 
+                                disabled={
+                                    (+message?.length > 280) || (+message?.length <= 0)
+                                }
                                 title="Submit">
                                 SUBMIT
                             </Button>
@@ -500,6 +521,16 @@ export function EveView(props: any){
             </>
 
         )
+    }
+
+    const fetchFilteredAuthor = (author:any) => {
+        const filter = [authorFilter(author)]
+        fetchThreads(filter);
+    }
+
+    const fetchFilteredThreads = (topic:any) => {
+        const filter = [topicFilter(topic)]
+        fetchThreads(filter);
     }
 
     useEffect(() => {
@@ -560,14 +591,18 @@ export function EveView(props: any){
                                         <Typography>
                                             {threads.length} thread posts
                                             <PostView type={0} />
+                                            <Button 
+                                                onClick={() => {fetchThreads()}}
+                                            >
+                                                Refresh
+                                            </Button>
                                         </Typography>
                                         <List sx={{ width: '100%' }}>
-                                        
-                                        {console.log("t: "+JSON.stringify(threads))}
                                         
                                         {threads.map((item:any, key:number) => {
                                             return (
                                                 <ListItem alignItems="flex-start" key={key}>
+                                                    
                                                     <ListItemAvatar>
                                                         <Avatar>
                                                             <Jazzicon diameter={40} seed={jsNumberForAddress(item?.author.toBase58())} />
@@ -576,7 +611,7 @@ export function EveView(props: any){
                                                     <ListItemText
                                                         primary={
                                                             <>
-                                                                <Typography>
+                                                                <Typography variant="h6">
                                                                     {item?.content}
                                                                 </Typography>
                                                             </>
@@ -591,9 +626,11 @@ export function EveView(props: any){
                                                             >
                                                                 {created_ago(+item?.timestamp)}
                                                             </Typography>
-                                                            &nbsp;-&nbsp;{item?.author.toBase58()}
+                                                            &nbsp;-&nbsp;
+                                                            <Button onClick={() => {fetchFilteredAuthor(item?.author.toBase58())}}>{item?.author.toBase58()}</Button>
+                                                            
                                                                 <Typography variant="caption" sx={{ display: 'block' }}>
-                                                                    Topic: {item?.topic}
+                                                                    Topic: <Button onClick={() => {fetchFilteredThreads(item?.topic)}}>{item?.topic}</Button>
                                                                 </Typography>
                                                                 <Typography variant="caption" sx={{ display: 'block' }}>
                                                                     Community: {item?.community.toBase58()} - Type: {item?.communityType}
