@@ -304,7 +304,7 @@ export function EveView(props: any){
                     {signedTransaction}
                 </Button>
             );
-            enqueueSnackbar(`Post created`,{ variant: 'success', action:snackaction });
+            enqueueSnackbar(`Edit complete!`,{ variant: 'success', action:snackaction });
             
 
             // do a refresh this is not efficient we should simply 
