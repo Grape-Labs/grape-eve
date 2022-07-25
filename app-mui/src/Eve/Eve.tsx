@@ -6,6 +6,9 @@ import { LAMPORTS_PER_SOL, Connection, PublicKey } from '@solana/web3.js';
 import { Schema, deserializeUnchecked, deserialize } from "borsh";
 import { TokenAmount } from '../utils/grapeTools/safe-math';
 import { GrapeEve, IDL } from '../../types/grape_eve';
+import tidl from '../../idl/grape_eve.json';
+
+import LitJsSdk from "lit-js-sdk";
 
 import Jazzicon, { jsNumberForAddress } from 'react-jazzicon';
 //import { GrapeEve, IDL } from "../../../target/types/grape_eve"
@@ -60,6 +63,7 @@ import {
     MenuItem,
     InputLabel,
     Paper,
+    Switch,
     Container,
     Radio,
     RadioGroup,
@@ -96,14 +100,17 @@ export const useWorkspace = () => workspace
 export function EveView(props: any){
 	const geconnection = new Connection(GRAPE_RPC_ENDPOINT);
     //const { connection } = useConnection();
+
+    //const client = new LitJsSdk.LitNodeClient();
 	const wallet = useWallet();
+    const {publicKey} = useWallet();
     const [loading, setLoading] = React.useState(false);
 
     const {handlekey} = useParams<{ handlekey: string }>();
     const [searchParams, setSearchParams] = useSearchParams();
     const urlParams = searchParams.get("storage") || searchParams.get("address") || handlekey;
     const [threads, setThreads] = React.useState(null);
-
+    
     const { enqueueSnackbar, closeSnackbar } = useSnackbar();
 
     const onError = useCallback(
@@ -185,7 +192,8 @@ export function EveView(props: any){
 
         const provider = await getProvider()
         const program = new Program<GrapeEve>(IDL, programID, provider);
-
+        //const program = new Program(tidl, programID, provider);
+        
         workspace = {
             wallet,
             connection,
@@ -205,6 +213,163 @@ export function EveView(props: any){
         const mptrd = thread.map((thread:any) => new Thread(thread.publicKey, thread.account))
         mptrd.sort((a:any,b:any) => (a.timestamp < b.timestamp) ? 1 : -1);
         return mptrd;
+    }
+
+    const newPost = async (topic:string, discussion:string, community:string, encrypted:number) => {
+        //await initWorkspace();
+        const { wallet, provider, program } = useWorkspace()
+        const thread = web3.Keypair.generate()
+
+        /*
+        const grapeEveId = "GXaZPJ3kwoZKMMxBxnRnwG87EJKBu7GjT8ks8dR4p693";
+        const programID = new PublicKey(grapeEveId);
+        
+        const connection = new Connection(clusterUrl)
+
+        async function getProvider() {
+            const connection = new Connection(clusterUrl);
+            
+            //const provider = new AnchorProvider(
+            const provider = new Provider(
+                    connection, wallet, {
+                commitment: "processed"
+            },
+            );
+            return provider;
+        }
+
+        const provider = await getProvider()
+
+        const program = new Program<GrapeEve>(IDL, programID, provider);
+        */
+
+        console.log("pk: "+publicKey.toBase58());
+        const instructions = await program.rpc.sendPost(topic, discussion, {
+            accounts: {
+                author: publicKey,
+                thread: thread.publicKey,
+                systemProgram: web3.SystemProgram.programId,
+            },
+            signers: [thread]
+        })
+    
+        console.log("instructions: "+JSON.stringify(instructions));
+        //const threadAccount = await program.value.account.thread.fetch(thread.publicKey)
+        //return new Thread(thread.publicKey, threadAccount)
+    }
+
+    const editPost = async (filters = []) => {
+        
+    }
+
+    const deletePost = async (filters = []) => {
+        
+    }
+    
+    function PostView(props:any){
+        const [openPreviewDialog, setOpenPreviewDialog] = React.useState(false);
+        const [discussion, setDiscussion] = React.useState(null);
+        const [topic, setTopic] = React.useState(null);
+        const [community, setCommunity] = React.useState(null);
+        const {publicKey} = useWallet();
+
+        const handleClickOpenPreviewDialog = () => {
+            setOpenPreviewDialog(true);
+        };
+        
+        const handleClosePreviewDialog = () => {
+            setOpenPreviewDialog(false);
+        };
+
+        async function handlePostNow(event: any) {
+            event.preventDefault();
+            handleClosePreviewDialog();
+            
+            console.log("posting: "+topic+" - "+discussion);
+
+            const thisthread = await newPost(topic, discussion, community, 1);
+            console.log("thisThread: "+JSON.stringify(thisthread));
+        }
+
+        return (
+
+            <>
+                {publicKey &&
+                <Button
+                    variant="text"
+                    //component={Link} to={`${GRAPE_PREVIEW}${item.mint}`}
+                    onClick={handleClickOpenPreviewDialog}
+                    sx={{borderRadius:'24px'}}
+                >
+                    Add
+                </Button>
+                }
+                <BootstrapDialog 
+                    fullWidth={true}
+                    maxWidth={"lg"}
+                    open={openPreviewDialog} onClose={handleClosePreviewDialog}
+                    PaperProps={{
+                        style: {
+                            background: '#13151C',
+                            border: '1px solid rgba(255,255,255,0.05)',
+                            borderTop: '1px solid rgba(255,255,255,0.1)',
+                            borderRadius: '20px'
+                        }
+                    }}
+                >
+                    <form onSubmit={handlePostNow}>
+                        <DialogContent>
+                            <FormControl fullWidth>
+                            <TextField
+                                id="filled-multiline-static"
+                                label="Start a discussion"
+                                multiline
+                                rows={4}
+                                onChange={(e: any) => {
+                                    setDiscussion(e.target.value)}
+                                }
+                                />
+                            </FormControl>
+                            <FormControl fullWidth>
+                                <TextField 
+                                    fullWidth 
+                                    label="Topic" 
+                                    id="fullWidth" 
+                                    onChange={(e: any) => {
+                                        setTopic(e.target.value)}
+                                    }/>
+                            </FormControl>
+                            <FormControlLabel control={<Switch defaultChecked />} label="Encrypted" />
+                            <FormControl fullWidth>
+                                <InputLabel id="demo-simple-select-label">Community</InputLabel>
+                                <Select
+                                    labelId="demo-simple-select-label"
+                                    id="demo-simple-select"
+                                    label="Community"
+                                    onChange={(e: any) => {
+                                        setCommunity(e.target.value)}
+                                    }
+                                >
+                                    <MenuItem value={1}>Grape</MenuItem>
+                                </Select>
+                            </FormControl>
+                        
+                        </DialogContent>
+                        <DialogActions>
+                            <Button 
+                                type="submit"
+                                variant="text" 
+                                title="Submit">
+                                SUBMIT
+                            </Button>
+                            <Button variant="text" onClick={handleClosePreviewDialog}>Close</Button>
+                        </DialogActions>
+                    </form>
+                </BootstrapDialog>
+
+            </>
+
+        )
     }
 
     useEffect(() => {
@@ -264,7 +429,10 @@ export function EveView(props: any){
                             <>
                                 {threads &&
                                     <>
-                                        <Typography>{threads.length} thread posts</Typography>
+                                        <Typography>
+                                            {threads.length} thread posts
+                                            <PostView />
+                                        </Typography>
                                         <List sx={{ width: '100%' }}>
                                         
                                         {console.log("t: "+JSON.stringify(threads))}

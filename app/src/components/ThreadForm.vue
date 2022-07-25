@@ -80,13 +80,13 @@ const send = async () => {
                     {{ characterLimit }} left
                 </div>
 
-                <!-- Tweet button. -->
+                <!-- Post button. -->
                 <button
                     class="text-white px-4 py-2 rounded-full font-semibold" :disabled="! canThread"
                     :class="canThread ? 'bg-pink-500' : 'bg-pink-300 cursor-not-allowed'"
                     @click="send"
                 >
-                    Thread
+                    Post
                 </button>
             </div>
         </div>
