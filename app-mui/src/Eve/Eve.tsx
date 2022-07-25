@@ -249,7 +249,7 @@ export function EveView(props: any){
             blockhash: latestBlockHash.blockhash,
             lastValidBlockHeight: latestBlockHash.lastValidBlockHeight,
             signature: signedTransaction}, 
-            'processed'
+            'confirmed'
         );
         closeSnackbar(cnfrmkey);
 
@@ -306,7 +306,7 @@ export function EveView(props: any){
                 blockhash: latestBlockHash.blockhash,
                 lastValidBlockHeight: latestBlockHash.lastValidBlockHeight,
                 signature: signedTransaction}, 
-                'processed'
+                'confirmed'
             );
             closeSnackbar(cnfrmkey);
     
