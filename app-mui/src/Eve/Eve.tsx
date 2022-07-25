@@ -216,14 +216,16 @@ export function EveView(props: any){
     }
 
     const newPost = async (topic:string, discussion:string, community:string, encrypted:number) => {
-        //await initWorkspace();
+        await initWorkspace();
         const { wallet, provider, program } = useWorkspace()
+        
         const thread = web3.Keypair.generate()
-
+        
+        
         /*
         const grapeEveId = "GXaZPJ3kwoZKMMxBxnRnwG87EJKBu7GjT8ks8dR4p693";
         const programID = new PublicKey(grapeEveId);
-        
+        const clusterUrl = 'https://api.devnet.solana.com'; //'https://ssc-dao.genesysgo.net/';//process.env.VUE_APP_CLUSTER_URL
         const connection = new Connection(clusterUrl)
 
         async function getProvider() {
@@ -254,6 +256,7 @@ export function EveView(props: any){
         })
     
         console.log("instructions: "+JSON.stringify(instructions));
+
         //const threadAccount = await program.value.account.thread.fetch(thread.publicKey)
         //return new Thread(thread.publicKey, threadAccount)
     }
