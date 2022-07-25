@@ -249,7 +249,7 @@ export function EveView(props: any){
             blockhash: latestBlockHash.blockhash,
             lastValidBlockHeight: latestBlockHash.lastValidBlockHeight,
             signature: signedTransaction}, 
-            'confirmed'
+            'finalized'
         );
         closeSnackbar(cnfrmkey);
 
@@ -262,6 +262,7 @@ export function EveView(props: any){
         
 
         // do a refresh this is not efficient we should simply 
+        // do a dynamic push/popup on the object and avoid the additional rpc call
         fetchThreads();
     }
 
@@ -306,7 +307,7 @@ export function EveView(props: any){
                 blockhash: latestBlockHash.blockhash,
                 lastValidBlockHeight: latestBlockHash.lastValidBlockHeight,
                 signature: signedTransaction}, 
-                'confirmed'
+                'finalized'
             );
             closeSnackbar(cnfrmkey);
     
@@ -319,6 +320,7 @@ export function EveView(props: any){
         
             console.log("signature: "+JSON.stringify(signedTransaction));
             // do a refresh this is not efficient we should simply 
+            // do a dynamic push/popup on the object and avoid the additional rpc call
             fetchThreads();
         }
 
