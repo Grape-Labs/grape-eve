@@ -6,11 +6,12 @@ declare_id!("GXaZPJ3kwoZKMMxBxnRnwG87EJKBu7GjT8ks8dR4p693");
 #[program]
 pub mod grape_eve {
     use super::*;
-    pub fn send_post(ctx: Context<SendPost>, topic: String, content: String) -> ProgramResult {
+
+    pub fn send_post(ctx: Context<SendPost>, topic: String, content: String, community: String, community_type: i8, is_encrypted: i8, metadata: String, reply: String) -> ProgramResult {
         let thread: &mut Account<Thread> = &mut ctx.accounts.thread;
         let author: &Signer = &ctx.accounts.author;
         let clock: Clock = Clock::get().unwrap();
-
+        
         if topic.chars().count() > 50 {
             return Err(ErrorCode::TopicTooLong.into())
         }
@@ -18,15 +19,16 @@ pub mod grape_eve {
         if content.chars().count() > 280 {
             return Err(ErrorCode::ContentTooLong.into())
         }
-
+        
         thread.author = *author.key;
         thread.timestamp = clock.unix_timestamp;
         thread.topic = topic;
         thread.content = content;
-        //thread.community = community;
-        //thread.communityType = community_type;
-        //thread.metadata = metadata;
-        //thread.isEncrypted = is_encrypted;
+        thread.community = community;
+        thread.community_type = community_type;
+        thread.metadata = metadata;
+        thread.is_encrypted = is_encrypted;
+        thread.reply = reply;
 
         Ok(())
     }
@@ -44,6 +46,7 @@ pub mod grape_eve {
 
         thread.topic = topic;
         thread.content = content;
+
 
         Ok(())
     }
@@ -69,6 +72,11 @@ pub struct UpdatePost<'info> {
     #[account(mut, has_one = author)]
     pub thread: Account<'info, Thread>,
     pub author: Signer<'info>,
+    //pub community: Signer<'info>,
+    //pub communityType: Signer<'info>,
+    //pub metadata: Signer<'info>,
+    //pub isEncrypted: Signer<'info>,
+    //pub reply: Signer<'info>,
 }
 
 #[derive(Accounts)]
@@ -84,12 +92,11 @@ pub struct Thread {
     pub timestamp: i64,
     pub topic: String,
     pub content: String,
-    pub community: Pubkey,
+    pub community: String,
     pub community_type: i8,
-    //pub community_type: i64,
     pub metadata: String,
     pub is_encrypted: i8,
-    //pub is_encrypted: i64
+    pub reply: String,
 }
 
 const DISCRIMINATOR_LENGTH: usize = 8;
@@ -103,6 +110,7 @@ const COMMUNITYTYPE_LENGTH: usize = 1;
 //const COMMUNITYTYPE_LENGTH: usize = 8;
 const METADATA_LENGTH: usize = 280;
 const ISENCRYPTED_LENGTH: usize = 1;
+const REPLY_KEY_LENGTH: usize = 32;
 //const ISENCRYPTED_LENGTH: usize = 8;
 
 // TODO ADD CHANNEL or COMMUNITY GATING
@@ -117,7 +125,8 @@ impl Thread {
         + COMMUNITY_LENGTH // Author.
         + COMMUNITYTYPE_LENGTH 
         + STRING_LENGTH_PREFIX + METADATA_LENGTH 
-        + ISENCRYPTED_LENGTH; // additional fields
+        + ISENCRYPTED_LENGTH // additional fields
+        + REPLY_KEY_LENGTH; // Author.
 }
 
 #[error]

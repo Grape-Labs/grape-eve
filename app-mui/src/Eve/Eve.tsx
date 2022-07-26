@@ -237,16 +237,16 @@ export function EveView(props: any){
         return mptrd;
     }
 
-    const newPost = async (topic:string, content:string, community:string, encrypted:number) => {
+    const newPost = async (topic:string, content:string, community:string, communityType: number, encrypted: number, reply: string, metadata: string) => {
         await initWorkspace();
         const { wallet, provider, program } = useWorkspace()
         
         const thread = web3.Keypair.generate()
-        
+        console.log("posting: "+topic+" - "+content+" - "+community+" - "+communityType+" - "+encrypted+" - "+(reply)+" - "+metadata)
         try{
             enqueueSnackbar(`Preparing to create a new post`,{ variant: 'info' });
             
-            const signedTransaction = await program.rpc.sendPost(topic, content, {
+            const signedTransaction = await program.rpc.sendPost(topic, content, community, communityType, encrypted, metadata, reply, {
                 accounts: {
                     author: publicKey,
                     thread: thread.publicKey,
@@ -401,10 +401,11 @@ export function EveView(props: any){
         const type = props?.type;
         const thread = props?.thread;
         const [openPreviewDialog, setOpenPreviewDialog] = React.useState(false);
-        const [encrypted, setEncrypted] = React.useState(props?.encrypted || true);
+        const [encrypted, setEncrypted] = React.useState(props?.encrypted || 1);
         const [message, setMessage] = React.useState(props?.message || null);
         const [topic, setTopic] = React.useState(props?.topic || null);
-        const [community, setCommunity] = React.useState(props?.community || null);
+        const [community, setCommunity] = React.useState(props?.community || '');
+        const [reply, setReply] = React.useState(props?.reply || '');
         const {publicKey} = useWallet();
 
         const handleClickOpenPreviewDialog = () => {
@@ -422,7 +423,8 @@ export function EveView(props: any){
             console.log("posting: ("+topic+") "+message);
             
             if (type === 0){
-                const thisthread = await newPost(topic, message, community, encrypted);
+                const metadata = '';
+                const thisthread = await newPost(topic, message, community, 1, encrypted, reply, metadata);
                 console.log("thisThread: "+JSON.stringify(thisthread));
             } else{
                 const thisthread = await editPost(thread, topic, message, community, encrypted);
@@ -633,7 +635,7 @@ export function EveView(props: any){
                                                                     Topic: <Button onClick={() => {fetchFilteredThreads(item?.topic)}}>{item?.topic}</Button>
                                                                 </Typography>
                                                                 <Typography variant="caption" sx={{ display: 'block' }}>
-                                                                    Community: {item?.community.toBase58()} - Type: {item?.communityType}
+                                                                    Community: {item?.community} - Type: {item?.communityType}
                                                                 </Typography>
                                                                 <Typography variant="caption" sx={{ display: 'block' }}>
                                                                     Metadata: {item?.metadata}

@@ -29,6 +29,26 @@ export type GrapeEve = {
         {
           "name": "content",
           "type": "string"
+        },
+        {
+          "name": "community",
+          "type": "string"
+        },
+        {
+          "name": "communityType",
+          "type": "i8"
+        },
+        {
+          "name": "isEncrypted",
+          "type": "i8"
+        },
+        {
+          "name": "metadata",
+          "type": "string"
+        },
+        {
+          "name": "reply",
+          "type": "string"
         }
       ]
     },
@@ -98,7 +118,7 @@ export type GrapeEve = {
           },
           {
             "name": "community",
-            "type": "publicKey"
+            "type": "string"
           },
           {
             "name": "communityType",
@@ -111,6 +131,10 @@ export type GrapeEve = {
           {
             "name": "isEncrypted",
             "type": "i8"
+          },
+          {
+            "name": "reply",
+            "type": "string"
           }
         ]
       }
@@ -165,6 +189,26 @@ export const IDL: GrapeEve = {
         {
           "name": "content",
           "type": "string"
+        },
+        {
+          "name": "community",
+          "type": "string"
+        },
+        {
+          "name": "communityType",
+          "type": "i8"
+        },
+        {
+          "name": "isEncrypted",
+          "type": "i8"
+        },
+        {
+          "name": "metadata",
+          "type": "string"
+        },
+        {
+          "name": "reply",
+          "type": "string"
         }
       ]
     },
@@ -234,7 +278,7 @@ export const IDL: GrapeEve = {
           },
           {
             "name": "community",
-            "type": "publicKey"
+            "type": "string"
           },
           {
             "name": "communityType",
@@ -247,6 +291,10 @@ export const IDL: GrapeEve = {
           {
             "name": "isEncrypted",
             "type": "i8"
+          },
+          {
+            "name": "reply",
+            "type": "string"
           }
         ]
       }
