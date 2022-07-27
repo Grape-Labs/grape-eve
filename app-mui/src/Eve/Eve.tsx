@@ -236,6 +236,7 @@ const communityFilter = communityBase58PublicKey => ({
                     4 + // prefix
                     280 * 4 + //metadata
                     1,// + //commmunity type
+                    
                     //32, //+ // community
                     //32, // reply
             bytes: communityBase58PublicKey,
