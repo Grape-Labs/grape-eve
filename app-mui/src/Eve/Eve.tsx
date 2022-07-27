@@ -300,7 +300,7 @@ export function EveView(props: any){
         const threadlen = await program.account.thread.all.length
         const thread = await program.account.thread.all(filters);
 
-        //console.log("t: "+JSON.stringify(thread));
+        console.log("t: "+JSON.stringify(thread));
         //return thread;
         const mptrd = thread.map((thread:any) => new Thread(thread.publicKey, thread.account))
         mptrd.sort((a:any,b:any) => (a.timestamp < b.timestamp) ? 1 : -1);
