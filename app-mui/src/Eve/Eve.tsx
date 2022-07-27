@@ -198,7 +198,7 @@ export function EveView(props: any){
         const program = new Program<GrapeEve>(IDL, programID, provider);
         //const program = new Program(tidl, programID, provider);
         
-        console.log( "threads.... + "+JSON.stringify(program.account.thread.all() ));
+        //console.log( "threads.... + "+JSON.stringify(program.account.thread.all() ));
 
         workspace = {
             wallet,
