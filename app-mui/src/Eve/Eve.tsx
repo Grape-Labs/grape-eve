@@ -275,12 +275,10 @@ export function EveView(props: any){
         await initWorkspace();
         const { program } = await useWorkspace()
 
-        console.log("attempting ")
         const threadlen = await program.account.thread.all.length
-        console.log("attempting "+threadlen);
         const thread = await program.account.thread.all(filters);
 
-        console.log("t: "+JSON.stringify(thread));
+        //console.log("t: "+JSON.stringify(thread));
         //return thread;
         const mptrd = thread.map((thread:any) => new Thread(thread.publicKey, thread.account))
         mptrd.sort((a:any,b:any) => (a.timestamp < b.timestamp) ? 1 : -1);
