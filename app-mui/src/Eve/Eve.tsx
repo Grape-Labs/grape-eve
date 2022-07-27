@@ -250,7 +250,7 @@ export function EveView(props: any){
                         4 + // prefix
                         (280 * 4) + //metadata
                         1 + //commmunity type
-                        1, //encrypted
+                        1 + 1, //encrypted
                         //32 + 1, //+ // community
                         //32 + 1, // reply
                 bytes: bs58.encode((new BN(0, 'le')).toArray()),
