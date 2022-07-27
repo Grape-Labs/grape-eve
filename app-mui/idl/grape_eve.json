@@ -31,12 +31,6 @@
           "type": "string"
         },
         {
-          "name": "community",
-          "type": {
-            "option": "publicKey"
-          }
-        },
-        {
           "name": "communityType",
           "type": "i8"
         },
@@ -47,6 +41,12 @@
         {
           "name": "metadata",
           "type": "string"
+        },
+        {
+          "name": "community",
+          "type": {
+            "option": "publicKey"
+          }
         },
         {
           "name": "reply",
@@ -121,12 +121,6 @@
             "type": "string"
           },
           {
-            "name": "community",
-            "type": {
-              "option": "publicKey"
-            }
-          },
-          {
             "name": "communityType",
             "type": "i8"
           },
@@ -137,6 +131,12 @@
           {
             "name": "isEncrypted",
             "type": "i8"
+          },
+          {
+            "name": "community",
+            "type": {
+              "option": "publicKey"
+            }
           },
           {
             "name": "reply",

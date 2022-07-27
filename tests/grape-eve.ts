@@ -8,8 +8,10 @@ describe('grape-eve', () => {
     // Configure the client cluster.
     anchor.setProvider(anchor.Provider.env());
     const program = anchor.workspace.GrapeEve as Program<GrapeEve>;
-/*
-    const SendPost = async (author, topic, content, community, community_type, is_encrypted, metadata, reply) => {
+
+    //console.log("here: "+program.account.thread.all(null))
+
+    const SendPost = async (author, topic, content, community_type, is_encrypted, metadata, community, reply) => {
         const thread = anchor.web3.Keypair.generate();
         await program.rpc.sendPost(topic, content, {
             accounts: {
@@ -22,8 +24,9 @@ describe('grape-eve', () => {
 
         return thread
     }
-*/
+
     
+
     it('can make a new thread', async () => {
         // Call the "SendPost" instruction.
         const thread = anchor.web3.Keypair.generate();
@@ -45,6 +48,7 @@ describe('grape-eve', () => {
         assert.equal(threadAccount.content, 'Grape, how does that sound?');
         assert.ok(threadAccount.timestamp);
     });
+
     /*
     it('can send a new thread without a topic', async () => {
         // Call the "SendPost" instruction.

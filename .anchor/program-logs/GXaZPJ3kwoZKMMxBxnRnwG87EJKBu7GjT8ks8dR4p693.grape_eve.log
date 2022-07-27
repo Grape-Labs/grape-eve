@@ -1,11 +1,1 @@
 Streaming transaction logs mentioning GXaZPJ3kwoZKMMxBxnRnwG87EJKBu7GjT8ks8dR4p693. Confirmed commitment
-Transaction executed in slot 150735639:
-  Signature: ji5fGNsxejea4tFeYPQnZsFFswPFyPdSNhBhditSwzmCGWzFmfxGpK77623BjpL1tTawg5vZZDnqvK29bxnY4To
-  Status: Ok
-  Log Messages:
-    Program GXaZPJ3kwoZKMMxBxnRnwG87EJKBu7GjT8ks8dR4p693 invoke [1]
-    Program log: Instruction: SendPost
-    Program 11111111111111111111111111111111 invoke [2]
-    Program 11111111111111111111111111111111 success
-    Program GXaZPJ3kwoZKMMxBxnRnwG87EJKBu7GjT8ks8dR4p693 consumed 8728 of 200000 compute units
-    Program GXaZPJ3kwoZKMMxBxnRnwG87EJKBu7GjT8ks8dR4p693 success

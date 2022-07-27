@@ -7,7 +7,7 @@ declare_id!("GXaZPJ3kwoZKMMxBxnRnwG87EJKBu7GjT8ks8dR4p693");
 pub mod grape_eve {
     use super::*;
 
-    pub fn send_post(ctx: Context<SendPost>, topic: String, content: String, community: Option<Pubkey>, community_type: i8, is_encrypted: i8, metadata: String, reply: Option<Pubkey>) -> ProgramResult {
+    pub fn send_post(ctx: Context<SendPost>, topic: String, content: String, community_type: i8, is_encrypted: i8, metadata: String, community: Option<Pubkey>, reply: Option<Pubkey>) -> ProgramResult {
         let thread: &mut Account<Thread> = &mut ctx.accounts.thread;
         let author: &Signer = &ctx.accounts.author;
         let clock: Clock = Clock::get().unwrap();
@@ -24,10 +24,10 @@ pub mod grape_eve {
         thread.timestamp = clock.unix_timestamp;
         thread.topic = topic;
         thread.content = content;
-        thread.community = community;
         thread.community_type = community_type;
         thread.metadata = metadata;
         thread.is_encrypted = is_encrypted;
+        thread.community = community;
         thread.reply = reply;
 
         Ok(())
@@ -92,10 +92,10 @@ pub struct Thread {
     pub timestamp: i64,
     pub topic: String,
     pub content: String,
-    pub community: Option<Pubkey>,
     pub community_type: i8,
     pub metadata: String,
     pub is_encrypted: i8,
+    pub community: Option<Pubkey>,
     pub reply: Option<Pubkey>,
 }
 
@@ -105,12 +105,12 @@ const TIMESTAMP_LENGTH: usize = 8;
 const STRING_LENGTH_PREFIX: usize = 4; // Stores the size of the string.
 const MAX_TOPIC_LENGTH: usize = 50 * 4; // 50 chars max.
 const MAX_CONTENT_LENGTH: usize = 280 * 4; // 280 chars max.
-const COMMUNITY_LENGTH: usize = 32;
+const COMMUNITY_LENGTH: usize = 32 + 1;
 const COMMUNITYTYPE_LENGTH: usize = 1;
 //const COMMUNITYTYPE_LENGTH: usize = 8;
 const METADATA_LENGTH: usize = 280 * 4;
 const ISENCRYPTED_LENGTH: usize = 1;
-const REPLY_KEY_LENGTH: usize = 32;
+const REPLY_KEY_LENGTH: usize = 32 + 1;
 //const ISENCRYPTED_LENGTH: usize = 8;
 
 // TODO ADD CHANNEL or COMMUNITY GATING
@@ -122,11 +122,11 @@ impl Thread {
         + TIMESTAMP_LENGTH // Timestamp.
         + STRING_LENGTH_PREFIX + MAX_TOPIC_LENGTH // Topic.
         + MAX_CONTENT_LENGTH // Content.
-        + COMMUNITY_LENGTH // Author.
         + COMMUNITYTYPE_LENGTH 
         + STRING_LENGTH_PREFIX + METADATA_LENGTH 
         + ISENCRYPTED_LENGTH // additional fields
-        + REPLY_KEY_LENGTH; // Author.
+        + COMMUNITY_LENGTH // Com.
+        + REPLY_KEY_LENGTH; // Reply.
 }
 
 #[error]

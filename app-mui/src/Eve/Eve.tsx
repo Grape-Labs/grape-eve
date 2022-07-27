@@ -8,7 +8,8 @@ import { TokenAmount } from '../utils/grapeTools/safe-math';
 import { GrapeEve, IDL } from '../../types/grape_eve';
 import tidl from '../../idl/grape_eve.json';
 
-import bs58 from 'bs58'
+import bs58 from 'bs58';
+import BN from 'bn.js';
 import LitJsSdk from "lit-js-sdk";
 
 import Jazzicon, { jsNumberForAddress } from 'react-jazzicon';
@@ -223,16 +224,35 @@ const ISENCRYPTED_LENGTH: usize = 1;
 const REPLY_KEY_LENGTH: usize = 32;
     */
 
-    const communityFilter = communityBase58PublicKey => ({
-        memcmp: {
-            offset: 8 + // Discriminator.
-                    32 + // Author
-                    8 + // Timestamp
-                    4 + // topic prefix
-                    50 * 4,
-            bytes: communityBase58PublicKey,
-        }
-    })
+const communityFilter = communityBase58PublicKey => ({
+    filters: [
+    {memcmp: {
+        offset: 8 + // Discriminator.
+                32 + // Author
+                8 + // Timestamp
+                4 + // topic prefix
+                50 * 4 + //topic 
+                200 * 4 + //content 
+                1 + //conmmunity type
+                200 * 4 + //metadata
+                1, // isencrypted
+                bytes: bs58.encode((new BN(1, 'le')).toArray()) ,
+    }},
+    {memcmp: {
+        offset: 8 + // Discriminator.
+                32 + // Author
+                8 + // Timestamp
+                4 + // topic prefix
+                50 * 4 + //topic 
+                200 * 4 + //content 
+                1 + //conmmunity type
+                200 * 4 + //metadata
+                1 + // isencrypted
+                1, //community exists
+        bytes: communityBase58PublicKey,
+    }}
+    ]
+})
 
     const authorFilter = authorBase58PublicKey => ({
         memcmp: {
@@ -255,10 +275,10 @@ const REPLY_KEY_LENGTH: usize = 32;
         await initWorkspace();
         const { program } = await useWorkspace()
 
-        //console.log("attmepting")
+        console.log("attempting ")
         const thread = await program.account.thread.all(filters);
 
-        //console.log("t: "+JSON.stringify(thread));
+        console.log("t: "+JSON.stringify(thread));
         //return thread;
         const mptrd = thread.map((thread:any) => new Thread(thread.publicKey, thread.account))
         mptrd.sort((a:any,b:any) => (a.timestamp < b.timestamp) ? 1 : -1);
