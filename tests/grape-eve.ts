@@ -21,16 +21,18 @@ describe('grape-eve', () => {
             },
             signers: [thread],
         });
-
         return thread
     }
 
-    
+    it('checking length', async () => {
+        console.log("threads:" + JSON.stringify(program.account.thread.all([])))
+    });
 
+    /*
     it('can make a new thread', async () => {
         // Call the "SendPost" instruction.
         const thread = anchor.web3.Keypair.generate();
-        await program.rpc.sendPost('fruit', 'Grape, how does that sound?', '', '', '', '', '', {
+        await program.rpc.sendPost('other', 'Testing posting from within', '', '', '', null, null, {
             accounts: {
                 thread: thread.publicKey,
                 author: program.provider.wallet.publicKey,
@@ -44,10 +46,10 @@ describe('grape-eve', () => {
 
         // Ensure it has the right data.
         assert.equal(threadAccount.author.toBase58(), program.provider.wallet.publicKey.toBase58());
-        assert.equal(threadAccount.topic, 'fruit');
-        assert.equal(threadAccount.content, 'Grape, how does that sound?');
+        assert.equal(threadAccount.topic, 'other');
+        assert.equal(threadAccount.content, 'Testing posting from within');
         assert.ok(threadAccount.timestamp);
-    });
+    });*/
 
     /*
     it('can send a new thread without a topic', async () => {

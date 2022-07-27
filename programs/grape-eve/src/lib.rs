@@ -6,8 +6,8 @@ declare_id!("GXaZPJ3kwoZKMMxBxnRnwG87EJKBu7GjT8ks8dR4p693");
 #[program]
 pub mod grape_eve {
     use super::*;
-
-    pub fn send_post(ctx: Context<SendPost>, topic: String, content: String, community_type: i8, is_encrypted: i8, metadata: String, community: Option<Pubkey>, reply: Option<Pubkey>) -> ProgramResult {
+    //, reply: String
+    pub fn send_post(ctx: Context<SendPost>, topic: String, content: String, metadata: String, community_type: i8, is_encrypted: i8, community: Option<Pubkey>) -> ProgramResult {
         let thread: &mut Account<Thread> = &mut ctx.accounts.thread;
         let author: &Signer = &ctx.accounts.author;
         let clock: Clock = Clock::get().unwrap();
@@ -24,11 +24,11 @@ pub mod grape_eve {
         thread.timestamp = clock.unix_timestamp;
         thread.topic = topic;
         thread.content = content;
-        thread.community_type = community_type;
         thread.metadata = metadata;
+        thread.community_type = community_type;
         thread.is_encrypted = is_encrypted;
         thread.community = community;
-        thread.reply = reply;
+        //thread.reply = reply;
 
         Ok(())
     }
@@ -92,11 +92,11 @@ pub struct Thread {
     pub timestamp: i64,
     pub topic: String,
     pub content: String,
-    pub community_type: i8,
     pub metadata: String,
+    pub community_type: i8,
     pub is_encrypted: i8,
     pub community: Option<Pubkey>,
-    pub reply: Option<Pubkey>,
+    //pub reply: String,//Option<Pubkey>,
 }
 
 const DISCRIMINATOR_LENGTH: usize = 8;
@@ -105,11 +105,11 @@ const TIMESTAMP_LENGTH: usize = 8;
 const STRING_LENGTH_PREFIX: usize = 4; // Stores the size of the string.
 const MAX_TOPIC_LENGTH: usize = 50 * 4; // 50 chars max.
 const MAX_CONTENT_LENGTH: usize = 280 * 4; // 280 chars max.
-const COMMUNITYTYPE_LENGTH: usize = 1;
 const METADATA_LENGTH: usize = 280 * 4;
+const COMMUNITYTYPE_LENGTH: usize = 1;
 const ISENCRYPTED_LENGTH: usize = 1;
-const COMMUNITY_LENGTH: usize = 32 + 1;
-const REPLY_KEY_LENGTH: usize = 32 + 1;
+const COMMUNITY_LENGTH: usize = 32 * 4;//+ 1;
+const REPLY_KEY_LENGTH: usize = 32 * 4;//+ 1;
 
 // TODO ADD CHANNEL or COMMUNITY GATING
 // ADD LITPROTOCOL
@@ -120,11 +120,11 @@ impl Thread {
         + TIMESTAMP_LENGTH // Timestamp.
         + STRING_LENGTH_PREFIX + MAX_TOPIC_LENGTH // Topic.
         + STRING_LENGTH_PREFIX + MAX_CONTENT_LENGTH // Content.
-        + COMMUNITYTYPE_LENGTH 
-        + STRING_LENGTH_PREFIX + METADATA_LENGTH 
+        + STRING_LENGTH_PREFIX + METADATA_LENGTH
+        + COMMUNITYTYPE_LENGTH
         + ISENCRYPTED_LENGTH // additional fields
-        + COMMUNITY_LENGTH // Com.
-        + REPLY_KEY_LENGTH; // Reply.
+        + COMMUNITY_LENGTH; // Com.
+        //+ REPLY_KEY_LENGTH; // Reply.
 }
 
 #[error]

@@ -198,7 +198,7 @@ export function EveView(props: any){
         const program = new Program<GrapeEve>(IDL, programID, provider);
         //const program = new Program(tidl, programID, provider);
         
-        //console.log( "threads.... + "+JSON.stringify(program.account.thread.all() ));
+        console.log( "threads: + "+JSON.stringify(program.account.thread.all([]) ));
 
         workspace = {
             wallet,
@@ -276,6 +276,8 @@ const communityFilter = communityBase58PublicKey => ({
         const { program } = await useWorkspace()
 
         console.log("attempting ")
+        const threadlen = await program.account.thread.all.length
+        console.log("attempting "+threadlen);
         const thread = await program.account.thread.all(filters);
 
         console.log("t: "+JSON.stringify(thread));
@@ -685,7 +687,7 @@ const communityFilter = communityBase58PublicKey => ({
                                                                     Topic: <Button onClick={() => {fetchFilteredThreads(item?.topic)}}>{item?.topic}</Button>
                                                                 </Typography>
                                                                 <Typography variant="caption" sx={{ display: 'block' }}>
-                                                                    Community: {item?.community.toBase58()} - Type: {item?.communityType}
+                                                                    Community: {item?.community && item?.community.toBase58()} - Type: {item?.communityType}
                                                                 </Typography>
                                                                 <Typography variant="caption" sx={{ display: 'block' }}>
                                                                     Metadata: {item?.metadata}

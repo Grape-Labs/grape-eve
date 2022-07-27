@@ -31,6 +31,10 @@ export type GrapeEve = {
           "type": "string"
         },
         {
+          "name": "metadata",
+          "type": "string"
+        },
+        {
           "name": "communityType",
           "type": "i8"
         },
@@ -39,17 +43,7 @@ export type GrapeEve = {
           "type": "i8"
         },
         {
-          "name": "metadata",
-          "type": "string"
-        },
-        {
           "name": "community",
-          "type": {
-            "option": "publicKey"
-          }
-        },
-        {
-          "name": "reply",
           "type": {
             "option": "publicKey"
           }
@@ -121,12 +115,12 @@ export type GrapeEve = {
             "type": "string"
           },
           {
-            "name": "communityType",
-            "type": "i8"
-          },
-          {
             "name": "metadata",
             "type": "string"
+          },
+          {
+            "name": "communityType",
+            "type": "i8"
           },
           {
             "name": "isEncrypted",
@@ -134,12 +128,6 @@ export type GrapeEve = {
           },
           {
             "name": "community",
-            "type": {
-              "option": "publicKey"
-            }
-          },
-          {
-            "name": "reply",
             "type": {
               "option": "publicKey"
             }
@@ -199,6 +187,10 @@ export const IDL: GrapeEve = {
           "type": "string"
         },
         {
+          "name": "metadata",
+          "type": "string"
+        },
+        {
           "name": "communityType",
           "type": "i8"
         },
@@ -207,17 +199,7 @@ export const IDL: GrapeEve = {
           "type": "i8"
         },
         {
-          "name": "metadata",
-          "type": "string"
-        },
-        {
           "name": "community",
-          "type": {
-            "option": "publicKey"
-          }
-        },
-        {
-          "name": "reply",
           "type": {
             "option": "publicKey"
           }
@@ -289,12 +271,12 @@ export const IDL: GrapeEve = {
             "type": "string"
           },
           {
-            "name": "communityType",
-            "type": "i8"
-          },
-          {
             "name": "metadata",
             "type": "string"
+          },
+          {
+            "name": "communityType",
+            "type": "i8"
           },
           {
             "name": "isEncrypted",
@@ -302,12 +284,6 @@ export const IDL: GrapeEve = {
           },
           {
             "name": "community",
-            "type": {
-              "option": "publicKey"
-            }
-          },
-          {
-            "name": "reply",
             "type": {
               "option": "publicKey"
             }
