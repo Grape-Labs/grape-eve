@@ -78,6 +78,7 @@ import SolanaIcon from "../components/static/SolIcon";
 import SolCurrencyIcon from '../components/static/SolCurrencyIcon';
 
 import { buffer } from "node:stream/consumers";
+import { responsiveProperty } from "@mui/material/styles/cssUtils";
 
 const Input = styled('input')({
     display: 'none',
@@ -298,6 +299,8 @@ const communityFilter = communityBase58PublicKey => ({
         try{
             enqueueSnackbar(`Preparing to create a new post`,{ variant: 'info' });
             
+            console.log("community: "+(community && community.toBase58()))
+
             const signedTransaction = await program.rpc.sendPost(topic, content, metadata, communityType, encrypted, community, reply, {
                 accounts: {
                     author: publicKey,
@@ -339,7 +342,7 @@ const communityFilter = communityBase58PublicKey => ({
         } 
     }
 
-    const editPost = async (thread: PublicKey, topic:string, content:string, community:string, encrypted:number) => {
+    const editPost = async (thread: PublicKey, topic:string, content:string, community:PublicKey, encrypted:number) => {
         await initWorkspace();
         const { wallet, provider, program } = useWorkspace()
         try{
@@ -456,8 +459,8 @@ const communityFilter = communityBase58PublicKey => ({
         const [encrypted, setEncrypted] = React.useState(props?.encrypted || 1);
         const [message, setMessage] = React.useState(props?.message || null);
         const [topic, setTopic] = React.useState(props?.topic || null);
-        const [community, setCommunity] = React.useState(props?.community || null);
-        const [reply, setReply] = React.useState(props?.reply || null);
+        const [community, setCommunity] = React.useState((props?.community && new PublicKey(props.community)) || null);
+        const [reply, setReply] = React.useState((props?.reply && new PublicKey(props.community)) || null);
         const {publicKey} = useWallet();
 
         const handleClickOpenPreviewDialog = () => {
@@ -548,7 +551,7 @@ const communityFilter = communityBase58PublicKey => ({
                                     label="Community"
                                     value={community}
                                     onChange={(e: any) => {
-                                        setCommunity(e.target.value)}
+                                        setCommunity(new PublicKey(e.target.value))}
                                     }
                                 >
                                     <MenuItem value={`8upjSpvjcdpuzhfR1zriwg5NXkwDruejqNE9WNbPRtyA`}>Grape</MenuItem>
