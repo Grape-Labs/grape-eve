@@ -106,8 +106,8 @@ const MAX_CONTENT_LENGTH: usize = 280 * 4; // 280 chars max.
 const METADATA_LENGTH: usize = 280 * 4;
 const COMMUNITYTYPE_LENGTH: usize = 1;
 const ISENCRYPTED_LENGTH: usize = 1;
-const COMMUNITY_LENGTH: usize = 32;//+ 1;
-const REPLY_KEY_LENGTH: usize = 32;//+ 1;
+const COMMUNITY_LENGTH: usize = 32 + 1;
+const REPLY_KEY_LENGTH: usize = 32 + 1;
 
 // TODO ADD CHANNEL or COMMUNITY GATING
 // ADD LITPROTOCOL

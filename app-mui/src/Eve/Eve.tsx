@@ -210,6 +210,7 @@ export function EveView(props: any){
     }
 
 /*
+
     const DISCRIMINATOR_LENGTH: usize = 8;
     const PUBLIC_KEY_LENGTH: usize = 32;
     const TIMESTAMP_LENGTH: usize = 8;
@@ -219,13 +220,23 @@ export function EveView(props: any){
     const METADATA_LENGTH: usize = 280 * 4;
     const COMMUNITYTYPE_LENGTH: usize = 1;
     const ISENCRYPTED_LENGTH: usize = 1;
-    const COMMUNITY_LENGTH: usize = 32 * 4;//+ 1;
-    const REPLY_KEY_LENGTH: usize = 32 * 4;//+ 1;
+    const COMMUNITY_LENGTH: usize = 32 + 1;
+    const REPLY_KEY_LENGTH: usize = 32 + 1;
+
+    DISCRIMINATOR_LENGTH
+        + PUBLIC_KEY_LENGTH // Author.
+        + TIMESTAMP_LENGTH // Timestamp.
+        + STRING_LENGTH_PREFIX + MAX_TOPIC_LENGTH // Topic.
+        + STRING_LENGTH_PREFIX + MAX_CONTENT_LENGTH // Content.
+        + STRING_LENGTH_PREFIX + METADATA_LENGTH
+        + COMMUNITYTYPE_LENGTH
+        + ISENCRYPTED_LENGTH // additional fields
+        + COMMUNITY_LENGTH // Com.
+        + REPLY_KEY_LENGTH; // Reply.
 */
 
-const communityFilter = communityBase58PublicKey => ({
-    filters: [
-        {memcmp: {
+    const communityFilter = communityBase58PublicKey => ({
+        memcmp: {
             offset: 8 + // Discriminator.
                     32 + // Author
                     8 + // Timestamp
@@ -235,14 +246,13 @@ const communityFilter = communityBase58PublicKey => ({
                     280 * 4 + //content 
                     4 + // prefix
                     280 * 4 + //metadata
-                    1,// + //commmunity type
-                    
-                    //32, //+ // community
-                    //32, // reply
+                    1 + //commmunity type
+                    1, //encrypted
+                    //32 + 1, //+ // community
+                    //32 + 1, // reply
             bytes: communityBase58PublicKey,
-        }}
-    ]
-})
+        }
+    })
 
     const authorFilter = authorBase58PublicKey => ({
         memcmp: {
@@ -254,9 +264,9 @@ const communityFilter = communityBase58PublicKey => ({
     const topicFilter = topic => ({
         memcmp: {
             offset: 8 + // Discriminator.
-                32 + // Author public key.
-                8 + // Timestamp.
-                4, // Topic string prefix.
+                    32 + // Author public key.
+                    8 + // Timestamp.
+                    4, // Topic string prefix.
             bytes: bs58.encode(Buffer.from(topic)),
         }
     })
