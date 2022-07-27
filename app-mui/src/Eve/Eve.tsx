@@ -223,7 +223,7 @@ export function EveView(props: any){
     const COMMUNITY_LENGTH: usize = 32 + 1;
     const REPLY_KEY_LENGTH: usize = 32 + 1;
 
-    DISCRIMINATOR_LENGTH
+        DISCRIMINATOR_LENGTH
         + PUBLIC_KEY_LENGTH // Author.
         + TIMESTAMP_LENGTH // Timestamp.
         + STRING_LENGTH_PREFIX + MAX_TOPIC_LENGTH // Topic.
@@ -235,24 +235,46 @@ export function EveView(props: any){
         + REPLY_KEY_LENGTH; // Reply.
 */
 
-    const communityFilter = communityBase58PublicKey => ({
-        memcmp: {
-            offset: 8 + // Discriminator.
-                    32 + // Author
-                    8 + // Timestamp
-                    4 + // topic prefix
-                    50 * 4 + //topic 
-                    4 + // prefix
-                    280 * 4 + //content 
-                    4 + // prefix
-                    280 * 4 + //metadata
-                    1 + //commmunity type
-                    1, //encrypted
-                    //32 + 1, //+ // community
-                    //32 + 1, // reply
-            bytes: communityBase58PublicKey,
+
+
+    const communityFilter = communityBase58PublicKey => ([
+        {
+            memcmp: {
+                offset: 8 + // Discriminator.
+                        32 + // Author
+                        8 + // Timestamp
+                        4 + // prefix
+                        (50 * 4) + //topic 
+                        4 + // prefix
+                        (280 * 4) + //content 
+                        4 + // prefix
+                        (280 * 4) + //metadata
+                        1 + //commmunity type
+                        1, //encrypted
+                        //32 + 1, //+ // community
+                        //32 + 1, // reply
+                bytes: bs58.encode((new BN(0, 'le')).toArray()),
+            }
+        },
+        {
+            memcmp: {
+                offset: 8 + // Discriminator.
+                        32 + // Author
+                        8 + // Timestamp
+                        4 + // prefix
+                        (50 * 4) + //topic 
+                        4 + // prefix
+                        (280 * 4) + //content 
+                        4 + // prefix
+                        (280 * 4) + //metadata
+                        1 + //commmunity type
+                        1, //encrypted
+                        //32 + 1, //+ // community
+                        //32 + 1, // reply
+                bytes: communityBase58PublicKey,
+            }
         }
-    })
+    ])
 
     const authorFilter = authorBase58PublicKey => ({
         memcmp: {
@@ -266,7 +288,7 @@ export function EveView(props: any){
             offset: 8 + // Discriminator.
                     32 + // Author public key.
                     8 + // Timestamp.
-                    4, // Topic string prefix.
+                    4, // prefix.
             bytes: bs58.encode(Buffer.from(topic)),
         }
     })
@@ -588,7 +610,8 @@ export function EveView(props: any){
     }
 
     const fetchFilteredCommunity = (community:any) => {
-        const filter = [communityFilter(community)]
+        //console.log("with: "+community)
+        const filter = communityFilter(community)
         fetchThreads(filter);
     }
 
