@@ -105,11 +105,11 @@ const TIMESTAMP_LENGTH: usize = 8;
 const STRING_LENGTH_PREFIX: usize = 4; // Stores the size of the string.
 const MAX_TOPIC_LENGTH: usize = 50 * 4; // 50 chars max.
 const MAX_CONTENT_LENGTH: usize = 280 * 4; // 280 chars max.
-const COMMUNITY_LENGTH: usize = 32 + 1;
 const COMMUNITYTYPE_LENGTH: usize = 1;
 //const COMMUNITYTYPE_LENGTH: usize = 8;
 const METADATA_LENGTH: usize = 280 * 4;
 const ISENCRYPTED_LENGTH: usize = 1;
+const COMMUNITY_LENGTH: usize = 32 + 1;
 const REPLY_KEY_LENGTH: usize = 32 + 1;
 //const ISENCRYPTED_LENGTH: usize = 8;
 
