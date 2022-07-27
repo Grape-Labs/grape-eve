@@ -209,49 +209,37 @@ export function EveView(props: any){
         }
     }
 
-
-    /*    
-const DISCRIMINATOR_LENGTH: usize = 8;
-const PUBLIC_KEY_LENGTH: usize = 32;
-const TIMESTAMP_LENGTH: usize = 8;
-const STRING_LENGTH_PREFIX: usize = 4; // Stores the size of the string.
-const MAX_TOPIC_LENGTH: usize = 50 * 4; // 50 chars max.
-const MAX_CONTENT_LENGTH: usize = 280 * 4; // 280 chars max.
-const COMMUNITY_LENGTH: usize = 32;
-const COMMUNITYTYPE_LENGTH: usize = 1;
-//const COMMUNITYTYPE_LENGTH: usize = 8;
-const METADATA_LENGTH: usize = 280 * 4;
-const ISENCRYPTED_LENGTH: usize = 1;
-const REPLY_KEY_LENGTH: usize = 32;
-    */
+/*
+    const DISCRIMINATOR_LENGTH: usize = 8;
+    const PUBLIC_KEY_LENGTH: usize = 32;
+    const TIMESTAMP_LENGTH: usize = 8;
+    const STRING_LENGTH_PREFIX: usize = 4; // Stores the size of the string.
+    const MAX_TOPIC_LENGTH: usize = 50 * 4; // 50 chars max.
+    const MAX_CONTENT_LENGTH: usize = 280 * 4; // 280 chars max.
+    const METADATA_LENGTH: usize = 280 * 4;
+    const COMMUNITYTYPE_LENGTH: usize = 1;
+    const ISENCRYPTED_LENGTH: usize = 1;
+    const COMMUNITY_LENGTH: usize = 32 * 4;//+ 1;
+    const REPLY_KEY_LENGTH: usize = 32 * 4;//+ 1;
+*/
 
 const communityFilter = communityBase58PublicKey => ({
     filters: [
-    {memcmp: {
-        offset: 8 + // Discriminator.
-                32 + // Author
-                8 + // Timestamp
-                4 + // topic prefix
-                50 * 4 + //topic 
-                200 * 4 + //content 
-                1 + //conmmunity type
-                200 * 4 + //metadata
-                1, // isencrypted
-                bytes: bs58.encode((new BN(1, 'le')).toArray()) ,
-    }},
-    {memcmp: {
-        offset: 8 + // Discriminator.
-                32 + // Author
-                8 + // Timestamp
-                4 + // topic prefix
-                50 * 4 + //topic 
-                200 * 4 + //content 
-                1 + //conmmunity type
-                200 * 4 + //metadata
-                1 + // isencrypted
-                1, //community exists
-        bytes: communityBase58PublicKey,
-    }}
+        {memcmp: {
+            offset: 8 + // Discriminator.
+                    32 + // Author
+                    8 + // Timestamp
+                    4 + // topic prefix
+                    50 * 4 + //topic 
+                    4 + // prefix
+                    280 * 4 + //content 
+                    4 + // prefix
+                    280 * 4 + //metadata
+                    1,// + //commmunity type
+                    //32, //+ // community
+                    //32, // reply
+            bytes: communityBase58PublicKey,
+        }}
     ]
 })
 
@@ -456,7 +444,7 @@ const communityFilter = communityBase58PublicKey => ({
         const type = props?.type;
         const thread = props?.thread;
         const [openPreviewDialog, setOpenPreviewDialog] = React.useState(false);
-        const [encrypted, setEncrypted] = React.useState(props?.encrypted || 1);
+        const [encrypted, setEncrypted] = React.useState(props?.encrypted || 0);
         const [message, setMessage] = React.useState(props?.message || null);
         const [topic, setTopic] = React.useState(props?.topic || null);
         const [community, setCommunity] = React.useState((props?.community && new PublicKey(props.community)) || null);
@@ -590,6 +578,11 @@ const communityFilter = communityBase58PublicKey => ({
         fetchThreads(filter);
     }
 
+    const fetchFilteredCommunity = (community:any) => {
+        const filter = [communityFilter(community)]
+        fetchThreads(filter);
+    }
+
     useEffect(() => {
 		(async () => {
             //if (urlParams){
@@ -685,12 +678,13 @@ const communityFilter = communityBase58PublicKey => ({
                                                             </Typography>
                                                             &nbsp;-&nbsp;
                                                             <Button onClick={() => {fetchFilteredAuthor(item?.author.toBase58())}}>{item?.author.toBase58()}</Button>
-                                                            
+
                                                                 <Typography variant="caption" sx={{ display: 'block' }}>
                                                                     Topic: <Button onClick={() => {fetchFilteredThreads(item?.topic)}}>{item?.topic}</Button>
                                                                 </Typography>
                                                                 <Typography variant="caption" sx={{ display: 'block' }}>
-                                                                    Community: {item?.community && item?.community.toBase58()} - Type: {item?.communityType}
+                                                                    {item?.community && <>Community:<Button onClick={() => {fetchFilteredCommunity(item?.community.toBase58())}}>{item.community.toBase58()}</Button></>} 
+                                                                    Type: {item?.communityType}
                                                                 </Typography>
                                                                 <Typography variant="caption" sx={{ display: 'block' }}>
                                                                     Metadata: {item?.metadata}
