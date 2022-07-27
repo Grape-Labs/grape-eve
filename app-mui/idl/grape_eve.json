@@ -47,6 +47,12 @@
           "type": {
             "option": "publicKey"
           }
+        },
+        {
+          "name": "reply",
+          "type": {
+            "option": "publicKey"
+          }
         }
       ]
     },
@@ -128,6 +134,12 @@
           },
           {
             "name": "community",
+            "type": {
+              "option": "publicKey"
+            }
+          },
+          {
+            "name": "reply",
             "type": {
               "option": "publicKey"
             }
