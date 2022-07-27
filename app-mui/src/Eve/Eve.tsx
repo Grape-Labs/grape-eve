@@ -289,16 +289,16 @@ const communityFilter = communityBase58PublicKey => ({
         return mptrd;
     }
 
-    const newPost = async (topic:string, content:string, community:string, communityType: number, encrypted: number, reply: string, metadata: string) => {
+    const newPost = async (topic:string, content:string, metadata: string, communityType: number, encrypted: number, community:PublicKey, reply: PublicKey ) => {
         await initWorkspace();
         const { wallet, provider, program } = useWorkspace()
         
         const thread = web3.Keypair.generate()
-        console.log("posting: "+topic+" - "+content+" - "+community+" - "+communityType+" - "+encrypted+" - "+(reply)+" - "+metadata)
+        //console.log("posting: "+topic+" - "+content+" - "+metadata+" - "+community+" - "+communityType+" - "+encrypted+" - "+(reply))
         try{
             enqueueSnackbar(`Preparing to create a new post`,{ variant: 'info' });
             
-            const signedTransaction = await program.rpc.sendPost(topic, content, community, communityType, encrypted, metadata, reply, {
+            const signedTransaction = await program.rpc.sendPost(topic, content, metadata, communityType, encrypted, community, reply, {
                 accounts: {
                     author: publicKey,
                     thread: thread.publicKey,
@@ -456,7 +456,7 @@ const communityFilter = communityBase58PublicKey => ({
         const [encrypted, setEncrypted] = React.useState(props?.encrypted || 1);
         const [message, setMessage] = React.useState(props?.message || null);
         const [topic, setTopic] = React.useState(props?.topic || null);
-        const [community, setCommunity] = React.useState(props?.community || 0);
+        const [community, setCommunity] = React.useState(props?.community || null);
         const [reply, setReply] = React.useState(props?.reply || null);
         const {publicKey} = useWallet();
 
@@ -476,7 +476,6 @@ const communityFilter = communityBase58PublicKey => ({
             
             if (type === 0){
                 const metadata = '';
-                
                 const thisthread = await newPost(topic, message, metadata, 1, encrypted, community, reply);
                 console.log("thisThread: "+JSON.stringify(thisthread));
             } else{
