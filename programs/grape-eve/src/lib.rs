@@ -7,7 +7,7 @@ declare_id!("GXaZPJ3kwoZKMMxBxnRnwG87EJKBu7GjT8ks8dR4p693");
 pub mod grape_eve {
     use super::*;
 
-    pub fn send_post(ctx: Context<SendPost>, topic: String, content: String, community: String, community_type: i8, is_encrypted: i8, metadata: String, reply: String) -> ProgramResult {
+    pub fn send_post(ctx: Context<SendPost>, topic: String, content: String, community: Pubkey, community_type: i8, is_encrypted: i8, metadata: String, reply: Pubkey) -> ProgramResult {
         let thread: &mut Account<Thread> = &mut ctx.accounts.thread;
         let author: &Signer = &ctx.accounts.author;
         let clock: Clock = Clock::get().unwrap();
@@ -92,11 +92,11 @@ pub struct Thread {
     pub timestamp: i64,
     pub topic: String,
     pub content: String,
-    pub community: String,
+    pub community: Pubkey,
     pub community_type: i8,
     pub metadata: String,
     pub is_encrypted: i8,
-    pub reply: String,
+    pub reply: Pubkey,
 }
 
 const DISCRIMINATOR_LENGTH: usize = 8;

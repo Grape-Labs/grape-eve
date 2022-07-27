@@ -253,6 +253,7 @@ const REPLY_KEY_LENGTH: usize = 32;
         await initWorkspace();
         const { program } = await useWorkspace()
 
+        //console.log("attmepting")
         const thread = await program.account.thread.all(filters);
 
         //console.log("t: "+JSON.stringify(thread));
@@ -431,8 +432,8 @@ const REPLY_KEY_LENGTH: usize = 32;
         const [encrypted, setEncrypted] = React.useState(props?.encrypted || 1);
         const [message, setMessage] = React.useState(props?.message || null);
         const [topic, setTopic] = React.useState(props?.topic || null);
-        const [community, setCommunity] = React.useState(props?.community || '');
-        const [reply, setReply] = React.useState(props?.reply || '');
+        const [community, setCommunity] = React.useState(props?.community || null);
+        const [reply, setReply] = React.useState(props?.reply || null);
         const {publicKey} = useWallet();
 
         const handleClickOpenPreviewDialog = () => {
@@ -526,8 +527,8 @@ const REPLY_KEY_LENGTH: usize = 32;
                                         setCommunity(e.target.value)}
                                     }
                                 >
-                                    <MenuItem value={`1`}>Grape</MenuItem>
-                                    <MenuItem value={`11111111111111111111111111111111`}>Solana</MenuItem>
+                                    <MenuItem value={`8upjSpvjcdpuzhfR1zriwg5NXkwDruejqNE9WNbPRtyA`}>Grape</MenuItem>
+                                    <MenuItem value={`So11111111111111111111111111111111111111112`}>Solana</MenuItem>
                                 </Select>
                             </FormControl>
                         
@@ -662,7 +663,7 @@ const REPLY_KEY_LENGTH: usize = 32;
                                                                     Topic: <Button onClick={() => {fetchFilteredThreads(item?.topic)}}>{item?.topic}</Button>
                                                                 </Typography>
                                                                 <Typography variant="caption" sx={{ display: 'block' }}>
-                                                                    Community: {item?.community} - Type: {item?.communityType}
+                                                                    Community: {item?.community.toBase58()} - Type: {item?.communityType}
                                                                 </Typography>
                                                                 <Typography variant="caption" sx={{ display: 'block' }}>
                                                                     Metadata: {item?.metadata}
