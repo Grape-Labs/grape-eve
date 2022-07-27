@@ -255,7 +255,7 @@ export function EveView(props: any){
                         //32 + 1, // reply
                 bytes: bs58.encode((new BN(0, 'le')).toArray()),
             }
-        },
+        }/*,
         {
             memcmp: {
                 offset: 8 + // Discriminator.
@@ -273,7 +273,7 @@ export function EveView(props: any){
                         //32 + 1, // reply
                 bytes: communityBase58PublicKey,
             }
-        }
+        }*/
     ])
 
     const authorFilter = authorBase58PublicKey => ({
