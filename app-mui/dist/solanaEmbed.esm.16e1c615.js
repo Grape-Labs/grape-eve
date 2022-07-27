@@ -16256,8 +16256,8 @@ Object.defineProperty(Duplex.prototype, "destroyed", {
 // Implement an async ._write(chunk, encoding, cb), and it'll handle all
 // the drain event emission and buffering.
 "use strict";
-var global = arguments[3];
 var process = require("process");
+var global = arguments[3];
 module.exports = Writable;
 /* <replacement> */ function WriteReq(chunk, encoding, cb) {
     this.chunk = chunk;
@@ -17686,8 +17686,8 @@ function keccak256(str) {
 
 },{"randombytes":"8hjhE","@babel/runtime/helpers/defineProperty":"4x6r7","base64url":"5xeES","keccak":"cOBab","buffer":"fCgem","@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}],"8hjhE":[function(require,module,exports) {
 "use strict";
-var process = require("process");
 var global = arguments[3];
+var process = require("process");
 // limit of Crypto.getRandomValues()
 // https://developer.mozilla.org/en-US/docs/Web/API/Crypto/getRandomValues
 var MAX_BYTES = 65536;
@@ -30726,8 +30726,8 @@ function Backoff(opts) {
 
 },{"@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}],"3TBBg":[function(require,module,exports) {
 "use strict";
-var global = arguments[3];
 var Buffer = require("buffer").Buffer;
+var global = arguments[3];
 var EC = require("elliptic").ec;
 var ec = new EC("secp256k1");
 var browserCrypto = global.crypto || global.msCrypto || {};
@@ -31257,8 +31257,8 @@ module.exports = function(iterations, keylen) {
 };
 
 },{}],"T9r9Q":[function(require,module,exports) {
-var process = require("process");
 var global = arguments[3];
+var process = require("process");
 var defaultEncoding;
 /* istanbul ignore next */ if (global.process && global.process.browser) defaultEncoding = "utf-8";
 else if (global.process && global.process.version) {

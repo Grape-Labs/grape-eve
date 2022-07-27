@@ -32,7 +32,9 @@ export type GrapeEve = {
         },
         {
           "name": "community",
-          "type": "publicKey"
+          "type": {
+            "option": "publicKey"
+          }
         },
         {
           "name": "communityType",
@@ -48,7 +50,9 @@ export type GrapeEve = {
         },
         {
           "name": "reply",
-          "type": "publicKey"
+          "type": {
+            "option": "publicKey"
+          }
         }
       ]
     },
@@ -118,7 +122,9 @@ export type GrapeEve = {
           },
           {
             "name": "community",
-            "type": "publicKey"
+            "type": {
+              "option": "publicKey"
+            }
           },
           {
             "name": "communityType",
@@ -134,7 +140,9 @@ export type GrapeEve = {
           },
           {
             "name": "reply",
-            "type": "publicKey"
+            "type": {
+              "option": "publicKey"
+            }
           }
         ]
       }
@@ -192,7 +200,9 @@ export const IDL: GrapeEve = {
         },
         {
           "name": "community",
-          "type": "publicKey"
+          "type": {
+            "option": "publicKey"
+          }
         },
         {
           "name": "communityType",
@@ -208,7 +218,9 @@ export const IDL: GrapeEve = {
         },
         {
           "name": "reply",
-          "type": "publicKey"
+          "type": {
+            "option": "publicKey"
+          }
         }
       ]
     },
@@ -278,7 +290,9 @@ export const IDL: GrapeEve = {
           },
           {
             "name": "community",
-            "type": "publicKey"
+            "type": {
+              "option": "publicKey"
+            }
           },
           {
             "name": "communityType",
@@ -294,7 +308,9 @@ export const IDL: GrapeEve = {
           },
           {
             "name": "reply",
-            "type": "publicKey"
+            "type": {
+              "option": "publicKey"
+            }
           }
         ]
       }

@@ -32,7 +32,9 @@
         },
         {
           "name": "community",
-          "type": "publicKey"
+          "type": {
+            "option": "publicKey"
+          }
         },
         {
           "name": "communityType",
@@ -48,7 +50,9 @@
         },
         {
           "name": "reply",
-          "type": "publicKey"
+          "type": {
+            "option": "publicKey"
+          }
         }
       ]
     },
@@ -118,7 +122,9 @@
           },
           {
             "name": "community",
-            "type": "publicKey"
+            "type": {
+              "option": "publicKey"
+            }
           },
           {
             "name": "communityType",
@@ -134,7 +140,9 @@
           },
           {
             "name": "reply",
-            "type": "publicKey"
+            "type": {
+              "option": "publicKey"
+            }
           }
         ]
       }
