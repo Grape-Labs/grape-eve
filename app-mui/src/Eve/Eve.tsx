@@ -484,10 +484,14 @@ export function EveView(props: any){
             if (type === 0){
                 const metadata = '';
                 const thisthread = await newPost(topic, message, metadata, 1, encrypted, community, reply);
-                console.log("thisThread: "+JSON.stringify(thisthread));
-            } else{
+                console.log("New: "+JSON.stringify(thisthread));
+            } else if (type === 1){
                 const thisthread = await editPost(thread, topic, message, community, encrypted);
-                console.log("thisThread: "+JSON.stringify(thisthread));
+                console.log("Edit: "+JSON.stringify(thisthread));
+            } else if (type === 2){
+                const metadata = '';
+                const thisthread = await newPost(topic, message, metadata, 1, encrypted, community, reply);
+                console.log("Reply: "+JSON.stringify(thisthread));
             }
         }
 
