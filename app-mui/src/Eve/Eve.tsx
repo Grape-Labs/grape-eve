@@ -464,7 +464,7 @@ export function EveView(props: any){
         const [message, setMessage] = React.useState(props?.message || null);
         const [topic, setTopic] = React.useState(props?.topic || null);
         const [community, setCommunity] = React.useState((props?.community && new PublicKey(props.community)) || new PublicKey(0));
-        const [reply, setReply] = React.useState((props?.reply && new PublicKey(props.reply)) || new PublicKey(0));
+        const [reply, setReply] = React.useState((type=== 2 && props?.thread && new PublicKey(props.thread)) || new PublicKey(0));
         const {publicKey} = useWallet();
 
         const handleClickOpenPreviewDialog = () => {
@@ -504,7 +504,13 @@ export function EveView(props: any){
                     {type === 0 ?
                         <>Add</>
                     :
-                        <>Edit</>
+                        <>
+                            {type === 1 ?
+                                <>Edit</>
+                            :
+                                <>Reply</>
+                            }
+                        </>
                     }
                 </Button>
                 }
@@ -562,7 +568,17 @@ export function EveView(props: any){
                                     <MenuItem value={`So11111111111111111111111111111111111111112`}>Solana</MenuItem>
                                 </Select>
                             </FormControl>
-                        
+
+                            <FormControl fullWidth>
+                                <TextField 
+                                    fullWidth 
+                                    label="Reply" 
+                                    id="fullWidth" 
+                                    value={reply}
+                                    onChange={(e: any) => {
+                                        setReply(e.target.value)}
+                                    }/>
+                            </FormControl>
                         </DialogContent>
                         <DialogActions>
                             <Button variant="text" onClick={handleClosePreviewDialog}>Cancel</Button>
@@ -716,6 +732,9 @@ export function EveView(props: any){
                                                                     <>
                                                                         <PostView type={1} thread={item.publicKey} message={item?.content} topic={item?.topic} community={item?.community} metadata={item?.metadata} encrypted={item?.isEncrypted}  />
                                                                         <DeletePost thread={item.publicKey}/>
+
+                                                                        <PostView type={2} thread={item.publicKey} topic={item?.topic} community={item?.community} encrypted={item?.isEncrypted} />
+                                                                        
                                                                     </>
                                                                 }
                                                             </React.Fragment>
