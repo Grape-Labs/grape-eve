@@ -113,18 +113,6 @@ export type GrapeEve = {
             "type": "i64"
           },
           {
-            "name": "community",
-            "type": {
-              "option": "publicKey"
-            }
-          },
-          {
-            "name": "reply",
-            "type": {
-              "option": "publicKey"
-            }
-          },
-          {
             "name": "topic",
             "type": "string"
           },
@@ -143,6 +131,18 @@ export type GrapeEve = {
           {
             "name": "isEncrypted",
             "type": "i8"
+          },
+          {
+            "name": "community",
+            "type": {
+              "option": "publicKey"
+            }
+          },
+          {
+            "name": "reply",
+            "type": {
+              "option": "publicKey"
+            }
           }
         ]
       }
@@ -281,18 +281,6 @@ export const IDL: GrapeEve = {
             "type": "i64"
           },
           {
-            "name": "community",
-            "type": {
-              "option": "publicKey"
-            }
-          },
-          {
-            "name": "reply",
-            "type": {
-              "option": "publicKey"
-            }
-          },
-          {
             "name": "topic",
             "type": "string"
           },
@@ -311,6 +299,18 @@ export const IDL: GrapeEve = {
           {
             "name": "isEncrypted",
             "type": "i8"
+          },
+          {
+            "name": "community",
+            "type": {
+              "option": "publicKey"
+            }
+          },
+          {
+            "name": "reply",
+            "type": {
+              "option": "publicKey"
+            }
           }
         ]
       }
