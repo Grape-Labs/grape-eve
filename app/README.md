@@ -1,24 +1,21 @@
-# app
+# Grape Drive | Getting Started 
 
-## Project setup
-```
-npm install
-```
+- Grape Drive, is a quick dive to make a simple UI utilizing Shadow Drive
 
-### Compiles and hot-reloads for development
-```
-npm run serve
-```
+Pending to be completed
+- Add support for folders
+- Prompt if SHDW token not in wallet and token amount required prior to sending to the wallet
 
-### Compiles and minifies for production
-```
-npm run build
-```
+References:
+- Shadow Drive by GensysGo (https://github.com/GenesysGo/shadow-drive)
+- Dialect Labs (https://github.com/dialectlabs)
 
-### Lints and fixes files
-```
-npm run lint
-```
+Wallet Adapter:
+- Solana Wallet Adapter (https://github.com/solana-labs/wallet-adapter)
 
-### Customize configuration
-See [Configuration Reference](https://cli.vuejs.org/config/).
+UI:
+- Interface: MUI 5 https://mui.com
+
+BUILD/START:
+- `yarn install`
+- `yarn start`

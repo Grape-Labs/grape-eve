@@ -6,7 +6,7 @@ export const SendPost = async (topic, content) => {
     const { wallet, program } = useWorkspace()
     const thread = web3.Keypair.generate()
 
-    await program.value.rpc.sendPost(topic, content, {
+    await program.value.rpc.SendPost(topic, content, {
         accounts: {
             author: wallet.value.publicKey,
             thread: thread.publicKey,

@@ -1,5 +1,0 @@
-export * from './delete-post'
-export * from './fetch-post'
-export * from './get-post'
-export * from './send-post'
-export * from './update-post'

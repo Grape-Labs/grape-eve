@@ -8,6 +8,11 @@ export class Thread
         this.timestamp = accountData.timestamp.toString()
         this.topic = accountData.topic
         this.content = accountData.content
+        this.community = accountData.community
+        this.communityType = accountData.communityType
+        this.metadata = accountData.metadata
+        this.isEncrypted = accountData.isEncrypted
+        this.reply = accountData.reply
     }
 
     get key () {
