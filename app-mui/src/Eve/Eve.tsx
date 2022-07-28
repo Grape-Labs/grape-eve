@@ -464,7 +464,7 @@ export function EveView(props: any){
         const [message, setMessage] = React.useState(props?.message || null);
         const [topic, setTopic] = React.useState(props?.topic || null);
         const [community, setCommunity] = React.useState((props?.community && new PublicKey(props.community)) || new PublicKey(0));
-        const [reply, setReply] = React.useState((props?.reply && new PublicKey(props.community)) || new PublicKey(0));
+        const [reply, setReply] = React.useState((props?.reply && new PublicKey(props.reply)) || new PublicKey(0));
         const {publicKey} = useWallet();
 
         const handleClickOpenPreviewDialog = () => {
