@@ -113,6 +113,18 @@
             "type": "i64"
           },
           {
+            "name": "community",
+            "type": {
+              "option": "publicKey"
+            }
+          },
+          {
+            "name": "reply",
+            "type": {
+              "option": "publicKey"
+            }
+          },
+          {
             "name": "topic",
             "type": "string"
           },
@@ -131,18 +143,6 @@
           {
             "name": "isEncrypted",
             "type": "i8"
-          },
-          {
-            "name": "community",
-            "type": {
-              "option": "publicKey"
-            }
-          },
-          {
-            "name": "reply",
-            "type": {
-              "option": "publicKey"
-            }
           }
         ]
       }

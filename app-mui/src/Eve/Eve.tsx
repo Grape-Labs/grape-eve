@@ -283,7 +283,7 @@ export function EveView(props: any){
                         4 + // prefix
                         50*4 + //topic
                         4, 
-                    bytes: bs58.encode(Buffer.from('Another solana post')),
+                    bytes: bs58.encode(Buffer.from("Another solana post")),
             }
         }
     ])
@@ -295,7 +295,7 @@ export function EveView(props: any){
         }
     })
     
-    const topicFilter = topic => ({
+    const topicFilter = (topic:string) => ({
         memcmp: {
             offset: 8 + // Discriminator.
                     32 + // Author public key.

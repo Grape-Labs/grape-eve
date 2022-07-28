@@ -88,13 +88,13 @@ pub struct DeletePost<'info> {
 pub struct Thread {
     pub author: Pubkey,
     pub timestamp: i64,
+    pub community: Option<Pubkey>,
+    pub reply: Option<Pubkey>,
     pub topic: String,
     pub content: String,
     pub metadata: String,
     pub community_type: i8,
     pub is_encrypted: i8,
-    pub community: Option<Pubkey>,
-    pub reply: Option<Pubkey>,
 }
 
 const DISCRIMINATOR_LENGTH: usize = 8;
