@@ -238,6 +238,7 @@ export function EveView(props: any){
 
 
     const communityFilter = communityBase58PublicKey => ([
+        /*
         {
             memcmp: {
                 offset: 8 + // Discriminator.
@@ -255,7 +256,7 @@ export function EveView(props: any){
                         //32 + 1, // reply
                 bytes: bs58.encode((new BN(0, 'le')).toArray()),
             }
-        }/*,
+        },
         {
             memcmp: {
                 offset: 8 + // Discriminator.
@@ -268,12 +269,23 @@ export function EveView(props: any){
                         4 + // prefix
                         (280 * 4) + //metadata
                         1 + //commmunity type
-                        1, //encrypted
+                        1 + 1, //encrypted
                         //32 + 1, //+ // community
                         //32 + 1, // reply
                 bytes: communityBase58PublicKey,
             }
         }*/
+        {
+            memcmp: {
+                offset: 8 + // Discriminator.
+                        32 + // Author
+                        8 + // Timestamp
+                        4 + // prefix
+                        50*4 + //topic
+                        4, 
+                    bytes: bs58.encode(Buffer.from('Another solana post')),
+            }
+        }
     ])
 
     const authorFilter = authorBase58PublicKey => ({
@@ -297,7 +309,7 @@ export function EveView(props: any){
         await initWorkspace();
         const { program } = await useWorkspace()
 
-        const threadlen = await program.account.thread.all.length
+        //const threadlen = await program.account.thread.all.length
         const thread = await program.account.thread.all(filters);
 
         console.log("t: "+JSON.stringify(thread));
