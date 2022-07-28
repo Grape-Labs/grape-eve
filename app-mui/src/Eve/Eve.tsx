@@ -704,6 +704,9 @@ export function EveView(props: any){
                                                                     Type: {item?.communityType}
                                                                 </Typography>
                                                                 <Typography variant="caption" sx={{ display: 'block' }}>
+                                                                    {item?.reply && <>Reply: {item.reply.toBase58()}</>} 
+                                                                </Typography>
+                                                                <Typography variant="caption" sx={{ display: 'block' }}>
                                                                     Metadata: {item?.metadata}
                                                                 </Typography>
                                                                 <Typography variant="caption" sx={{ display: 'block' }}>

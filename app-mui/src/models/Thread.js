@@ -12,6 +12,7 @@ export class Thread
         this.communityType = accountData.communityType
         this.metadata = accountData.metadata
         this.isEncrypted = accountData.isEncrypted
+        this.reply = accountData.reply
     }
 
     get key () {
