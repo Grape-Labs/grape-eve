@@ -116,7 +116,8 @@ export function EveView(props: any){
 	const wallet = useWallet();
     const {publicKey} = useWallet();
     const [loading, setLoading] = React.useState(false);
-
+    const [loadingThreads, setLoadingThreads] = React.useState(false);
+    
     const {handlekey} = useParams<{ handlekey: string }>();
     const [searchParams, setSearchParams] = useSearchParams();
     const urlParams = searchParams.get("storage") || searchParams.get("address") || handlekey;
@@ -283,9 +284,10 @@ export function EveView(props: any){
     })
 
     const fetchThreads = async (filters = []) => {
+        setLoadingThreads(true);
         await initWorkspace();
         const { program } = await useWorkspace()
-        
+
         //const threadlen = await program.account.thread.all.length
         const thread = await program.account.thread.all(filters);
 
@@ -294,7 +296,7 @@ export function EveView(props: any){
         const mptrd = thread.map((thread:any) => new Thread(thread.publicKey, thread.account))
         mptrd.sort((a:any,b:any) => (a.timestamp < b.timestamp) ? 1 : -1);
         setThreads(mptrd);
-                
+        setLoadingThreads(false);     
         return mptrd;
     }
 
@@ -650,6 +652,7 @@ export function EveView(props: any){
 	
     return (
         <>
+            
             <Box
                 sx={{ 
                     p: 1, 
@@ -695,14 +698,21 @@ export function EveView(props: any){
                                                     <PostView type={0} />
                                                     <Button 
                                                         variant='outlined'
+                                                        disabled={loadingThreads}
                                                         onClick={() => {fetchThreads()}}
                                                         sx={{borderRadius:'17px', ml:1}}
                                                     >
-                                                        <RefreshIcon />
+                                                        {loadingThreads ?
+                                                            <CircularProgress sx={{p:'10px',m:0}} />
+                                                        :
+                                                            <RefreshIcon />
+                                                        }
+                                                        
                                                     </Button>
                                                 </Grid>
                                             </Grid>
                                         </Typography>
+                                        
                                         <List sx={{ width: '100%' }}>
                                         
                                         {threads.map((item:any, key:number) => {
