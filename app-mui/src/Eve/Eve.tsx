@@ -490,6 +490,7 @@ export function EveView(props: any){
                 console.log("Edit: "+JSON.stringify(thisthread));
             } else if (type === 2){
                 const metadata = '';
+                console.log("reply: "+reply.toBase58())
                 const thisthread = await newPost(topic, message, metadata, 1, encrypted, community, reply);
                 console.log("Reply: "+JSON.stringify(thisthread));
             }
