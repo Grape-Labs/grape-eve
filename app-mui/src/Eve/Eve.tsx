@@ -243,7 +243,7 @@ export function EveView(props: any){
                 offset: 8 + // Discriminator.
                         32 + // Author
                         8, // Timestamp  
-                bytes: bs58.encode((new BN(0, 'le')).toArray()),
+                bytes: bs58.encode((new BN(1, 'le')).toArray()),
             }
         },
         {
@@ -269,10 +269,10 @@ export function EveView(props: any){
             offset: 8 + // Discriminator.
                     32 + // Author public key.
                     8 + // Timestamp.
-                    32 + 1 +
-                    32 + 1 +
-                    1 +
-                    1 +
+                    32 + 1 + // Community
+                    32 + 1 + // Reply
+                    1 + //
+                    1 + // 
                     4, // prefix
             bytes: bs58.encode(Buffer.from(topic)),
         }
