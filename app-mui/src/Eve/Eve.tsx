@@ -176,7 +176,7 @@ export function EveView(props: any){
     //export const  initWorkspace = () => {
     async function initWorkspace() {  
         const clusterUrl = 'https://api.devnet.solana.com'; //'https://ssc-dao.genesysgo.net/';//process.env.VUE_APP_CLUSTER_URL
-        const grapeEveId = "7pjxFfT8Md94mbsujhdSvHYApKzLjVZLbH5dsZHfy6xN";
+        const grapeEveId = "2rbW644hAFC43trjcsbrpPQjGvUHz6q3k4D3kZYSZigB";
         const programID = new PublicKey(grapeEveId);
         
         const connection = new Connection(clusterUrl)
@@ -214,74 +214,45 @@ export function EveView(props: any){
     const DISCRIMINATOR_LENGTH: usize = 8;
     const PUBLIC_KEY_LENGTH: usize = 32;
     const TIMESTAMP_LENGTH: usize = 8;
+    const COMMUNITY_LENGTH: usize = 32 + 1;
+    const REPLY_KEY_LENGTH: usize = 32 + 1;
     const STRING_LENGTH_PREFIX: usize = 4; // Stores the size of the string.
     const MAX_TOPIC_LENGTH: usize = 50 * 4; // 50 chars max.
     const MAX_CONTENT_LENGTH: usize = 280 * 4; // 280 chars max.
     const METADATA_LENGTH: usize = 280 * 4;
     const COMMUNITYTYPE_LENGTH: usize = 1;
     const ISENCRYPTED_LENGTH: usize = 1;
-    const COMMUNITY_LENGTH: usize = 32 + 1;
-    const REPLY_KEY_LENGTH: usize = 32 + 1;
 
         DISCRIMINATOR_LENGTH
         + PUBLIC_KEY_LENGTH // Author.
         + TIMESTAMP_LENGTH // Timestamp.
+        + COMMUNITY_LENGTH // Com.
+        + REPLY_KEY_LENGTH; // Reply
+        + COMMUNITYTYPE_LENGTH //
+        + ISENCRYPTED_LENGTH // additional fields
         + STRING_LENGTH_PREFIX + MAX_TOPIC_LENGTH // Topic.
         + STRING_LENGTH_PREFIX + MAX_CONTENT_LENGTH // Content.
         + STRING_LENGTH_PREFIX + METADATA_LENGTH
-        + COMMUNITYTYPE_LENGTH
-        + ISENCRYPTED_LENGTH // additional fields
-        + COMMUNITY_LENGTH // Com.
-        + REPLY_KEY_LENGTH; // Reply.
 */
 
 
 
     const communityFilter = communityBase58PublicKey => ([
-        /*
         {
             memcmp: {
                 offset: 8 + // Discriminator.
                         32 + // Author
-                        8 + // Timestamp
-                        4 + // prefix
-                        (50 * 4) + //topic 
-                        4 + // prefix
-                        (280 * 4) + //content 
-                        4 + // prefix
-                        (280 * 4) + //metadata
-                        1 + //commmunity type
-                        1 + 1, //encrypted
-                        //32 + 1, //+ // community
-                        //32 + 1, // reply
+                        8, // Timestamp  
                 bytes: bs58.encode((new BN(0, 'le')).toArray()),
             }
         },
         {
             memcmp: {
                 offset: 8 + // Discriminator.
-                        32 + // Author
-                        8 + // Timestamp
-                        4 + // prefix
-                        (50 * 4) + //topic 
-                        4 + // prefix
-                        (280 * 4) + //content 
-                        4 + // prefix
-                        (280 * 4) + //metadata
-                        1 + //commmunity type
-                        1 + 1, //encrypted
-                        //32 + 1, //+ // community
-                        //32 + 1, // reply
+                32 + // Author
+                8 + // Timestamp
+                1, //+ // community
                 bytes: communityBase58PublicKey,
-            }
-        }*/
-        {
-            memcmp: {
-                offset: 8 + // Discriminator.
-                        32 + // Author
-                        8 + // Timestamp
-                        4 + // prefix
-                        50*4, //topic
             }
         }
     ])
@@ -298,7 +269,11 @@ export function EveView(props: any){
             offset: 8 + // Discriminator.
                     32 + // Author public key.
                     8 + // Timestamp.
-                    4, // prefix.
+                    32 + 1 +
+                    32 + 1 +
+                    1 +
+                    1 +
+                    4, // prefix
             bytes: bs58.encode(Buffer.from(topic)),
         }
     })
@@ -488,8 +463,8 @@ export function EveView(props: any){
         const [encrypted, setEncrypted] = React.useState(props?.encrypted || 0);
         const [message, setMessage] = React.useState(props?.message || null);
         const [topic, setTopic] = React.useState(props?.topic || null);
-        const [community, setCommunity] = React.useState((props?.community && new PublicKey(props.community)) || null);
-        const [reply, setReply] = React.useState((props?.reply && new PublicKey(props.community)) || null);
+        const [community, setCommunity] = React.useState((props?.community && new PublicKey(props.community)) || new PublicKey(0));
+        const [reply, setReply] = React.useState((props?.reply && new PublicKey(props.community)) || new PublicKey(0));
         const {publicKey} = useWallet();
 
         const handleClickOpenPreviewDialog = () => {
