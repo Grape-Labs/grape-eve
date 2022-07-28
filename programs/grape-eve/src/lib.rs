@@ -6,7 +6,7 @@ declare_id!("2rbW644hAFC43trjcsbrpPQjGvUHz6q3k4D3kZYSZigB");
 #[program]
 pub mod grape_eve {
     use super::*;
-    pub fn send_post(ctx: Context<SendPost>, topic: String, content: String, metadata: String, community_type: i8, is_encrypted: i8, community: Option<Pubkey>, reply: Option<Pubkey>) -> ProgramResult {
+    pub fn send_post(ctx: Context<SendPost>, topic: String, content: String, metadata: String, thread_type: i8, is_encrypted: i8, community: Option<Pubkey>, reply: Option<Pubkey>) -> ProgramResult {
         let thread: &mut Account<Thread> = &mut ctx.accounts.thread;
         let author: &Signer = &ctx.accounts.author;
         let clock: Clock = Clock::get().unwrap();
@@ -24,7 +24,7 @@ pub mod grape_eve {
         thread.topic = topic;
         thread.content = content;
         thread.metadata = metadata;
-        thread.community_type = community_type;
+        thread.thread_type = thread_type;
         thread.is_encrypted = is_encrypted;
         thread.community = community;
         thread.reply = reply;
@@ -90,7 +90,7 @@ pub struct Thread {
     pub timestamp: i64,
     pub community: Option<Pubkey>,
     pub reply: Option<Pubkey>,
-    pub community_type: i8,
+    pub thread_type: i8,
     pub is_encrypted: i8,
     pub topic: String,
     pub content: String,
@@ -104,7 +104,7 @@ const STRING_LENGTH_PREFIX: usize = 4; // Stores the size of the string.
 const MAX_TOPIC_LENGTH: usize = 50 * 4; // 50 chars max.
 const MAX_CONTENT_LENGTH: usize = 280 * 4; // 280 chars max.
 const METADATA_LENGTH: usize = 280 * 4;
-const COMMUNITYTYPE_LENGTH: usize = 1;
+const THREADTYPE_LENGTH: usize = 1;
 const ISENCRYPTED_LENGTH: usize = 1;
 const COMMUNITY_LENGTH: usize = 32 + 1;
 const REPLY_KEY_LENGTH: usize = 32 + 1;
@@ -118,7 +118,7 @@ impl Thread {
         + TIMESTAMP_LENGTH // Timestamp.
         + COMMUNITY_LENGTH // Com.
         + REPLY_KEY_LENGTH // Reply.
-        + COMMUNITYTYPE_LENGTH
+        + THREADTYPE_LENGTH
         + ISENCRYPTED_LENGTH // additional fields
         + STRING_LENGTH_PREFIX + MAX_TOPIC_LENGTH // Topic.
         + STRING_LENGTH_PREFIX + MAX_CONTENT_LENGTH // Content.

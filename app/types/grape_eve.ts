@@ -35,7 +35,7 @@ export type GrapeEve = {
           "type": "string"
         },
         {
-          "name": "communityType",
+          "name": "threadType",
           "type": "i8"
         },
         {
@@ -125,7 +125,7 @@ export type GrapeEve = {
             }
           },
           {
-            "name": "communityType",
+            "name": "threadType",
             "type": "i8"
           },
           {
@@ -203,7 +203,7 @@ export const IDL: GrapeEve = {
           "type": "string"
         },
         {
-          "name": "communityType",
+          "name": "threadType",
           "type": "i8"
         },
         {
@@ -293,7 +293,7 @@ export const IDL: GrapeEve = {
             }
           },
           {
-            "name": "communityType",
+            "name": "threadType",
             "type": "i8"
           },
           {

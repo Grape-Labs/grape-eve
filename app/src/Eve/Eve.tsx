@@ -77,6 +77,12 @@ import GrapeIcon from "../components/static/GrapeIcon";
 import SolanaIcon from "../components/static/SolIcon";
 import SolCurrencyIcon from '../components/static/SolCurrencyIcon';
 
+import AddCircleIcon from '@mui/icons-material/AddCircle';
+import EditIcon from '@mui/icons-material/Edit';
+import RefreshIcon from '@mui/icons-material/Refresh';
+import DeleteIcon from '@mui/icons-material/Delete';
+import ReplyIcon from '@mui/icons-material/Reply';
+
 import { buffer } from "node:stream/consumers";
 import { responsiveProperty } from "@mui/material/styles/cssUtils";
 
@@ -235,8 +241,6 @@ export function EveView(props: any){
         + STRING_LENGTH_PREFIX + METADATA_LENGTH
 */
 
-
-
     const communityFilter = communityBase58PublicKey => ([
         {
             memcmp: {
@@ -281,7 +285,7 @@ export function EveView(props: any){
     const fetchThreads = async (filters = []) => {
         await initWorkspace();
         const { program } = await useWorkspace()
-
+        
         //const threadlen = await program.account.thread.all.length
         const thread = await program.account.thread.all(filters);
 
@@ -294,18 +298,18 @@ export function EveView(props: any){
         return mptrd;
     }
 
-    const newPost = async (topic:string, content:string, metadata: string, communityType: number, encrypted: number, community:PublicKey, reply: PublicKey ) => {
+    const newPost = async (topic:string, content:string, metadata: string, threadType: number, encrypted: number, community:PublicKey, reply: PublicKey ) => {
         await initWorkspace();
         const { wallet, provider, program } = useWorkspace()
         
         const thread = web3.Keypair.generate()
-        //console.log("posting: "+topic+" - "+content+" - "+metadata+" - "+community+" - "+communityType+" - "+encrypted+" - "+(reply))
+        //console.log("posting: "+topic+" - "+content+" - "+metadata+" - "+community+" - "+threadType+" - "+encrypted+" - "+(reply))
         try{
             enqueueSnackbar(`Preparing to create a new post`,{ variant: 'info' });
             
             console.log("community: "+(community && community.toBase58()))
 
-            const signedTransaction = await program.rpc.sendPost(topic, content, metadata, communityType, encrypted, community, reply, {
+            const signedTransaction = await program.rpc.sendPost(topic, content, metadata, threadType, encrypted, community, reply, {
                 accounts: {
                     author: publicKey,
                     thread: thread.publicKey,
@@ -449,9 +453,12 @@ export function EveView(props: any){
         return (
 
             <Button
+                variant="outlined"
                 onClick={deletePost}
+                sx={{borderRadius:'17px',ml:1}}
+                color="error"
             >
-                    Delete
+                    <DeleteIcon />
             </Button>
         )
     }
@@ -501,19 +508,19 @@ export function EveView(props: any){
             <>
                 {publicKey &&
                 <Button
-                    variant="text"
+                    variant="outlined"
                     //component={Link} to={`${GRAPE_PREVIEW}${item.mint}`}
                     onClick={handleClickOpenPreviewDialog}
-                    sx={{borderRadius:'24px'}}
+                    sx={{borderRadius:'17px'}}
                 >
                     {type === 0 ?
-                        <>Add</>
+                        <><AddCircleIcon /></>
                     :
                         <>
                             {type === 1 ?
-                                <>Edit</>
+                                <><EditIcon /></>
                             :
-                                <>Reply</>
+                                <><ReplyIcon /></>
                             }
                         </>
                     }
@@ -677,13 +684,24 @@ export function EveView(props: any){
                                 {threads &&
                                     <>
                                         <Typography>
-                                            {threads.length} thread posts
-                                            <PostView type={0} />
-                                            <Button 
-                                                onClick={() => {fetchThreads()}}
-                                            >
-                                                Refresh
-                                            </Button>
+                                            
+                                            <Grid container direction="row">
+                                                <Grid item xs={6}>
+                                                    <Typography sx={{mr:1}}>
+                                                        {threads.length} thread posts
+                                                    </Typography>
+                                                </Grid>
+                                                <Grid item xs={6}>
+                                                    <PostView type={0} />
+                                                    <Button 
+                                                        variant='outlined'
+                                                        onClick={() => {fetchThreads()}}
+                                                        sx={{borderRadius:'17px', ml:1}}
+                                                    >
+                                                        <RefreshIcon />
+                                                    </Button>
+                                                </Grid>
+                                            </Grid>
                                         </Typography>
                                         <List sx={{ width: '100%' }}>
                                         
@@ -722,7 +740,7 @@ export function EveView(props: any){
                                                                 </Typography>
                                                                 <Typography variant="caption" sx={{ display: 'block' }}>
                                                                     {item?.community && <>Community:<Button onClick={() => {fetchFilteredCommunity(item?.community.toBase58())}}>{item.community.toBase58()}</Button></>} 
-                                                                    Type: {item?.communityType}
+                                                                    Type: {item?.threadType}
                                                                 </Typography>
                                                                 <Typography variant="caption" sx={{ display: 'block' }}>
                                                                     {item?.reply && <>Reply: {item.reply.toBase58()}</>} 
@@ -733,13 +751,14 @@ export function EveView(props: any){
                                                                 <Typography variant="caption" sx={{ display: 'block' }}>
                                                                     Encrypted: {item?.isEncrypted}
                                                                 </Typography>
-                                                                {publicKey && publicKey.toBase58() === item?.author.toBase58() &&
+                                                                {publicKey && publicKey.toBase58() === item?.author.toBase58() ?
                                                                     <>
                                                                         <PostView type={1} thread={item.publicKey} message={item?.content} topic={item?.topic} community={item?.community} metadata={item?.metadata} encrypted={item?.isEncrypted}  />
-                                                                        <DeletePost thread={item.publicKey}/>
-
+                                                                        <DeletePost thread={item.publicKey}/>                                                                        
+                                                                    </>
+                                                                :
+                                                                    <>
                                                                         <PostView type={2} thread={item.publicKey} topic={item?.topic} community={item?.community} encrypted={item?.isEncrypted} />
-                                                                        
                                                                     </>
                                                                 }
                                                             </React.Fragment>

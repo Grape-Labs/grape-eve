@@ -35,7 +35,7 @@
           "type": "string"
         },
         {
-          "name": "communityType",
+          "name": "threadType",
           "type": "i8"
         },
         {
@@ -125,7 +125,7 @@
             }
           },
           {
-            "name": "communityType",
+            "name": "threadType",
             "type": "i8"
           },
           {

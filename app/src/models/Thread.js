@@ -9,7 +9,7 @@ export class Thread
         this.topic = accountData.topic
         this.content = accountData.content
         this.community = accountData.community
-        this.communityType = accountData.communityType
+        this.threadType = accountData.threadType
         this.metadata = accountData.metadata
         this.isEncrypted = accountData.isEncrypted
         this.reply = accountData.reply
