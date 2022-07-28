@@ -113,26 +113,6 @@ export type GrapeEve = {
             "type": "i64"
           },
           {
-            "name": "topic",
-            "type": "string"
-          },
-          {
-            "name": "content",
-            "type": "string"
-          },
-          {
-            "name": "metadata",
-            "type": "string"
-          },
-          {
-            "name": "communityType",
-            "type": "i8"
-          },
-          {
-            "name": "isEncrypted",
-            "type": "i8"
-          },
-          {
             "name": "community",
             "type": {
               "option": "publicKey"
@@ -143,6 +123,26 @@ export type GrapeEve = {
             "type": {
               "option": "publicKey"
             }
+          },
+          {
+            "name": "communityType",
+            "type": "i8"
+          },
+          {
+            "name": "isEncrypted",
+            "type": "i8"
+          },
+          {
+            "name": "topic",
+            "type": "string"
+          },
+          {
+            "name": "content",
+            "type": "string"
+          },
+          {
+            "name": "metadata",
+            "type": "string"
           }
         ]
       }
@@ -281,26 +281,6 @@ export const IDL: GrapeEve = {
             "type": "i64"
           },
           {
-            "name": "topic",
-            "type": "string"
-          },
-          {
-            "name": "content",
-            "type": "string"
-          },
-          {
-            "name": "metadata",
-            "type": "string"
-          },
-          {
-            "name": "communityType",
-            "type": "i8"
-          },
-          {
-            "name": "isEncrypted",
-            "type": "i8"
-          },
-          {
             "name": "community",
             "type": {
               "option": "publicKey"
@@ -311,6 +291,26 @@ export const IDL: GrapeEve = {
             "type": {
               "option": "publicKey"
             }
+          },
+          {
+            "name": "communityType",
+            "type": "i8"
+          },
+          {
+            "name": "isEncrypted",
+            "type": "i8"
+          },
+          {
+            "name": "topic",
+            "type": "string"
+          },
+          {
+            "name": "content",
+            "type": "string"
+          },
+          {
+            "name": "metadata",
+            "type": "string"
           }
         ]
       }

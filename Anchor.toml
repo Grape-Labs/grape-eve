@@ -2,10 +2,10 @@
 grape_eve = "BNDCEb5uXCuWDxJW9BGmbfvR1JBMAKckfhYrEKW2Bv1W"
 
 [programs.devnet]
-grape_eve = "GXaZPJ3kwoZKMMxBxnRnwG87EJKBu7GjT8ks8dR4p693"
+grape_eve = "7pjxFfT8Md94mbsujhdSvHYApKzLjVZLbH5dsZHfy6xN"
 
 [programs.mainnet]
-grape_eve = "GXaZPJ3kwoZKMMxBxnRnwG87EJKBu7GjT8ks8dR4p693"
+grape_eve = "7pjxFfT8Md94mbsujhdSvHYApKzLjVZLbH5dsZHfy6xN"
 
 [registry]
 url = "https://anchor.projectserum.com"

@@ -1,7 +1,7 @@
 use anchor_lang::prelude::*;
 use anchor_lang::solana_program::system_program;
 
-declare_id!("GXaZPJ3kwoZKMMxBxnRnwG87EJKBu7GjT8ks8dR4p693");
+declare_id!("7pjxFfT8Md94mbsujhdSvHYApKzLjVZLbH5dsZHfy6xN");
 
 #[program]
 pub mod grape_eve {
@@ -88,13 +88,13 @@ pub struct DeletePost<'info> {
 pub struct Thread {
     pub author: Pubkey,
     pub timestamp: i64,
+    pub community: Option<Pubkey>,
+    pub reply: Option<Pubkey>,
+    pub community_type: i8,
+    pub is_encrypted: i8,
     pub topic: String,
     pub content: String,
     pub metadata: String,
-    pub community_type: i8,
-    pub is_encrypted: i8,
-    pub community: Option<Pubkey>,
-    pub reply: Option<Pubkey>,
 }
 
 const DISCRIMINATOR_LENGTH: usize = 8;
@@ -116,13 +116,13 @@ impl Thread {
     const LEN: usize = DISCRIMINATOR_LENGTH
         + PUBLIC_KEY_LENGTH // Author.
         + TIMESTAMP_LENGTH // Timestamp.
-        + STRING_LENGTH_PREFIX + MAX_TOPIC_LENGTH // Topic.
-        + STRING_LENGTH_PREFIX + MAX_CONTENT_LENGTH // Content.
-        + STRING_LENGTH_PREFIX + METADATA_LENGTH
+        + COMMUNITY_LENGTH // Com.
+        + REPLY_KEY_LENGTH // Reply.
         + COMMUNITYTYPE_LENGTH
         + ISENCRYPTED_LENGTH // additional fields
-        + COMMUNITY_LENGTH // Com.
-        + REPLY_KEY_LENGTH; // Reply.
+        + STRING_LENGTH_PREFIX + MAX_TOPIC_LENGTH // Topic.
+        + STRING_LENGTH_PREFIX + MAX_CONTENT_LENGTH // Content.
+        + STRING_LENGTH_PREFIX + METADATA_LENGTH;
 }
 
 #[error]

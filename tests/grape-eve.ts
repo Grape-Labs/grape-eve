@@ -4,6 +4,7 @@ import { GrapeEve } from '../target/types/grape_eve';
 import * as assert from "assert";
 import * as bs58 from "bs58";
 
+
 describe('grape-eve', () => {
     // Configure the client cluster.
     anchor.setProvider(anchor.Provider.env());
@@ -25,7 +26,20 @@ describe('grape-eve', () => {
     }
 
     it('checking length', async () => {
-        console.log("threads:" + JSON.stringify(program.account.thread.all([])))
+        
+        /*
+        const threads = program.account.thread.all([]);
+        //const mptrd = thread.map((thread:any) => new Thread(thread.publicKey, thread.account))
+        //console.log("threads:" + JSON.stringify(program.account.thread.all([])))
+        for (var thread of threads){
+            await program.rpc.deletePost({
+                accounts: {
+                    thread: thread.publicKey,
+                    author: thread.author,
+                },
+            });
+        }
+        */
     });
 
     /*

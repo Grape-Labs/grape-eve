@@ -113,26 +113,6 @@
             "type": "i64"
           },
           {
-            "name": "topic",
-            "type": "string"
-          },
-          {
-            "name": "content",
-            "type": "string"
-          },
-          {
-            "name": "metadata",
-            "type": "string"
-          },
-          {
-            "name": "communityType",
-            "type": "i8"
-          },
-          {
-            "name": "isEncrypted",
-            "type": "i8"
-          },
-          {
             "name": "community",
             "type": {
               "option": "publicKey"
@@ -143,6 +123,26 @@
             "type": {
               "option": "publicKey"
             }
+          },
+          {
+            "name": "communityType",
+            "type": "i8"
+          },
+          {
+            "name": "isEncrypted",
+            "type": "i8"
+          },
+          {
+            "name": "topic",
+            "type": "string"
+          },
+          {
+            "name": "content",
+            "type": "string"
+          },
+          {
+            "name": "metadata",
+            "type": "string"
           }
         ]
       }
@@ -165,6 +165,6 @@
     }
   ],
   "metadata": {
-    "address": "GXaZPJ3kwoZKMMxBxnRnwG87EJKBu7GjT8ks8dR4p693"
+    "address": "2rbW644hAFC43trjcsbrpPQjGvUHz6q3k4D3kZYSZigB"
   }
 }
