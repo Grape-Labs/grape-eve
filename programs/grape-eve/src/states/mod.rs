@@ -1,2 +1,2 @@
-pub(crate) mod thread;
 pub(crate) mod community;
+pub(crate) mod thread;

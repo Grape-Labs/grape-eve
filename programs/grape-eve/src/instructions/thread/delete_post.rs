@@ -1,6 +1,5 @@
-use anchor_lang::prelude::*;
 use crate::states::thread::Thread;
-
+use anchor_lang::prelude::*;
 
 #[derive(Accounts)]
 pub struct DeletePost<'info> {

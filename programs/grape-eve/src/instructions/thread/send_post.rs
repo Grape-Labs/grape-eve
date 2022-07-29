@@ -1,72 +1,68 @@
-use anchor_lang::prelude::*;
-use crate::states::thread::Thread;
 use crate::error_codes::errors::Errors;
+use crate::states::thread::Thread;
+use crate::states::thread::THREAD;
+use crate::states::community::COMMUNITY;
+use anchor_lang::prelude::*;
+use crate::states::community::Community;
 
-
-#[derive(Accounts)]
-pub struct SendPost<'info> {
-    #[account(init, payer = author, space = Thread::SIZE)]
-    pub thread: Account<'info, Thread>,
-    #[account(mut)]
-    pub author: Signer<'info>,
-    // #[account(address = system_program::ID)]
-
-    //#[account(init, payer = author, space = Thread::LEN)]
-    //pub community: Signer<'info>,
-    // TODO ADD CHANNEL or COMMUNITY GATING
-    // ADD LITPROTOCOL
-
-    /*
-        let rpc_url = String::from("https://api.devnet.solana.com");
-        let connection = RpcClient::new_with_commitment(rpc_url, CommitmentConfig::confirmed());
-
-        let token_account = Pubkey::from_str("FWZedVtyKQtP4CXhT7XDnLidRADrJknmZGA2qNjpTPg8").unwrap();
-        let balance = connection
-            .get_token_account_balance(&token_account)
-            .unwrap();
-
-        println!("amount: {}, decimals: {}", balance.amount, balance.decimals);
-        */
-
-    /*
-    let mint = Mint::unpack_unchecked(&mint_account.data).unwrap();
-    assert_eq!(mint.supply, 2000 - 42);
-    let account = Account::unpack_unchecked(&account_account.data).unwrap();
-    assert_eq!(account.amount, 1000 - 42);
-
-
-    // insufficient funds
-    assert_eq!(
-
-    );
-    */
-
-    //pub system_program: AccountInfo<'info>,
-    pub system_program: Program<'info, System>,
+#[derive(AnchorSerialize, AnchorDeserialize)]
+pub struct SendPostArgs {
+    pub reply_to: Pubkey,
+    pub thread_type: u8,
+    pub is_encrypted: bool,
+    pub topic: String,
+    pub content: String,
+    pub metadata: String,
+    pub uuid: String
 }
 
-pub fn send_post(ctx: Context<SendPost>, topic: String, content: String, metadata: String, thread_type: u8, is_encrypted: bool, community: Option<Pubkey>, reply: Option<Pubkey>) -> Result<()> {
+#[derive(Accounts)]
+#[instruction(args: SendPostArgs)]
+pub struct SendPostContext<'info> {
+    #[account(mut)]
+    pub author: Signer<'info>,
+    #[account(init,
+    payer=author,
+    space=Thread::SIZE,
+    seeds=[THREAD.as_bytes(), args.uuid.as_bytes()],
+    bump
+    )]
+    pub thread: Account<'info, Thread>,
+    #[account(
+    seeds=[COMMUNITY.as_bytes(), community.title.as_bytes()],
+    bump=community.bump
+    )]
+    pub community: Account<'info, Community>,
+
+    pub system_program: Program<'info, System>,
+    pub rent: Sysvar<'info, Rent>,
+}
+
+pub fn send_post(
+    ctx: Context<SendPostContext>,
+    args: SendPostArgs,
+) -> Result<()> {
     let thread: &mut Account<Thread> = &mut ctx.accounts.thread;
-    let author: &Signer = &ctx.accounts.author;
-    let clock: Clock = Clock::get().unwrap();
 
-    if topic.chars().count() > 50 {
-        return Err(Errors::TopicTooLong.into())
+    if args.topic.chars().count() > 50 {
+        return Err(Errors::TopicTooLong.into());
     }
 
-    if content.chars().count() > 280 {
-        return Err(Errors::ContentTooLong.into())
+    if args.content.chars().count() > 280 {
+        return Err(Errors::ContentTooLong.into());
     }
 
-    thread.author = *author.key;
-    thread.timestamp = clock.unix_timestamp as u64;
-    thread.topic = topic;
-    thread.content = content;
-    thread.metadata = metadata;
-    thread.thread_type = thread_type;
-    thread.is_encrypted = is_encrypted;
-    thread.community = community;
-    thread.reply = reply;
+    thread.update(*ctx.bumps.get("thread").unwrap(),
+                  ctx.accounts.author.key(),
+                  Clock::get().unwrap().unix_timestamp as u64,
+                  ctx.accounts.community.key(),
+                  args.reply_to,
+                  args.thread_type,
+                  args.is_encrypted,
+                  args.topic,
+                  args.content,
+                  args.metadata,
+                  args.uuid);
 
     Ok(())
 }
