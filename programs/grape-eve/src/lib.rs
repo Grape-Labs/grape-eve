@@ -1,7 +1,7 @@
-mod utils;
-mod states;
 mod error_codes;
 mod instructions;
+mod states;
+mod utils;
 
 use instructions::*;
 
@@ -14,16 +14,35 @@ declare_id!("2rbW644hAFC43trjcsbrpPQjGvUHz6q3k4D3kZYSZigB");
 pub mod grape_eve {
     use super::*;
 
-    pub fn send_post(ctx: Context<SendPost>, topic: String, content: String, metadata: String, thread_type: u8, is_encrypted: bool, community: Option<Pubkey>, reply: Option<Pubkey>) -> Result<()> {
-        send_post::send_post(ctx, topic, content, metadata, thread_type, is_encrypted, community, reply)
+
+    pub fn send_post(
+        ctx: Context<SendPostContext>,
+        args: SendPostArgs,
+    ) -> Result<()> {
+        send_post::send_post(ctx, args)
     }
 
     pub fn delete_post(_ctx: Context<DeletePost>) -> Result<()> {
         delete_post::delete_post(_ctx)
     }
 
-    pub fn update_post(ctx: Context<UpdatePost>, topic: String, content: String) -> Result<()> {
-        update_post::update_post(ctx, topic, content)
+    pub fn update_post(ctx: Context<UpdatePostContext>, args: UpdatePostArgs) -> Result<()> {
+        update_post::update_post(ctx, args)
+    }
+
+    pub fn create_community(
+        ctx: Context<CreateCommunityContext>,
+        args: CreateCommunityArgs,
+    ) -> Result<()> {
+        create_community::create_community(ctx, args)
+    }
+
+
+    pub fn edit_community(
+        ctx: Context<EditCommunityContext>,
+        args: EditCommunityArgs,
+    ) -> Result<()>
+    {
+        edit_community::edit_community(ctx, args)
     }
 }
-

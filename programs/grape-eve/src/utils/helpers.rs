@@ -1,8 +1,8 @@
 #![allow(dead_code)]
 #![allow(unused_variables)]
+use crate::error_codes::errors::Errors;
 use anchor_lang::prelude::*;
 use anchor_lang::solana_program::program_memory::sol_memset;
-use crate::error_codes::errors::Errors;
 
 pub fn transfer_sol(from: &mut AccountInfo, to: &mut AccountInfo, amount: u64) -> Result<()> {
     let post_from = from
