@@ -38,6 +38,7 @@ import {
 import { styled } from '@mui/material/styles';
 import {
     Box,
+    Chip,
     Grid,
     List,
     ListItem,
@@ -77,6 +78,7 @@ import GrapeIcon from "../components/static/GrapeIcon";
 import SolanaIcon from "../components/static/SolIcon";
 import SolCurrencyIcon from '../components/static/SolCurrencyIcon';
 
+import LinkIcon from '@mui/icons-material/Link';
 import AddCircleIcon from '@mui/icons-material/AddCircle';
 import EditIcon from '@mui/icons-material/Edit';
 import RefreshIcon from '@mui/icons-material/Refresh';
@@ -764,61 +766,73 @@ export function EveView(props: any){
                                             return (
                                                 <ListItem alignItems="flex-start" key={key}>
                                                     
-                                                    <ListItemAvatar>
-                                                        <Avatar>
-                                                            <Jazzicon diameter={40} seed={jsNumberForAddress(item?.author.toBase58())} />
-                                                        </Avatar>
-                                                    </ListItemAvatar>
-                                                    <ListItemText
-                                                        primary={
-                                                            <>
-                                                                <Typography variant="h6">
-                                                                    {item?.content}
+                                                    <Grid container>
+                                                        <Grid item xs={12}>
+                                                            <Grid container direction='row'>
+                                                                <Avatar sx={{ width: 50, height: 50 }}>
+                                                                    <Jazzicon diameter={50} seed={jsNumberForAddress(item?.author.toBase58())} />
+                                                                </Avatar>
+                                                                
+                                                                <Grid item sx={{ml:1}}>
+                                                                    <Typography variant="h5" sx={{}}>
+                                                                        <Button sx={{color:'white',textTransform:'none',m:0,p:0.5}} size='large' onClick={() => {fetchFilteredAuthor(item?.author.toBase58())}}>{item?.author.toBase58()}</Button>
+                                                                    </Typography>
+                                                                    <Typography variant='caption' sx={{mt:-3}}>
+                                                                        <Button sx={{color:'white',textTransform:'none',m:0,p:0.5}}onClick={() => {fetchFilteredThreads(item?.topic)}}>
+                                                                            {item?.topic}
+                                                                        </Button>
+                                                                    </Typography>
+                                                                </Grid>
+                                                            </Grid>
+                                                        </Grid>
+                                                    
+                                                        <Divider />
+                                                    
+                                                        <Grid item xs={12}>
+                                                            <Typography variant="h5" component='div'>
+                                                                {item?.content} 
+                                                                <Typography component="span" variant="h6" sx={{color:'gray'}}>
+                                                                &nbsp;-&nbsp;{created_ago(+item?.timestamp)}
                                                                 </Typography>
-                                                            </>
-                                                            }
-                                                        secondary={
-                                                            <React.Fragment>
-                                                            <Typography
-                                                                sx={{ display: 'inline' }}
-                                                                component="span"
-                                                                variant="body2"
-                                                                color="text.primary"
-                                                            >
-                                                                {created_ago(+item?.timestamp)}
                                                             </Typography>
-                                                            &nbsp;-&nbsp;
-                                                            <Button onClick={() => {fetchFilteredAuthor(item?.author.toBase58())}}>{item?.author.toBase58()}</Button>
+                                                        </Grid>
 
-                                                                <Typography variant="caption" sx={{ display: 'block' }}>
-                                                                    Topic: <Button onClick={() => {fetchFilteredThreads(item?.topic)}}>{item?.topic}</Button>
-                                                                </Typography>
-                                                                <Typography variant="caption" sx={{ display: 'block' }}>
-                                                                    {item?.community && <>Community:<Button onClick={() => {fetchFilteredCommunity(item?.community.toBase58())}}>{item.community.toBase58()}</Button></>} 
-                                                                    Type: {item?.threadType}
-                                                                </Typography>
-                                                                <Typography variant="caption" sx={{ display: 'block' }}>
-                                                                    {item?.reply && <>Reply: {item.reply.toBase58()}</>} 
-                                                                </Typography>
-                                                                <Typography variant="caption" sx={{ display: 'block' }}>
-                                                                    Metadata: {item?.metadata}
-                                                                </Typography>
-                                                                <Typography variant="caption" sx={{ display: 'block' }}>
-                                                                    Encrypted: {item?.isEncrypted}
-                                                                </Typography>
+                                                        {/*
+                                                        <Button onClick={() => {fetchFilteredCommunity(item?.community.toBase58())}}>{item.community.toBase58()}</Button>
+                                                        {item?.threadType}
+                                                        {item?.metadata}
+                                                        {item?.isEncrypted}
+                                                        {item.publicKey}
+
+                                                        */}
+
+                                                        <Grid item xs={12}>
+                                                            <Grid >
+                                                                <Grid item xs={6}>
+                                                                    <Button
+                                                                        variant="outlined"
+                                                                        //onClick={deletePost}
+                                                                        sx={{borderRadius:'17px'}}
+                                                                    >
+                                                                        <LinkIcon />
+                                                                    </Button>
+                                                                </Grid>
+                                                                
                                                                 {publicKey && publicKey.toBase58() === item?.author.toBase58() ?
-                                                                    <>
+                                                                    <Grid item xs={6}>
                                                                         <PostView type={1} thread={item.publicKey} message={item?.content} topic={item?.topic} community={item?.community} metadata={item?.metadata} encrypted={item?.isEncrypted}  />
                                                                         <DeletePost thread={item.publicKey}/>                                                                        
-                                                                    </>
+                                                                    </Grid>
                                                                 :
-                                                                    <>
+                                                                    <Grid item xs={6}>
                                                                         <PostView type={2} thread={item.publicKey} topic={item?.topic} community={item?.community} encrypted={item?.isEncrypted} />
-                                                                    </>
+                                                                    </Grid>
                                                                 }
-                                                            </React.Fragment>
-                                                        }
-                                                    />
+                                                                
+                                                            </Grid>
+                                                        </Grid>
+                                                    </Grid>
+
                                                 </ListItem>
                                             )
                                         })}

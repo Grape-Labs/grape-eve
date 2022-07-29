@@ -109,6 +109,10 @@ function DashboardContent() {
                                         <Route path=":handlekey" element={<EveView />} />
                                     </Route>
 
+                                    <Route path="community/*" element={<EveView />} >
+                                        <Route path=":handlekey" element={<EveView />} />
+                                    </Route>
+
                                     <Route path="*" element={<NotFound />} />
                                   </Routes>
                                   
