@@ -14859,8 +14859,8 @@ exports.pipeline = require("./lib/internal/streams/pipeline.js");
 // OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE
 // USE OR OTHER DEALINGS IN THE SOFTWARE.
 "use strict";
-var process = require("process");
 var global = arguments[3];
+var process = require("process");
 module.exports = Readable;
 /*<replacement>*/ var Duplex;
 /*</replacement>*/ Readable.ReadableState = ReadableState;
@@ -16256,8 +16256,8 @@ Object.defineProperty(Duplex.prototype, "destroyed", {
 // Implement an async ._write(chunk, encoding, cb), and it'll handle all
 // the drain event emission and buffering.
 "use strict";
-var global = arguments[3];
 var process = require("process");
+var global = arguments[3];
 module.exports = Writable;
 /* <replacement> */ function WriteReq(chunk, encoding, cb) {
     this.chunk = chunk;
@@ -31257,8 +31257,8 @@ module.exports = function(iterations, keylen) {
 };
 
 },{}],"T9r9Q":[function(require,module,exports) {
-var global = arguments[3];
 var process = require("process");
+var global = arguments[3];
 var defaultEncoding;
 /* istanbul ignore next */ if (global.process && global.process.browser) defaultEncoding = "utf-8";
 else if (global.process && global.process.version) {
@@ -49509,8 +49509,8 @@ function compare(a, b) {
 
 },{"parse-asn1":"4Szbv","./mgf":"e2JgG","./xor":"iaxu0","bn.js":"3pDum","browserify-rsa":"e594P","create-hash":"2WyL8","./withPublic":"fFkPV","safe-buffer":"eW7r9"}],"k3tsT":[function(require,module,exports) {
 "use strict";
-var global = arguments[3];
 var process = require("process");
+var global = arguments[3];
 function oldBrowser() {
     throw new Error("secure random number generation not supported by this browser\nuse chrome, FireFox or Internet Explorer 11");
 }
@@ -66241,6 +66241,6 @@ module.exports = function equal(a, b) {
 },{}],"7OQ7n":[function(require,module,exports) {
 module.exports = JSON.parse('{"name":"@toruslabs/solana-embed","version":"0.2.2","description":"Embed script for solana blockchain","main":"dist/solanaEmbed.cjs.js","module":"dist/solanaEmbed.esm.js","unpkg":"dist/solanaEmbed.umd.min.js","jsdelivr":"dist/solanaEmbed.umd.min.js","types":"dist/types/index.d.ts","files":["dist","src"],"scripts":{"start":"torus-scripts start","build":"torus-scripts build","build:test":"cross-env NODE_ENV=testing torus-scripts build","release":"torus-scripts release","prepack":"npm run build","lint:ts":"eslint --fix \'src/**/*.ts\'","prepare":"husky install"},"repository":{"type":"git","url":"git+https://github.com/torusresearch/solana-embed.git"},"dependencies":{"@solana/web3.js":"^1.36.0","@toruslabs/base-controllers":"^2.0.0","@toruslabs/http-helpers":"^3.0.0","@toruslabs/openlogin-jrpc":"^2.0.0","eth-rpc-errors":"^4.0.3","fast-deep-equal":"^3.1.3","is-stream":"^2.0.0","lodash-es":"^4.17.21","loglevel":"^1.8.0","pump":"^3.0.0"},"peerDependencies":{"@babel/runtime":"7.x"},"devDependencies":{"@babel/register":"^7.17.7","@commitlint/cli":"^16.2.1","@commitlint/config-conventional":"^16.2.1","@commitlint/is-ignored":"^16.2.1","@toruslabs/eslint-config-typescript":"^1.0.1","@toruslabs/torus-scripts":"^1.0.3","@babel/runtime":"^7.18.0","@types/bs58":"^4.0.1","@types/node":"^17.0.35","@types/once":"^1.4.0","@types/pump":"^1.1.1","@types/readable-stream":"^2.3.13","@typescript-eslint/eslint-plugin":"^5.25.0","@typescript-eslint/parser":"^5.25.0","cross-env":"^7.0.3","eslint":"^8.15.0","eslint-plugin-import":"^2.26.0","eslint-plugin-mocha":"^10.0.4","eslint-plugin-n":"^15.2.0","eslint-plugin-prettier":"^4.0.0","eslint-plugin-promise":"^6.0.0","eslint-plugin-simple-import-sort":"^7.0.0","eslint-plugin-tsdoc":"^0.2.16","husky":"^8.0.1","lint-staged":"^12.4.1","mocha":"^10.0.0","prettier":"^2.6.2","puppeteer":"^14.1.1","rimraf":"^3.0.2","ts-node":"^10.7.0","typescript":"^4.6.4"},"mocha":{"timeout":0},"keywords":["torus","wallet","Solana","embed","login","OAuth","crypto"],"author":"Torus Labs","license":"ISC","bugs":{"url":"https://github.com/torusresearch/solana-embed/issues"},"homepage":"https://github.com/torusresearch/solana-embed#readme","lint-staged":{"!(*d).{js,ts}":["eslint --cache --fix","prettier --write"],"*.{json, md}":["prettier --write"]},"engines":{"node":">=14.17.0","npm":">=6.x"}}');
 
-},{}]},["b6LeB"], null, "parcelRequirea48b")
+},{}]},["b6LeB"], null, "parcelRequire7a15")
 
 //# sourceMappingURL=solanaEmbed.esm.16e1c615.js.map

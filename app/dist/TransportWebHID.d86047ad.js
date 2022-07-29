@@ -3343,6 +3343,6 @@ function dispatch(log1) {
 }
 if (typeof window !== "undefined") window.__ledgerLogsListen = listen;
 
-},{"@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}]},["gOOSk"], null, "parcelRequirea48b")
+},{"@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}]},["gOOSk"], null, "parcelRequire7a15")
 
 //# sourceMappingURL=TransportWebHID.d86047ad.js.map

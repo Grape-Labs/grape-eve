@@ -639,6 +639,8 @@ export function EveView(props: any){
                                 <Typography>{280 - (message?.length | 0)} left</Typography>
                             </FormControl>
                             
+                            <FormControlLabel control={<Switch disabled />} label="Encrypted" />
+
                             {/*
                             <FormControl fullWidth>
                                 <TextField 
@@ -749,7 +751,7 @@ export function EveView(props: any){
                                             <Grid container direction="row">
                                                 <Grid item xs={6}>
                                                     <Typography sx={{mr:1}}>
-                                                        {threads.length} thread posts
+                                                        X threads / {threads.length} posts
                                                     </Typography>
                                                 </Grid>
                                                 <Grid item xs={6}>
@@ -780,19 +782,16 @@ export function EveView(props: any){
                                                     <Grid container>
                                                         <Grid item xs={12}>
                                                             <Grid container direction='row'>
-                                                                <Avatar sx={{ width: 50, height: 50 }}>
-                                                                    <Jazzicon diameter={50} seed={jsNumberForAddress(item?.author.toBase58())} />
+                                                                <Avatar sx={{ width: 60, height: 60 }}>
+                                                                    <Jazzicon diameter={60} seed={jsNumberForAddress(item?.author.toBase58())} />
                                                                 </Avatar>
                                                                 
                                                                 <Grid item sx={{ml:1}}>
-                                                                    <Typography variant="h5" sx={{}}>
-                                                                        <Button sx={{color:'white',textTransform:'none',m:0,p:0.5}} size='large' onClick={() => {fetchFilteredAuthor(item?.author.toBase58())}}>{item?.author.toBase58()}</Button>
-                                                                    </Typography>
-                                                                    <Typography variant='caption' sx={{mt:-3}}>
-                                                                        <Button sx={{color:'white',textTransform:'none',m:0,p:0.5}}onClick={() => {fetchFilteredThreads(item?.topic)}}>
-                                                                            {item?.topic}
-                                                                        </Button>
-                                                                    </Typography>
+                                                                    <Button sx={{color:'white',textTransform:'none',m:0,p:0.5}} size='large' onClick={() => {fetchFilteredAuthor(item?.author.toBase58())}}><Typography variant="h6" sx={{}}>{item?.author.toBase58()}</Typography></Button>
+                                                                    <br/>
+                                                                    <Button variant="contained" sx={{borderRadius:'17px',background:'rgba(255,255,255,0.5)',color:'black',textTransform:'none',m:0,p:0}}onClick={() => {fetchFilteredThreads(item?.topic)}}>
+                                                                        <Typography variant='caption' sx={{}}>{item?.topic}</Typography>
+                                                                    </Button>
                                                                 </Grid>
                                                             </Grid>
                                                         </Grid>

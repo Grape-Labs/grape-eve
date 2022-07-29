@@ -1963,6 +1963,6 @@ var IframeAdapter = /** @class */ function(_super) {
 }((0, _baseDefault.default));
 exports.default = IframeAdapter;
 
-},{"@solana/web3.js":"5JBKN","./base":"kVxtd","uuid":"j4KJi","bs58":"4ji3p","@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}]},["1xC6H","b3lwZ"], null, "parcelRequirea48b")
+},{"@solana/web3.js":"5JBKN","./base":"kVxtd","uuid":"j4KJi","bs58":"4ji3p","@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}]},["1xC6H","b3lwZ"], null, "parcelRequire7a15")
 
 //# sourceMappingURL=esm.56c130f2.js.map
