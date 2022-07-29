@@ -1,5 +1,5 @@
 export type GrapeEve = {
-  "version": "0.1.0",
+  "version": "0.1.2",
   "name": "grape_eve",
   "instructions": [
     {
@@ -167,7 +167,7 @@ export type GrapeEve = {
 };
 
 export const IDL: GrapeEve = {
-  "version": "0.1.0",
+  "version": "0.1.2",
   "name": "grape_eve",
   "instructions": [
     {

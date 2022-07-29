@@ -206,6 +206,12 @@ export function EveView(props: any){
         const program = new Program<GrapeEve>(IDL, programID, provider);
         //const program = new Program(tidl, programID, provider);
         
+        const litclient = new LitJsSdk.LitNodeClient();
+        const chain = 'solana'
+
+        //await litclient.connect()
+        //window.litNodeClient = litclient
+
         console.log( "threads: + "+JSON.stringify(program.account.thread.all([]) ));
 
         workspace = {
@@ -213,8 +219,47 @@ export function EveView(props: any){
             connection,
             provider,
             program,
+            litclient
         }
     }
+
+    const accessControlConditions = [
+        {
+          contractAddress: '',
+          standardContractType: '',
+          chain: 'solana',
+          method: 'sol_getBalance',
+          parameters: [':userAddress', 'latest'],
+          returnValueTest: {
+            comparator: '>=',
+            value: '1000000000000',  // 0.000001 SOL
+          },
+        },
+      ]
+
+    /*
+    const encrypt = async (message: string) => {
+    //async encrypt(message: string) {
+        if (!this.litNodeClient) {
+          await this.connect()
+        }
+    
+        const authSig = await LitJsSdk.checkAndSignAuthMessage({ chain })
+        const { encryptedString, symmetricKey } = await LitJsSdk.encryptString(message)
+    
+        const encryptedSymmetricKey = await this.litNodeClient.saveEncryptionKey({
+          accessControlConditions,
+          symmetricKey,
+          authSig,
+          chain,
+        })
+    
+        return {
+          encryptedString,
+          encryptedSymmetricKey: LitJsSdk.uint8arrayToString(encryptedSymmetricKey, "base16")
+        }
+      }
+    */
 
 /*
 
