@@ -1,5 +1,7 @@
 use anchor_lang::prelude::*;
 
+pub const COMMUNITY: &str = "COMMUNITY";
+
 #[account]
 pub struct Community {
     pub bump: u8,
@@ -13,7 +15,6 @@ pub struct Community {
 const COMMUNITY_LENGTH: usize = 32 + 1;
 const METADATA_LENGTH: usize = 280 * 4;
 
-
 impl Community {
     pub const SIZE: usize = 8 + /* discriminator */
         std::mem::size_of::<u8>() + /* bump */
@@ -24,7 +25,8 @@ impl Community {
         METADATA_LENGTH + /* metadata */
         100; /* padding */
 
-    pub fn update(&mut self,
+    pub fn update(
+        &mut self,
         bump: u8,
         community: Pubkey,
         mint: Pubkey,

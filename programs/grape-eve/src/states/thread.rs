@@ -1,22 +1,26 @@
 use anchor_lang::prelude::*;
 
+pub const THREAD: &str = "THREAD";
+
 #[account]
 pub struct Thread {
     pub bump: u8,
     pub author: Pubkey,
     pub timestamp: u64,
-    pub community: Option<Pubkey>,
-    pub reply: Option<Pubkey>,
+    pub community: Pubkey,
+    pub reply: Pubkey,
     pub thread_type: u8,
     pub is_encrypted: bool,
     pub topic: String,
     pub content: String,
     pub metadata: String,
+    pub uuid: String
 }
 
 const MAX_TOPIC_LENGTH: usize = 50 * 4; // 50 chars max.
 const MAX_CONTENT_LENGTH: usize = 280 * 4; // 280 chars max.
 const METADATA_LENGTH: usize = 280 * 4;
+const UUID_LENGTH: usize = 16;
 
 impl Thread {
     pub const SIZE: usize = 8 + /* discriminator */
@@ -30,20 +34,23 @@ impl Thread {
         MAX_TOPIC_LENGTH + /* topic */
         MAX_CONTENT_LENGTH + /* content */
         METADATA_LENGTH +  /* metadata */
+        UUID_LENGTH + /* uuid */
         100 /* padding */
     ;
 
-    pub fn update(&mut self,
-                  bump: u8,
-                  author: Pubkey,
-                  timestamp: u64,
-                  community: Option<Pubkey>,
-                  reply: Option<Pubkey>,
-                  thread_type: u8,
-                  is_encrypted: bool,
-                  topic: String,
-                  content: String,
-                  metadata: String,
+    pub fn update(
+        &mut self,
+        bump: u8,
+        author: Pubkey,
+        timestamp: u64,
+        community: Pubkey,
+        reply: Pubkey,
+        thread_type: u8,
+        is_encrypted: bool,
+        topic: String,
+        content: String,
+        metadata: String,
+        uuid: String
     ) {
         self.bump = bump;
         self.author = author;
@@ -55,6 +62,6 @@ impl Thread {
         self.topic = topic;
         self.content = content;
         self.metadata = metadata;
+        self.uuid = uuid;
     }
 }
-
