@@ -590,31 +590,14 @@ export function EveView(props: any){
                 >
                     <form onSubmit={handlePostNow}>
                         <DialogContent>
-                            <FormControl fullWidth>
-                                <TextField
-                                    id="filled-multiline-static"
-                                    label="Start a discussion"
-                                    multiline
-                                    rows={4}
-                                    value={message}
-                                    onChange={(e: any) => {
-                                        setMessage(e.target.value)}
-                                    }
-                                    />
-                                <Typography>{280 - (message?.length | 0)} left</Typography>
-                            </FormControl>
-                            <FormControl fullWidth>
-                                <TextField 
-                                    fullWidth 
-                                    label="Topic" 
-                                    id="fullWidth" 
-                                    value={topic}
-                                    onChange={(e: any) => {
-                                        setTopic(e.target.value)}
-                                    }/>
-                            </FormControl>
-                            <FormControlLabel control={<Switch defaultChecked />} label="Encrypted" />
-                            <FormControl fullWidth>
+
+                            {thread &&
+                                <Typography variant='h6'>
+                                    Editing {thread.toBase58()}
+                                </Typography>
+                            }
+                            <br/>
+                            <FormControl fullWidth sx={{m:1}}>
                                 <InputLabel id="demo-simple-select-label">Community</InputLabel>
                                 <Select
                                     labelId="demo-simple-select-label"
@@ -629,7 +612,34 @@ export function EveView(props: any){
                                     <MenuItem value={`So11111111111111111111111111111111111111112`}>Solana</MenuItem>
                                 </Select>
                             </FormControl>
-
+                            
+                            <FormControl fullWidth sx={{m:1}}>
+                                <TextField 
+                                    fullWidth 
+                                    label="Topic" 
+                                    id="fullWidth" 
+                                    value={topic}
+                                    onChange={(e: any) => {
+                                        if (e.target.value.length <= 50)
+                                            setTopic(e.target.value)}
+                                    }/>
+                                <Typography>{50 - (topic?.length | 0)} left</Typography>
+                            </FormControl>
+                            <FormControl fullWidth sx={{m:1}}>
+                                <TextField
+                                    id="filled-multiline-static"
+                                    label="Start a discussion"
+                                    multiline
+                                    rows={4}
+                                    value={message}
+                                    onChange={(e: any) => {
+                                        setMessage(e.target.value)}
+                                    }
+                                    />
+                                <Typography>{280 - (message?.length | 0)} left</Typography>
+                            </FormControl>
+                            
+                            {/*
                             <FormControl fullWidth>
                                 <TextField 
                                     fullWidth 
@@ -640,6 +650,7 @@ export function EveView(props: any){
                                         setReply(e.target.value)}
                                     }/>
                             </FormControl>
+                            */}
                         </DialogContent>
                         <DialogActions>
                             <Button variant="text" onClick={handleClosePreviewDialog}>Cancel</Button>
