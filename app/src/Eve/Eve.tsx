@@ -703,7 +703,7 @@ export function EveView(props: any){
                                                         sx={{borderRadius:'17px', ml:1}}
                                                     >
                                                         {loadingThreads ?
-                                                            <CircularProgress sx={{p:'10px',m:0}} />
+                                                            <>loading...</>
                                                         :
                                                             <RefreshIcon />
                                                         }

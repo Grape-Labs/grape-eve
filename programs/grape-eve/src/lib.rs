@@ -1,5 +1,9 @@
 use anchor_lang::prelude::*;
 use anchor_lang::solana_program::system_program;
+//use solana_client::rpc_client::RpcClient;
+//use solana_program::pubkey::Pubkey;
+//use solana_sdk::commitment_config::CommitmentConfig;
+//use std::str::FromStr;
 
 declare_id!("2rbW644hAFC43trjcsbrpPQjGvUHz6q3k4D3kZYSZigB");
 
@@ -18,7 +22,31 @@ pub mod grape_eve {
         if content.chars().count() > 280 {
             return Err(ErrorCode::ContentTooLong.into())
         }
-        
+        /*
+        let rpc_url = String::from("https://api.devnet.solana.com");
+        let connection = RpcClient::new_with_commitment(rpc_url, CommitmentConfig::confirmed());
+
+        let token_account = Pubkey::from_str("FWZedVtyKQtP4CXhT7XDnLidRADrJknmZGA2qNjpTPg8").unwrap();
+        let balance = connection
+            .get_token_account_balance(&token_account)
+            .unwrap();
+
+        println!("amount: {}, decimals: {}", balance.amount, balance.decimals);
+        */
+
+        /*
+        let mint = Mint::unpack_unchecked(&mint_account.data).unwrap();
+        assert_eq!(mint.supply, 2000 - 42);
+        let account = Account::unpack_unchecked(&account_account.data).unwrap();
+        assert_eq!(account.amount, 1000 - 42);
+
+
+        // insufficient funds
+        assert_eq!(
+            
+        );
+        */
+
         thread.author = *author.key;
         thread.timestamp = clock.unix_timestamp;
         thread.topic = topic;
