@@ -10,7 +10,7 @@ declare_id!("2rbW644hAFC43trjcsbrpPQjGvUHz6q3k4D3kZYSZigB");
 #[program]
 pub mod grape_eve {
     use super::*;
-    pub fn send_post(ctx: Context<SendPost>, topic: String, content: String, metadata: String, thread_type: i8, is_encrypted: i8, community: Option<Pubkey>, reply: Option<Pubkey>) -> ProgramResult {
+    pub fn send_post(ctx: Context<SendPost>, topic: String, content: String, metadata: String, thread_type: i8, is_encrypted: i8, community: Pubkey, reply: Pubkey) -> ProgramResult {
         let thread: &mut Account<Thread> = &mut ctx.accounts.thread;
         let author: &Signer = &ctx.accounts.author;
         let clock: Clock = Clock::get().unwrap();
@@ -22,31 +22,7 @@ pub mod grape_eve {
         if content.chars().count() > 280 {
             return Err(ErrorCode::ContentTooLong.into())
         }
-        /*
-        let rpc_url = String::from("https://api.devnet.solana.com");
-        let connection = RpcClient::new_with_commitment(rpc_url, CommitmentConfig::confirmed());
-
-        let token_account = Pubkey::from_str("FWZedVtyKQtP4CXhT7XDnLidRADrJknmZGA2qNjpTPg8").unwrap();
-        let balance = connection
-            .get_token_account_balance(&token_account)
-            .unwrap();
-
-        println!("amount: {}, decimals: {}", balance.amount, balance.decimals);
-        */
-
-        /*
-        let mint = Mint::unpack_unchecked(&mint_account.data).unwrap();
-        assert_eq!(mint.supply, 2000 - 42);
-        let account = Account::unpack_unchecked(&account_account.data).unwrap();
-        assert_eq!(account.amount, 1000 - 42);
-
-
-        // insufficient funds
-        assert_eq!(
-            
-        );
-        */
-
+        
         thread.author = *author.key;
         thread.timestamp = clock.unix_timestamp;
         thread.topic = topic;
@@ -89,6 +65,37 @@ pub struct SendPost<'info> {
     #[account(mut)]
     pub author: Signer<'info>,
     #[account(address = system_program::ID)]
+
+    #[account(init, payer = author, space = Thread::LEN)]
+    pub community: Signer<'info>,
+    // TODO ADD CHANNEL or COMMUNITY GATING
+    // ADD LITPROTOCOL
+
+    /*
+        let rpc_url = String::from("https://api.devnet.solana.com");
+        let connection = RpcClient::new_with_commitment(rpc_url, CommitmentConfig::confirmed());
+
+        let token_account = Pubkey::from_str("FWZedVtyKQtP4CXhT7XDnLidRADrJknmZGA2qNjpTPg8").unwrap();
+        let balance = connection
+            .get_token_account_balance(&token_account)
+            .unwrap();
+
+        println!("amount: {}, decimals: {}", balance.amount, balance.decimals);
+        */
+
+        /*
+        let mint = Mint::unpack_unchecked(&mint_account.data).unwrap();
+        assert_eq!(mint.supply, 2000 - 42);
+        let account = Account::unpack_unchecked(&account_account.data).unwrap();
+        assert_eq!(account.amount, 1000 - 42);
+
+
+        // insufficient funds
+        assert_eq!(
+
+        );
+        */
+
     //pub system_program: AccountInfo<'info>,
     pub system_program: Program<'info, System>,
 }
@@ -116,12 +123,21 @@ pub struct DeletePost<'info> {
 pub struct Thread {
     pub author: Pubkey,
     pub timestamp: i64,
-    pub community: Option<Pubkey>,
-    pub reply: Option<Pubkey>,
+    pub community: Pubkey,
+    pub reply: Pubkey,
     pub thread_type: i8,
     pub is_encrypted: i8,
     pub topic: String,
     pub content: String,
+    pub metadata: String,
+}
+
+#[account]
+pub struct Community {
+    pub community: Pubkey,
+    pub mint: Pubkey,
+    pub owner: Pubkey,
+    pub title: String,
     pub metadata: String,
 }
 
@@ -137,9 +153,6 @@ const ISENCRYPTED_LENGTH: usize = 1;
 const COMMUNITY_LENGTH: usize = 32 + 1;
 const REPLY_KEY_LENGTH: usize = 32 + 1;
 
-// TODO ADD CHANNEL or COMMUNITY GATING
-// ADD LITPROTOCOL
-
 impl Thread {
     const LEN: usize = DISCRIMINATOR_LENGTH
         + PUBLIC_KEY_LENGTH // Author.
@@ -151,6 +164,15 @@ impl Thread {
         + STRING_LENGTH_PREFIX + MAX_TOPIC_LENGTH // Topic.
         + STRING_LENGTH_PREFIX + MAX_CONTENT_LENGTH // Content.
         + STRING_LENGTH_PREFIX + METADATA_LENGTH;
+}
+
+impl Community {
+    const LEN: usize = DISCRIMINATOR_LENGTH
+        + PUBLIC_KEY_LENGTH // Community.
+        + PUBLIC_KEY_LENGTH // Mint.
+        + PUBLIC_KEY_LENGTH // Owner.
+        + STRING_LENGTH_PREFIX + MAX_TOPIC_LENGTH // Title.
+        + STRING_LENGTH_PREFIX + METADATA_LENGTH; // Metadata.
 }
 
 #[error]
