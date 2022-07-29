@@ -10,7 +10,7 @@ declare_id!("2rbW644hAFC43trjcsbrpPQjGvUHz6q3k4D3kZYSZigB");
 #[program]
 pub mod grape_eve {
     use super::*;
-    pub fn send_post(ctx: Context<SendPost>, topic: String, content: String, metadata: String, thread_type: i8, is_encrypted: i8, community: Pubkey, reply: Pubkey) -> ProgramResult {
+    pub fn send_post(ctx: Context<SendPost>, topic: String, content: String, metadata: String, thread_type: i8, is_encrypted: i8, community: Option<Pubkey>, reply: Option<Pubkey>) -> ProgramResult {
         let thread: &mut Account<Thread> = &mut ctx.accounts.thread;
         let author: &Signer = &ctx.accounts.author;
         let clock: Clock = Clock::get().unwrap();
@@ -66,8 +66,8 @@ pub struct SendPost<'info> {
     pub author: Signer<'info>,
     #[account(address = system_program::ID)]
 
-    #[account(init, payer = author, space = Thread::LEN)]
-    pub community: Signer<'info>,
+    //#[account(init, payer = author, space = Thread::LEN)]
+    //pub community: Signer<'info>,
     // TODO ADD CHANNEL or COMMUNITY GATING
     // ADD LITPROTOCOL
 
@@ -123,15 +123,15 @@ pub struct DeletePost<'info> {
 pub struct Thread {
     pub author: Pubkey,
     pub timestamp: i64,
-    pub community: Pubkey,
-    pub reply: Pubkey,
+    pub community: Option<Pubkey>,
+    pub reply: Option<Pubkey>,
     pub thread_type: i8,
     pub is_encrypted: i8,
     pub topic: String,
     pub content: String,
     pub metadata: String,
 }
-
+/*
 #[account]
 pub struct Community {
     pub community: Pubkey,
@@ -140,7 +140,7 @@ pub struct Community {
     pub title: String,
     pub metadata: String,
 }
-
+*/
 const DISCRIMINATOR_LENGTH: usize = 8;
 const PUBLIC_KEY_LENGTH: usize = 32;
 const TIMESTAMP_LENGTH: usize = 8;
@@ -166,6 +166,7 @@ impl Thread {
         + STRING_LENGTH_PREFIX + METADATA_LENGTH;
 }
 
+/*
 impl Community {
     const LEN: usize = DISCRIMINATOR_LENGTH
         + PUBLIC_KEY_LENGTH // Community.
@@ -174,6 +175,7 @@ impl Community {
         + STRING_LENGTH_PREFIX + MAX_TOPIC_LENGTH // Title.
         + STRING_LENGTH_PREFIX + METADATA_LENGTH; // Metadata.
 }
+*/
 
 #[error]
 pub enum ErrorCode {
