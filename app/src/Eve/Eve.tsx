@@ -517,6 +517,8 @@ export function EveView(props: any){
     }
     
     function PostView(props:any){
+        const ml = props?.ml || 0;
+        const mr = props?.mr || 0;
         const type = props?.type;
         const thread = props?.thread;
         const [openPreviewDialog, setOpenPreviewDialog] = React.useState(false);
@@ -564,7 +566,7 @@ export function EveView(props: any){
                     variant="outlined"
                     //component={Link} to={`${GRAPE_PREVIEW}${item.mint}`}
                     onClick={handleClickOpenPreviewDialog}
-                    sx={{borderRadius:'17px'}}
+                    sx={{borderRadius:'17px',mr:mr,ml:ml}}
                 >
                     {type === 0 ?
                         <><AddCircleIcon /></>
@@ -822,7 +824,6 @@ export function EveView(props: any){
                                                         {item?.metadata}
                                                         {item?.isEncrypted}
                                                         {item.publicKey}
-
                                                         */}
 
                                                         <br/>
@@ -848,8 +849,8 @@ export function EveView(props: any){
                                                                             >
                                                                             ###
                                                                         </Button>
+                                                                        <PostView type={2} thread={item.publicKey} topic={item?.topic} community={item?.community} encrypted={item?.isEncrypted} mr={1} />
                                                                         <PostView type={1} thread={item.publicKey} message={item?.content} topic={item?.topic} community={item?.community} metadata={item?.metadata} encrypted={item?.isEncrypted}  />
-                                                                        <PostView type={2} thread={item.publicKey} topic={item?.topic} community={item?.community} encrypted={item?.isEncrypted} sx={{ml:1}} />
                                                                         <DeletePost thread={item.publicKey}/>  
                                                                     </Grid>                                                                      
                                                                 :
@@ -860,7 +861,7 @@ export function EveView(props: any){
                                                                         //onClick={deletePost}
                                                                         sx={{borderRadius:'17px',mr:1}}
                                                                         >
-                                                                        <ThumbUpIcon />
+                                                                            <ThumbUpIcon />
                                                                         </Button>
                                                                         <PostView type={2} thread={item.publicKey} topic={item?.topic} community={item?.community} encrypted={item?.isEncrypted} />
                                                                     </Grid>
