@@ -756,7 +756,6 @@ export function EveView(props: any){
                                                     </Typography>
                                                 </Grid>
                                                 <Grid item>
-                                                    <PostView type={0} />
                                                     <Button 
                                                         variant='outlined'
                                                         disabled={loadingThreads}
@@ -770,6 +769,7 @@ export function EveView(props: any){
                                                         }
                                                         
                                                     </Button>
+                                                    <PostView type={0} />
                                                 </Grid>
                                             </Grid>
                                         </Typography>
