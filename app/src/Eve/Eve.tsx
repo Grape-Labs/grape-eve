@@ -742,11 +742,13 @@ export function EveView(props: any){
                     alignItems="center"
                     justifyContent={'center'}
                     rowSpacing={8}
+                    sx={{ width: '100%' }}
                 >
                     
                     <Grid 
                         item sm={12}
                         alignItems="center"
+                        sx={{ width: '100%' }}
                     >
 
                         {loading ?
