@@ -15,13 +15,13 @@ pub struct Thread {
     pub topic: String,
     pub content: String,
     pub metadata: String,
-    pub uuid: String
+    pub uuid: String,
 }
 
-const MAX_TOPIC_LENGTH: usize = 50 * 4; // 50 chars max.
-const MAX_CONTENT_LENGTH: usize = 280 * 4; // 280 chars max.
-const METADATA_LENGTH: usize = 280 * 4;
-const UUID_LENGTH: usize = 16;
+pub const MAX_TOPIC_LENGTH: usize = 50 * 4; // 50 chars max.
+pub const MAX_CONTENT_LENGTH: usize = 280 * 4; // 280 chars max.
+pub const METADATA_LENGTH: usize = 280 * 4;
+pub const UUID_LENGTH: usize = 16;
 
 impl Thread {
     pub const SIZE: usize = 8 + /* discriminator */
@@ -53,7 +53,7 @@ impl Thread {
         topic: String,
         content: String,
         metadata: String,
-        uuid: String
+        uuid: String,
     ) {
         self.bump = bump;
         self.author = author;

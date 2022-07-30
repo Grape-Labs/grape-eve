@@ -20,4 +20,8 @@ pub enum Errors {
     TopicTooLong,
     #[msg("The provided content should be 280 characters long maximum.")]
     ContentTooLong,
+    #[msg("You don't hold the needed mint token")]
+    NotEnoughBalance,
+    #[msg("Invalid PubKey provided")]
+    InvalidPubkeyProvided
 }

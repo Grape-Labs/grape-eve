@@ -1,7 +1,7 @@
-pub(crate) mod delete_post;
-pub(crate) mod send_post;
-pub(crate) mod update_post;
+pub(crate) mod create_thread;
+pub(crate) mod delete_thread;
+pub(crate) mod update_thread;
 
-pub(crate) use delete_post::*;
-pub(crate) use send_post::*;
-pub(crate) use update_post::*;
+pub(crate) use create_thread::*;
+pub(crate) use delete_thread::*;
+pub(crate) use update_thread::*;
