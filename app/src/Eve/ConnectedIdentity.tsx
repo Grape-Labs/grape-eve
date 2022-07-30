@@ -45,8 +45,8 @@ import {
     TWITTER_PROXY } from '../utils/grapeTools/constants';
 
 export const ConnectedIdentity = (props:any) => {
-    const [address, setAddress] = React.useState(props.address);
-    const [avatarSize, setAvatarSize] = React.useState(props.avatarSize);
+    const address = props.address;
+    const avatarSize = props.avatarSize;
     const [loadingpicture, setLoadingPicture] = React.useState(false);
     const [solanaDomain, setSolanaDomain] = React.useState(null);
     const [profilePictureUrl, setProfilePictureUrl] = React.useState(null);
@@ -106,19 +106,16 @@ export const ConnectedIdentity = (props:any) => {
 
     
     React.useEffect(() => {    
-        
         if (!loadingpicture){
             //const interval = setTimeout(() => {
                 if (address){
+                    console.log("fetching identity for "+address)
                     fetchProfilePicture();
-                    //if (participating)
-                        fetchSolanaDomain();
-                    //else
-                    //    setSolanaDomain(trimAddress(address, 6))
+                    fetchSolanaDomain();
                 }
             //}, 500);
         }
-    }, []);
+    }, [address]);
     
     if (loadingpicture){
         return (
@@ -134,7 +131,6 @@ export const ConnectedIdentity = (props:any) => {
             </Grid>
         )
     }else{
-        
         if (hasProfilePicture){
             return (
                 <Grid container direction="row">

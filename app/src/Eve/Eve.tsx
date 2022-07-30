@@ -695,7 +695,7 @@ export function EveView(props: any){
         fetchThreads(filter);
     }
 
-    useEffect(() => {
+    React.useEffect(() => {
 		(async () => {
             //if (urlParams){
                 //console.log("PARAMS: "+urlParams);
@@ -792,7 +792,11 @@ export function EveView(props: any){
                                                         
                                                         <Box sx={{ my: 3, mx: 2 }}>
                                                             <Button sx={{color:'white',textTransform:'none',borderRadius:'17px'}} size='large' onClick={() => {fetchFilteredAuthor(item?.author.toBase58())}}>
-                                                                <ConnectedIdentity address={item?.author.toBase58()} avatarSize={60} fetchFilteredAuthor={fetchFilteredAuthor} />
+                                                                {item?.author.toBase58() ?
+                                                                    <ConnectedIdentity address={item.author.toBase58()} avatarSize={60} />
+                                                                :
+                                                                    <>-NAN-</>
+                                                                }
                                                             </Button>
                                                             <br/>
                                                             <Button variant="contained" sx={{borderRadius:'17px',background:'rgba(255,255,255,0.5)',color:'black',textTransform:'none',m:0.5,p:0.5}}onClick={() => {fetchFilteredThreads(item?.topic)}}>
