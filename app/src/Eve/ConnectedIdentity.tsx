@@ -109,6 +109,7 @@ export const ConnectedIdentity = (props:any) => {
         if (!loadingpicture){
             //const interval = setTimeout(() => {
                 if (address){
+                    setSolanaDomain(null);
                     console.log("fetching identity for "+address)
                     fetchProfilePicture();
                     fetchSolanaDomain();
@@ -141,7 +142,7 @@ export const ConnectedIdentity = (props:any) => {
                     </Grid>
                     <Grid item sx={{ml:1}}>
                         <Grid item sx={{textAlign:'left'}}>
-                            {solanaDomain || trimAddress(address,6)}
+                            {solanaDomain}
                         </Grid>
                         
                         <Grid item sx={{}}>
@@ -161,8 +162,16 @@ export const ConnectedIdentity = (props:any) => {
                         <Grid item alignItems="center">
                             <Jazzicon diameter={avatarSize} seed={jsNumberForAddress(address)} />
                         </Grid>
-                        <Grid item  alignItems="center" sx={{ml:1}}>
-                            {solanaDomain || trimAddress(address,6)}
+                        <Grid item sx={{ml:1}}>
+                            <Grid item sx={{textAlign:'left'}}>
+                                {solanaDomain}
+                            </Grid>
+                            
+                            <Grid item sx={{}}>
+                                <Grid item sx={{textAlign:'left'}}>
+                                    <Typography variant="h6" sx={{}}>{trimAddress(address,6)}</Typography>
+                                </Grid>
+                            </Grid>
                         </Grid>
                     </Grid>
                 :
@@ -172,7 +181,13 @@ export const ConnectedIdentity = (props:any) => {
                         </Grid>
                         <Grid item sx={{ml:1}}>
                             <Grid item sx={{textAlign:'left'}}>
-                                {solanaDomain || trimAddress(address,6)}
+                                {solanaDomain}
+                            </Grid>
+                            
+                            <Grid item sx={{}}>
+                                <Grid item sx={{textAlign:'left'}}>
+                                    <Typography variant="h6" sx={{}}>{trimAddress(address,6)}</Typography>
+                                </Grid>
                             </Grid>
                         </Grid>
                     </Grid>
