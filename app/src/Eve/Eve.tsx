@@ -32,6 +32,8 @@ import { useTranslation } from 'react-i18next';
 import moment from 'moment';
 
 import { ConnectedIdentity } from './ConnectedIdentity';
+import { SocialVotes } from './Poll';
+import ShareSocialURL from '../utils/grapeTools/ShareUrl';
 
 import { 
     GRAPE_RPC_ENDPOINT
@@ -219,7 +221,7 @@ export function EveView(props: any){
         //await litclient.connect()
         //window.litNodeClient = litclient
 
-        console.log( "threads: + "+JSON.stringify(program.account.thread.all([]) ));
+        //console.log( "threads: + "+JSON.stringify(program.account.thread.all([]) ));
 
         workspace = {
             wallet,
@@ -267,7 +269,7 @@ export function EveView(props: any){
         }
       }
     */
-            
+
     const threadFilter = threadBase58PublicKey => ([
         {
             memcmp: {
@@ -681,7 +683,7 @@ export function EveView(props: any){
     }
 
     const fetchFilteredThread = (thread:any) => {
-        const filter = [threadFilter(thread)]
+        const filter = []//[threadFilter(thread)]
         fetchThreads(filter);
     }
 
@@ -690,7 +692,6 @@ export function EveView(props: any){
         const filter = communityFilter(community)
         fetchThreads(filter);
     }
-
 
     React.useEffect(() => { 
         if (urlParams){
@@ -831,39 +832,22 @@ export function EveView(props: any){
                                                         <Box sx={{ m: 2 }}>
                                                             <Grid container direction="row">
                                                                 <Grid item xs>
-                                                                    <Button
-                                                                        variant="outlined"
-                                                                        //onClick={deletePost}
-                                                                        sx={{borderRadius:'17px'}}
-                                                                    >
-                                                                        <LinkIcon />
-                                                                    </Button>
+                                                                    <ShareSocialURL url={'https://grape-eve.vercel.app/'+item.publicKey.toBase58()} title={`Topic: ${item?.topic}`} />
                                                                 </Grid>
                                                                 
                                                                 {publicKey && publicKey.toBase58() === item?.author.toBase58() ?
                                                                     <Grid item>
-                                                                        <Button
-                                                                            variant="outlined"
-                                                                            disabled={true}
-                                                                            //onClick={deletePost}
-                                                                            sx={{borderRadius:'17px',mr:1}}
-                                                                            >
-                                                                            ###
-                                                                        </Button>
+                                                                        
+                                                                        <SocialVotes address={item.publicKey.toBase58()} />
+                                                                        
                                                                         <PostView type={2} thread={item.publicKey} topic={item?.topic} community={item?.community} encrypted={item?.isEncrypted} mr={1} />
                                                                         <PostView type={1} thread={item.publicKey} message={item?.content} topic={item?.topic} community={item?.community} metadata={item?.metadata} encrypted={item?.isEncrypted}  />
                                                                         <DeletePost thread={item.publicKey}/>  
                                                                     </Grid>                                                                      
                                                                 :
                                                                     <Grid>
-                                                                        <Button
-                                                                        variant="outlined"
-                                                                        disabled={true}
-                                                                        //onClick={deletePost}
-                                                                        sx={{borderRadius:'17px',mr:1}}
-                                                                        >
-                                                                            <ThumbUpIcon />
-                                                                        </Button>
+                                                                        
+                                                                        <SocialVotes address={item.publicKey.toBase58()} />
                                                                         <PostView type={2} thread={item.publicKey} topic={item?.topic} community={item?.community} encrypted={item?.isEncrypted} />
                                                                     </Grid>
                                                                 }

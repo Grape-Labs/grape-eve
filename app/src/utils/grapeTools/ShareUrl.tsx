@@ -70,7 +70,7 @@ import {
 export default function ShareSocialURL(props:any){
     const shareUrl = props.url;
     const title = props.title;
-    const fontSize = props.fontSize || '20px';
+    const fontSize = props.fontSize || '24px';
 
     const [open_snackbar, setSnackbarState] = React.useState(false);
     const { enqueueSnackbar } = useSnackbar();
@@ -102,8 +102,8 @@ export default function ShareSocialURL(props:any){
     return (
         <>
             <Tooltip title={t('Share')}>
-                <Button size="small" variant="text" onClick={handleClickOpen}
-                    sx={{borderRadius:'24px', color:'white'}}
+                <Button variant="outlined" onClick={handleClickOpen}
+                    sx={{borderRadius:'17px'}}
                 >
                     <IosShareIcon sx={{fontSize:{fontSize}}} />
                 </Button> 
