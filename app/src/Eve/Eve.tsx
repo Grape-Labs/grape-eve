@@ -846,7 +846,6 @@ export function EveView(props: any){
                                                                     </Grid>                                                                      
                                                                 :
                                                                     <Grid>
-                                                                        
                                                                         <SocialVotes address={item.publicKey.toBase58()} />
                                                                         <PostView type={2} thread={item.publicKey} topic={item?.topic} community={item?.community} encrypted={item?.isEncrypted} />
                                                                     </Grid>

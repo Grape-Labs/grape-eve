@@ -71,6 +71,7 @@ export const ConnectedIdentity = (props:any) => {
 
     const fetchSolanaDomain = async () => {
         
+        
         console.log("fetching tryGetName: "+address);
         const cardinal_registration = await tryGetName(
             ggoconnection, 
