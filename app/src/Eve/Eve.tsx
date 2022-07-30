@@ -71,7 +71,8 @@ import {
     Container,
     Radio,
     RadioGroup,
-    LinearProgress
+    LinearProgress,
+    Stack
 } from '@mui/material';
 
 import GrapeIcon from "../components/static/GrapeIcon";
@@ -749,12 +750,12 @@ export function EveView(props: any){
                                         <Typography>
                                             
                                             <Grid container direction="row">
-                                                <Grid item xs={6}>
+                                                <Grid item xs>
                                                     <Typography sx={{mr:1}}>
                                                         X threads / {threads.length} posts
                                                     </Typography>
                                                 </Grid>
-                                                <Grid item xs={6}>
+                                                <Grid item>
                                                     <PostView type={0} />
                                                     <Button 
                                                         variant='outlined'
@@ -777,10 +778,15 @@ export function EveView(props: any){
                                         
                                         {threads.map((item:any, key:number) => {
                                             return (
+                                                <>
+                                                {key > 0 &&
+                                                    <Divider variant="middle" />
+                                                }
                                                 <ListItem alignItems="flex-start" key={key}>
                                                     
-                                                    <Grid container>
-                                                        <Grid item xs={12}>
+                                                    <Box sx={{ width: '100%', bgcolor: 'background.paper', borderRadius:'17px' }}>
+                                                        
+                                                        <Box sx={{ my: 3, mx: 2 }}>
                                                             <Grid container direction='row'>
                                                                 <Avatar sx={{ width: 60, height: 60 }}>
                                                                     <Jazzicon diameter={60} seed={jsNumberForAddress(item?.author.toBase58())} />
@@ -794,18 +800,19 @@ export function EveView(props: any){
                                                                     </Button>
                                                                 </Grid>
                                                             </Grid>
-                                                        </Grid>
-                                                    
-                                                        <Divider />
-                                                    
-                                                        <Grid item xs={12}>
+                                                        </Box>
+                                                        
+                                                        <Divider variant="middle" />
+                                                        
+                                                        <br/>
+                                                        <Box sx={{ m: 2 }}>
                                                             <Typography variant="h5" component='div'>
                                                                 {item?.content} 
                                                                 <Typography component="span" variant="h6" sx={{color:'gray'}}>
                                                                 &nbsp;-&nbsp;{created_ago(+item?.timestamp)}
                                                                 </Typography>
                                                             </Typography>
-                                                        </Grid>
+                                                        </Box>
 
                                                         {/*
                                                         <Button onClick={() => {fetchFilteredCommunity(item?.community.toBase58())}}>{item.community.toBase58()}</Button>
@@ -816,9 +823,11 @@ export function EveView(props: any){
 
                                                         */}
 
-                                                        <Grid item xs={12}>
-                                                            <Grid >
-                                                                <Grid item xs={6}>
+                                                        <br/>
+                                                        <Box sx={{ m: 2 }}>
+                                                            <Grid container direction="row">
+                                                                <Grid item xs>
+                                                                    
                                                                     <Button
                                                                         variant="outlined"
                                                                         //onClick={deletePost}
@@ -829,21 +838,22 @@ export function EveView(props: any){
                                                                 </Grid>
                                                                 
                                                                 {publicKey && publicKey.toBase58() === item?.author.toBase58() ?
-                                                                    <Grid item xs={6}>
+                                                                    <Grid item>
                                                                         <PostView type={1} thread={item.publicKey} message={item?.content} topic={item?.topic} community={item?.community} metadata={item?.metadata} encrypted={item?.isEncrypted}  />
-                                                                        <DeletePost thread={item.publicKey}/>                                                                        
-                                                                    </Grid>
+                                                                        <DeletePost thread={item.publicKey}/>  
+                                                                    </Grid>                                                                      
                                                                 :
-                                                                    <Grid item xs={6}>
+                                                                    <Grid>
                                                                         <PostView type={2} thread={item.publicKey} topic={item?.topic} community={item?.community} encrypted={item?.isEncrypted} />
                                                                     </Grid>
                                                                 }
                                                                 
                                                             </Grid>
-                                                        </Grid>
-                                                    </Grid>
+                                                        </Box>
+                                                    </Box>
 
                                                 </ListItem>
+                                                </>
                                             )
                                         })}
                                         </List>

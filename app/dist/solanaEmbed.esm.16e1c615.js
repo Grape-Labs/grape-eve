@@ -14859,8 +14859,8 @@ exports.pipeline = require("./lib/internal/streams/pipeline.js");
 // OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE
 // USE OR OTHER DEALINGS IN THE SOFTWARE.
 "use strict";
-var global = arguments[3];
 var process = require("process");
+var global = arguments[3];
 module.exports = Readable;
 /*<replacement>*/ var Duplex;
 /*</replacement>*/ Readable.ReadableState = ReadableState;
@@ -31257,8 +31257,8 @@ module.exports = function(iterations, keylen) {
 };
 
 },{}],"T9r9Q":[function(require,module,exports) {
-var process = require("process");
 var global = arguments[3];
+var process = require("process");
 var defaultEncoding;
 /* istanbul ignore next */ if (global.process && global.process.browser) defaultEncoding = "utf-8";
 else if (global.process && global.process.version) {
