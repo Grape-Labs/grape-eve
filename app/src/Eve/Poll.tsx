@@ -80,7 +80,7 @@ export function SocialVotes(props: any){
                 if (socialconnection){
                     //if (socialconnection?.identity){
                     if (socialconnection?.connections[0]?.followStatus) {  
-                        if ((socialconnection?.connections[0].type.toString() === "VOTE")||
+                        if ((socialconnection?.connections[0].type.toString() === "LIKE")||
                             (socialconnection?.connections[0].type.toString() === "FOLLOW"))
                             setIsVoted(socialconnection?.connections[0].followStatus.isFollowing);
                     }
@@ -97,7 +97,7 @@ export function SocialVotes(props: any){
             toAddr,
             namespace: NAME_SPACE,
             network: Network.SOLANA,
-            type: 'VOTE',
+            type: 'LIKE',
         });
         if (resp) {
             setSearchAddrInfo(resp);
@@ -144,16 +144,14 @@ export function SocialVotes(props: any){
             {isVoted ?  
                     <Tooltip title="Remove Yai">
                         <Button 
-                            variant="text" 
+                            variant="outlined" 
                             onClick={() => likeWalletDisconnect(address)}
-                            size="small"
-                            className="profileAvatarIcon"
-                            sx={{borderRadius:'24px', color:'white'}}
+                            sx={{borderRadius:'17px', color:'white', mr:1}}
                             >
                             <ThumbUpIcon sx={{fontSize:'24px', color:'red'}} /> 
-                            {followListInfo?.voted && +followListInfo?.voted > 0 ?
+                            {followListInfo?.liked && +followListInfo?.liked > 0 ?
                                 <Typography variant="caption" sx={{ml:1}}>
-                                    {followListInfo?.voted}
+                                    {followListInfo?.liked}
                                 </Typography>
                             :<></>}
                         </Button>
@@ -161,16 +159,14 @@ export function SocialVotes(props: any){
                 :
                     <Tooltip title="Yai">
                         <Button 
-                            variant="text" 
+                            variant="outlined" 
                             onClick={() => likeWalletConnect(address)}
-                            size="small"
-                            className="profileAvatarIcon"
-                            sx={{borderRadius:'24px', color:'white'}}
+                            sx={{borderRadius:'17px', color:'white', mr:1}}
                             >
                             <ThumbUpBorderIcon sx={{fontSize:'24px'}} /> 
-                            {followListInfo?.voted && +followListInfo?.voted > 0 ?
+                            {followListInfo?.liked && +followListInfo?.liked > 0 ?
                                 <Typography variant="caption" sx={{ml:1}}>
-                                    {followListInfo?.voted}
+                                    {followListInfo?.liked}
                                 </Typography>
                             :<></>}
                         </Button>
