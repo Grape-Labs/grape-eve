@@ -14859,8 +14859,8 @@ exports.pipeline = require("./lib/internal/streams/pipeline.js");
 // OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE
 // USE OR OTHER DEALINGS IN THE SOFTWARE.
 "use strict";
-var process = require("process");
 var global = arguments[3];
+var process = require("process");
 module.exports = Readable;
 /*<replacement>*/ var Duplex;
 /*</replacement>*/ Readable.ReadableState = ReadableState;
@@ -17686,8 +17686,8 @@ function keccak256(str) {
 
 },{"randombytes":"8hjhE","@babel/runtime/helpers/defineProperty":"4x6r7","base64url":"5xeES","keccak":"cOBab","buffer":"fCgem","@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}],"8hjhE":[function(require,module,exports) {
 "use strict";
-var global = arguments[3];
 var process = require("process");
+var global = arguments[3];
 // limit of Crypto.getRandomValues()
 // https://developer.mozilla.org/en-US/docs/Web/API/Crypto/getRandomValues
 var MAX_BYTES = 65536;
@@ -30726,8 +30726,8 @@ function Backoff(opts) {
 
 },{"@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}],"3TBBg":[function(require,module,exports) {
 "use strict";
-var global = arguments[3];
 var Buffer = require("buffer").Buffer;
+var global = arguments[3];
 var EC = require("elliptic").ec;
 var ec = new EC("secp256k1");
 var browserCrypto = global.crypto || global.msCrypto || {};

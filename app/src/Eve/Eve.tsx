@@ -31,6 +31,8 @@ import { useTranslation } from 'react-i18next';
 
 import moment from 'moment';
 
+import { ConnectedIdentity } from './ConnectedIdentity';
+
 import { 
     GRAPE_RPC_ENDPOINT
 } from '../utils/grapeTools/constants';
@@ -79,6 +81,7 @@ import GrapeIcon from "../components/static/GrapeIcon";
 import SolanaIcon from "../components/static/SolIcon";
 import SolCurrencyIcon from '../components/static/SolCurrencyIcon';
 
+import ThumbUpIcon from '@mui/icons-material/ThumbUp';
 import LinkIcon from '@mui/icons-material/Link';
 import AddCircleIcon from '@mui/icons-material/AddCircle';
 import EditIcon from '@mui/icons-material/Edit';
@@ -676,6 +679,7 @@ export function EveView(props: any){
     }
 
     const fetchFilteredAuthor = (author:any) => {
+        //console.log("filtering by author: "+author);
         const filter = [authorFilter(author)]
         fetchThreads(filter);
     }
@@ -787,19 +791,13 @@ export function EveView(props: any){
                                                     <Box sx={{ width: '100%', bgcolor: 'background.paper', borderRadius:'17px' }}>
                                                         
                                                         <Box sx={{ my: 3, mx: 2 }}>
-                                                            <Grid container direction='row'>
-                                                                <Avatar sx={{ width: 60, height: 60 }}>
-                                                                    <Jazzicon diameter={60} seed={jsNumberForAddress(item?.author.toBase58())} />
-                                                                </Avatar>
-                                                                
-                                                                <Grid item sx={{ml:1}}>
-                                                                    <Button sx={{color:'white',textTransform:'none',m:0,p:0.5}} size='large' onClick={() => {fetchFilteredAuthor(item?.author.toBase58())}}><Typography variant="h6" sx={{}}>{item?.author.toBase58()}</Typography></Button>
-                                                                    <br/>
-                                                                    <Button variant="contained" sx={{borderRadius:'17px',background:'rgba(255,255,255,0.5)',color:'black',textTransform:'none',m:0,p:0}}onClick={() => {fetchFilteredThreads(item?.topic)}}>
-                                                                        <Typography variant='caption' sx={{}}>{item?.topic}</Typography>
-                                                                    </Button>
-                                                                </Grid>
-                                                            </Grid>
+                                                            <Button sx={{color:'white',textTransform:'none',borderRadius:'17px'}} size='large' onClick={() => {fetchFilteredAuthor(item?.author.toBase58())}}>
+                                                                <ConnectedIdentity address={item?.author.toBase58()} avatarSize={60} fetchFilteredAuthor={fetchFilteredAuthor} />
+                                                            </Button>
+                                                            <br/>
+                                                            <Button variant="contained" sx={{borderRadius:'17px',background:'rgba(255,255,255,0.5)',color:'black',textTransform:'none',m:0.5,p:0.5}}onClick={() => {fetchFilteredThreads(item?.topic)}}>
+                                                                <Typography variant='subtitle1' sx={{}}>{item?.topic}</Typography>
+                                                            </Button>
                                                         </Box>
                                                         
                                                         <Divider variant="middle" />
@@ -827,7 +825,6 @@ export function EveView(props: any){
                                                         <Box sx={{ m: 2 }}>
                                                             <Grid container direction="row">
                                                                 <Grid item xs>
-                                                                    
                                                                     <Button
                                                                         variant="outlined"
                                                                         //onClick={deletePost}
@@ -839,11 +836,28 @@ export function EveView(props: any){
                                                                 
                                                                 {publicKey && publicKey.toBase58() === item?.author.toBase58() ?
                                                                     <Grid item>
+                                                                        <Button
+                                                                            variant="outlined"
+                                                                            disabled={true}
+                                                                            //onClick={deletePost}
+                                                                            sx={{borderRadius:'17px',mr:1}}
+                                                                            >
+                                                                            ###
+                                                                        </Button>
                                                                         <PostView type={1} thread={item.publicKey} message={item?.content} topic={item?.topic} community={item?.community} metadata={item?.metadata} encrypted={item?.isEncrypted}  />
+                                                                        <PostView type={2} thread={item.publicKey} topic={item?.topic} community={item?.community} encrypted={item?.isEncrypted} sx={{ml:1}} />
                                                                         <DeletePost thread={item.publicKey}/>  
                                                                     </Grid>                                                                      
                                                                 :
                                                                     <Grid>
+                                                                        <Button
+                                                                        variant="outlined"
+                                                                        disabled={true}
+                                                                        //onClick={deletePost}
+                                                                        sx={{borderRadius:'17px',mr:1}}
+                                                                        >
+                                                                        <ThumbUpIcon />
+                                                                        </Button>
                                                                         <PostView type={2} thread={item.publicKey} topic={item?.topic} community={item?.community} encrypted={item?.isEncrypted} />
                                                                     </Grid>
                                                                 }

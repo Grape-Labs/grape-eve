@@ -32,6 +32,8 @@
         "react": "^17.0.0 || ^18.0.0"
     },
     "dependencies": {
+        "@bonfida/spl-name-service": "^0.1.44",
+        "@cardinal/namespaces": "^4.1.35",
         "@emotion/react": "^11.4.1",
         "@emotion/styled": "^11.8.1",
         "@metaplex-foundation/mpl-core": "^0.6.1",
