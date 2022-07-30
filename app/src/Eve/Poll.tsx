@@ -70,7 +70,7 @@ export function SocialVotes(props: any){
     setLoading(false);
   };
 
-    const getLikeStatus = async () => {
+    const getVoteStatus = async () => {
         
         if (publicKey){
             if (address){
@@ -97,7 +97,7 @@ export function SocialVotes(props: any){
             toAddr,
             namespace: NAME_SPACE,
             network: Network.SOLANA,
-            type: 'LIKE',
+            type: 'VOTE',
         });
         if (resp) {
             setSearchAddrInfo(resp);
@@ -114,7 +114,7 @@ export function SocialVotes(props: any){
             console.log(error);
         });
         initFollowListInfo();
-        getLikeStatus();
+        getVoteStatus();
     };
     const likeWalletDisconnect = async (followAddress:string) => {
         // address:string, alias:string
@@ -123,12 +123,12 @@ export function SocialVotes(props: any){
             console.log(error);
         });
         initFollowListInfo();
-        getLikeStatus();
+        getVoteStatus();
     };
     
     React.useEffect(() => {
         initFollowListInfo();
-        getLikeStatus();
+        getVoteStatus();
     },[]);
 
     return ( 
