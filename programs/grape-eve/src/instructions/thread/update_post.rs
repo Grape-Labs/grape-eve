@@ -13,6 +13,7 @@ pub struct UpdatePostArgs {
     pub topic: String,
     pub content: String,
     pub metadata: String,
+    pub ends: u64,
 }
 
 #[derive(Accounts)]
@@ -45,10 +46,11 @@ pub fn update_post(ctx: Context<UpdatePostContext>, args: UpdatePostArgs) -> Res
 
     let bump = thread.bump;
     let uuid = thread.uuid.clone();
-
+    
     thread.update(bump,
                   ctx.accounts.author.key(),
                   Clock::get().unwrap().unix_timestamp as u64,
+                  args.ends,
                   ctx.accounts.community.key(),
                   args.reply_to,
                   args.thread_type,

@@ -13,6 +13,7 @@ pub struct SendPostArgs {
     pub topic: String,
     pub content: String,
     pub metadata: String,
+    pub ends: u64,
     pub uuid: String
 }
 
@@ -55,6 +56,7 @@ pub fn send_post(
     thread.update(*ctx.bumps.get("thread").unwrap(),
                   ctx.accounts.author.key(),
                   Clock::get().unwrap().unix_timestamp as u64,
+                  args.ends as u64,
                   ctx.accounts.community.key(),
                   args.reply_to,
                   args.thread_type,

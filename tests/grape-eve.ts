@@ -11,7 +11,7 @@ describe('grape-eve', () => {
     const program = anchor.workspace.GrapeEve as Program<GrapeEve>;
 
     //console.log("here: "+program.account.thread.all(null))
-
+    /*
     const SendPost = async (author, topic, content, community_type, is_encrypted, metadata, community, reply) => {
         const thread = anchor.web3.Keypair.generate();
         await program.rpc.sendPost(topic, content, {
@@ -24,8 +24,10 @@ describe('grape-eve', () => {
         });
         return thread
     }
+    */
 
     it('checking length', async () => {
+        //const threads = program.account.thread.fetch()
         
         /*
         const threads = program.account.thread.all([]);

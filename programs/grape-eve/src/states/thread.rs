@@ -7,6 +7,7 @@ pub struct Thread {
     pub bump: u8,
     pub author: Pubkey,
     pub timestamp: u64,
+    pub ends: u64,
     pub community: Pubkey,
     pub reply: Pubkey,
     pub thread_type: u8,
@@ -27,6 +28,7 @@ impl Thread {
         std::mem::size_of::<u8>() + /* bump */
         std::mem::size_of::<Pubkey>() + /* author */
         std::mem::size_of::<u64>() + /* timestamp */
+        std::mem::size_of::<u64>() + /* end timestamp */
         std::mem::size_of::<Pubkey>() + /* community */
         std::mem::size_of::<Pubkey>() + /* reply */
         std::mem::size_of::<u8>() + /* thread_type */
@@ -43,6 +45,7 @@ impl Thread {
         bump: u8,
         author: Pubkey,
         timestamp: u64,
+        ends: u64,
         community: Pubkey,
         reply: Pubkey,
         thread_type: u8,
@@ -55,6 +58,7 @@ impl Thread {
         self.bump = bump;
         self.author = author;
         self.timestamp = timestamp;
+        self.ends = ends;
         self.community = community;
         self.reply = reply;
         self.thread_type = thread_type;

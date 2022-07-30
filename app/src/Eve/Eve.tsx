@@ -124,11 +124,12 @@ export function EveView(props: any){
     const [loading, setLoading] = React.useState(false);
     const [loadingThreads, setLoadingThreads] = React.useState(false);
     
+    const [filterThread, setFilterThread] = React.useState(null);
     const {handlekey} = useParams<{ handlekey: string }>();
     const [searchParams, setSearchParams] = useSearchParams();
-    const urlParams = searchParams.get("storage") || searchParams.get("address") || handlekey;
+    const urlParams = searchParams.get("thread") || searchParams.get("address") || handlekey;
     const [threads, setThreads] = React.useState(null);
-    
+
     const { enqueueSnackbar, closeSnackbar } = useSnackbar();
 
     const onError = useCallback(
@@ -212,8 +213,8 @@ export function EveView(props: any){
         const program = new Program<GrapeEve>(IDL, programID, provider);
         //const program = new Program(tidl, programID, provider);
         
-        const litclient = new LitJsSdk.LitNodeClient();
-        const chain = 'solana'
+        //const litclient = new LitJsSdk.LitNodeClient();
+        //const chain = 'solana'
 
         //await litclient.connect()
         //window.litNodeClient = litclient
@@ -225,7 +226,7 @@ export function EveView(props: any){
             connection,
             provider,
             program,
-            litclient
+            //litclient
         }
     }
 
@@ -266,32 +267,15 @@ export function EveView(props: any){
         }
       }
     */
-
-/*
-
-    const DISCRIMINATOR_LENGTH: usize = 8;
-    const PUBLIC_KEY_LENGTH: usize = 32;
-    const TIMESTAMP_LENGTH: usize = 8;
-    const COMMUNITY_LENGTH: usize = 32 + 1;
-    const REPLY_KEY_LENGTH: usize = 32 + 1;
-    const STRING_LENGTH_PREFIX: usize = 4; // Stores the size of the string.
-    const MAX_TOPIC_LENGTH: usize = 50 * 4; // 50 chars max.
-    const MAX_CONTENT_LENGTH: usize = 280 * 4; // 280 chars max.
-    const METADATA_LENGTH: usize = 280 * 4;
-    const COMMUNITYTYPE_LENGTH: usize = 1;
-    const ISENCRYPTED_LENGTH: usize = 1;
-
-        DISCRIMINATOR_LENGTH
-        + PUBLIC_KEY_LENGTH // Author.
-        + TIMESTAMP_LENGTH // Timestamp.
-        + COMMUNITY_LENGTH // Com.
-        + REPLY_KEY_LENGTH; // Reply
-        + COMMUNITYTYPE_LENGTH //
-        + ISENCRYPTED_LENGTH // additional fields
-        + STRING_LENGTH_PREFIX + MAX_TOPIC_LENGTH // Topic.
-        + STRING_LENGTH_PREFIX + MAX_CONTENT_LENGTH // Content.
-        + STRING_LENGTH_PREFIX + METADATA_LENGTH
-*/
+            
+    const threadFilter = threadBase58PublicKey => ([
+        {
+            memcmp: {
+                offset: 0,
+                bytes: threadBase58PublicKey,
+            }
+        }
+    ])
 
     const communityFilter = communityBase58PublicKey => ([
         {
@@ -691,8 +675,13 @@ export function EveView(props: any){
         fetchThreads(filter);
     }
 
-    const fetchFilteredThreads = (topic:any) => {
+    const fetchFilteredTopic = (topic:any) => {
         const filter = [topicFilter(topic)]
+        fetchThreads(filter);
+    }
+
+    const fetchFilteredThread = (thread:any) => {
+        const filter = [threadFilter(thread)]
         fetchThreads(filter);
     }
 
@@ -702,29 +691,24 @@ export function EveView(props: any){
         fetchThreads(filter);
     }
 
-    React.useEffect(() => {
-		(async () => {
-            //if (urlParams){
-                //console.log("PARAMS: "+urlParams);
 
-                setLoading(true);
-                await fetchThreads(null);
-                //console.log("threads: "+JSON.stringify(thrds))
-                setLoading(false);
-
-            /*
-            } else if (wallet?.publicKey) {
-                setLoading(true);
-                // do some magic here...
-                setLoading(false);
-			}*/
-
-		})();
-	}, [])
+    React.useEffect(() => { 
+        if (urlParams){
+            // show unique thread with params
+            console.log("with filter: "+urlParams)
+            fetchFilteredThread(urlParams)
+            //setFilterThread(urlParams);
+        } else{
+            //???
+            setLoading(true);
+            fetchFilteredThread(null);
+            //console.log("threads: "+JSON.stringify(thrds))
+            setLoading(false);
+        }
+    }, [urlParams]);
 	
     return (
         <>
-            
             <Box
                 sx={{ 
                     p: 1, 
@@ -752,8 +736,18 @@ export function EveView(props: any){
                     >
 
                         {loading ?
-                            <Box sx={{ width: '100%' }}>
-                                Loading...
+                            <Box 
+                                sx={{ width: '100%' }}>
+                                <Grid container>
+                                    <Grid 
+                                        item
+                                        alignItems="center"
+                                        justifyContent="center"
+                                        sx={{ width: '100%' }}
+                                    >
+                                        Loading...
+                                    </Grid>
+                                </Grid>
                                 <LinearProgress />
                             </Box>
                         :
@@ -808,7 +802,7 @@ export function EveView(props: any){
                                                                 }
                                                             </Button>
                                                             <br/>
-                                                            <Button variant="contained" sx={{borderRadius:'17px',background:'rgba(255,255,255,0.5)',color:'black',textTransform:'none',m:0.5,p:0.5}}onClick={() => {fetchFilteredThreads(item?.topic)}}>
+                                                            <Button variant="contained" sx={{borderRadius:'17px',background:'rgba(255,255,255,0.5)',color:'black',textTransform:'none',m:0.5,p:0.5}}onClick={() => {fetchFilteredTopic(item?.topic)}}>
                                                                 <Typography variant='subtitle1' sx={{}}>{item?.topic}</Typography>
                                                             </Button>
                                                         </Box>
