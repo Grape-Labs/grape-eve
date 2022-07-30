@@ -599,7 +599,12 @@ export function EveView(props: any){
 
                             {thread &&
                                 <Typography variant='h6'>
-                                    Editing {thread.toBase58()}
+                                    {reply && reply.toBase58() !== new PublicKey(0).toBase58() ? 
+                                        <>Replying to</>
+                                    :
+                                        <>Editing</>
+                                    }
+                                    &nbsp;{thread.toBase58()}
                                 </Typography>
                             }
                             <br/>
