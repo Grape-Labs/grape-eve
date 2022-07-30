@@ -760,7 +760,7 @@ export function EveView(props: any){
                                                         variant='outlined'
                                                         disabled={loadingThreads}
                                                         onClick={() => {fetchThreads()}}
-                                                        sx={{borderRadius:'17px', ml:1}}
+                                                        sx={{borderRadius:'17px', mr:1}}
                                                     >
                                                         {loadingThreads ?
                                                             <>loading...</>
