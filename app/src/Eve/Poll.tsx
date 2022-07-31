@@ -88,7 +88,6 @@ export function SocialVotes(props: any){
                 }
                 setLoadingVotedState(false);
             }
-            
         }
     }
 

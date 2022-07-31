@@ -582,7 +582,7 @@ export function EveView(props: any){
                     variant="outlined"
                     //component={Link} to={`${GRAPE_PREVIEW}${item.mint}`}
                     onClick={handleClickOpenPreviewDialog}
-                    sx={{borderRadius:'17px',mr:mr,ml:ml}}
+                    sx={{borderRadius:'17px',mr:mr,ml:ml,color:'white'}}
                 >
                     {type === 0 ?
                         <><AddCircleIcon /></>
@@ -759,8 +759,8 @@ export function EveView(props: any){
                     mt: 6,
                     mb: 3, 
                     width: '100%',
-                    background: '#13151C',
-                    borderRadius: '24px'
+                    backgroundColor:'rgba(0,0,0,0.5)',
+                    borderRadius:'24px'
                 }}
             > 
                 <Grid 
@@ -809,7 +809,7 @@ export function EveView(props: any){
                                                         variant='outlined'
                                                         disabled={loadingThreads}
                                                         onClick={() => {fetchThreads()}}
-                                                        sx={{borderRadius:'17px', mr:1}}
+                                                        sx={{borderRadius:'17px', mr:1,color:'white'}}
                                                     >
                                                         {loadingThreads ?
                                                             <>loading...</>
@@ -829,11 +829,10 @@ export function EveView(props: any){
                                             return (
                                                 <>
                                                 {key > 0 &&
-                                                    <Divider variant="middle" />
+                                                    <></>
                                                 }
                                                 <ListItem alignItems="flex-start" key={key}>
-                                                    
-                                                    <Box sx={{ width: '100%', bgcolor: 'background.paper', borderRadius:'17px' }}>
+                                                    <Box sx={{ width: '100%', background: 'linear-gradient(to right, #111111, rgba(0,0,0,0.5))', boxShadow:'1px 1px 2px black', borderRadius:'17px' }}>
                                                         
                                                         <Box sx={{ my: 3, mx: 2 }}>
                                                             <Grid container>
@@ -846,7 +845,7 @@ export function EveView(props: any){
                                                                         }
                                                                     </Button>
                                                                     <br/>
-                                                                    <Button variant="contained" sx={{borderRadius:'17px',background:'rgba(255,255,255,0.5)',color:'black',textTransform:'none',m:0.5,p:0.5}}onClick={() => {fetchFilteredTopic(item?.topic)}}>
+                                                                    <Button variant="contained" sx={{borderRadius:'17px',background: 'linear-gradient(to right, #ffffff, rgba(255,255,255,0.5))',color:'black',textTransform:'none',m:0.5,p:0.5}}onClick={() => {fetchFilteredTopic(item?.topic)}}>
                                                                         <Typography variant='subtitle1' sx={{}}>{item?.topic}</Typography>
                                                                     </Button>
                                                                 </Grid>

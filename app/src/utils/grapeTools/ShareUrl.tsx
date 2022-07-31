@@ -103,7 +103,7 @@ export default function ShareSocialURL(props:any){
         <>
             <Tooltip title={t('Share')}>
                 <Button variant="outlined" onClick={handleClickOpen}
-                    sx={{borderRadius:'17px'}}
+                    sx={{borderRadius:'17px',color:'white'}}
                 >
                     <IosShareIcon sx={{fontSize:{fontSize}}} />
                 </Button> 
