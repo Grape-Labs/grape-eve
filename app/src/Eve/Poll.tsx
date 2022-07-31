@@ -5,7 +5,6 @@ import CyberConnect, { Env, Blockchain, ConnectionType } from '@cyberlab/cyberco
 import { Connection, PublicKey, SystemProgram, Transaction, TransactionInstruction } from '@solana/web3.js';
 
 import { styled } from '@mui/material/styles';
-import { Button } from '@mui/material';
 import { useSnackbar } from 'notistack';
 import { FollowListInfoResp, SearchUserInfoResp, Network } from '../utils/cyberConnect/types';
 import { followListInfoQuery, searchUserInfoQuery } from '../utils/cyberConnect/query';
@@ -13,6 +12,8 @@ import { followListInfoQuery, searchUserInfoQuery } from '../utils/cyberConnect/
 import {
     Typography,
     Tooltip,
+    ButtonGroup,
+    Button,
 } from '@mui/material';
 
 import MuiAlert, { AlertProps } from '@mui/material/Alert';
@@ -143,33 +144,47 @@ export function SocialVotes(props: any){
             <>
             {isVoted ?  
                     <Tooltip title="Remove Yai">
-                        <Button 
+                        <ButtonGroup
                             variant="outlined" 
-                            onClick={() => likeWalletDisconnect(address)}
                             sx={{borderRadius:'17px', color:'white', mr:1}}
+                        >
+                            <Button 
+                                onClick={() => likeWalletDisconnect(address)}
                             >
-                            <ThumbUpIcon sx={{fontSize:'24px', color:'red'}} /> 
-                            {followListInfo?.liked && +followListInfo?.liked > 0 ?
-                                <Typography variant="caption" sx={{ml:1}}>
-                                    {followListInfo?.liked}
-                                </Typography>
-                            :<></>}
-                        </Button>
+                                <ThumbUpIcon sx={{fontSize:'24px', color:'red'}} /> 
+                            </Button>
+                            <Button>
+                                {followListInfo?.liked && +followListInfo?.liked > 0 ?
+                                    <Typography variant="body2">
+                                        {followListInfo?.liked}
+                                    </Typography>
+                                :<></>}
+                            </Button>
+                        </ButtonGroup>
                     </Tooltip>
                 :
                     <Tooltip title="Yai">
-                        <Button 
+                        <ButtonGroup
                             variant="outlined" 
-                            onClick={() => likeWalletConnect(address)}
                             sx={{borderRadius:'17px', color:'white', mr:1}}
+                        >
+                            <Button 
+                                onClick={() => likeWalletConnect(address)}
                             >
-                            <ThumbUpBorderIcon sx={{fontSize:'24px'}} /> 
-                            {followListInfo?.liked && +followListInfo?.liked > 0 ?
-                                <Typography variant="caption" sx={{ml:1}}>
-                                    {followListInfo?.liked}
-                                </Typography>
-                            :<></>}
-                        </Button>
+                                <ThumbUpBorderIcon sx={{fontSize:'24px'}} /> 
+                            </Button>
+                            <Button>
+                                {followListInfo?.liked && +followListInfo?.liked > 0 ?
+                                    <Typography variant="caption">
+                                        {followListInfo?.liked && +followListInfo?.liked > 0 ?
+                                            <Typography variant="caption">
+                                                {followListInfo?.liked}???
+                                            </Typography>
+                                        :<></>}
+                                    </Typography>
+                                :<></>}
+                            </Button>
+                        </ButtonGroup>
                     </Tooltip>
             }
             </>

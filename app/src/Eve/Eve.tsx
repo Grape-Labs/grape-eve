@@ -294,7 +294,7 @@ export function EveView(props: any){
             setLoadingThreads(false);     
             return [thread];
         } else{
-            fetchThreads(null);
+            fetchThreads();
         }
         
     }
@@ -325,6 +325,13 @@ export function EveView(props: any){
             bytes: authorBase58PublicKey,
         }
     })
+
+    const genericThreadFilter = nullBase58PublicKey => ({
+        memcmp: {
+            offset: 8, // Discriminator.
+            bytes: new PublicKey(0),
+        }
+    })
     
     const topicFilter = (topic:string) => ({
         memcmp: {
@@ -345,7 +352,10 @@ export function EveView(props: any){
         await initWorkspace();
         const { program } = await useWorkspace()
 
-        //const threadlen = await program.account.thread.all.length
+        if (filters === null){
+            console.log("null filters")
+        }
+
         const thread = await program.account.thread.all(filters);
 
         console.log("t: "+JSON.stringify(thread));
