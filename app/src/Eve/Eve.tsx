@@ -138,6 +138,10 @@ export function EveView(props: any){
     const urlParams = searchParams.get("thread") || searchParams.get("address") || handlekey;
     const [threads, setThreads] = React.useState(null);
 
+    const [threadCount, setThreadCount] = React.useState(0);
+    const [postCount, setPostCount] = React.useState(0);
+    const [replyCount, setReplyCount] = React.useState(0);
+
     const { enqueueSnackbar, closeSnackbar } = useSnackbar();
 
     const onError = useCallback(
@@ -276,7 +280,7 @@ export function EveView(props: any){
       }
     */
 
-      const threadFilter = async (pubkey: string) => {
+    const threadFilter = async (pubkey: string) => {
         if (pubkey && pubkey.length){
             setLoadingThreads(true);
             await initWorkspace();
@@ -362,6 +366,17 @@ export function EveView(props: any){
         //return thread;
         const mptrd = thread.map((thread:any) => new Thread(thread.publicKey, thread.account))
         mptrd.sort((a:any,b:any) => (a.timestamp < b.timestamp) ? 1 : -1);
+
+        let tcnt = 0;
+        for (var x of mptrd){
+            if (x.reply.toBase58() !== (new PublicKey(0)).toBase58())
+                tcnt++;
+        }
+
+        setThreadCount(tcnt);
+        setPostCount(mptrd.length);
+        setReplyCount(mptrd.length - tcnt);
+
         setThreads(mptrd);
         setLoadingThreads(false);     
         return mptrd;
@@ -801,7 +816,7 @@ export function EveView(props: any){
                                             <Grid container direction="row">
                                                 <Grid item xs>
                                                     <Typography sx={{mr:1}}>
-                                                        X threads / {threads.length} posts
+                                                        {threadCount} threads / {replyCount} replies / {postCount} total posts
                                                     </Typography>
                                                 </Grid>
                                                 <Grid item>
@@ -834,7 +849,7 @@ export function EveView(props: any){
                                                 <ListItem alignItems="flex-start" key={key}>
                                                     <Box sx={{ width: '100%', background: 'linear-gradient(to right, #111111, rgba(0,0,0,0.5))', boxShadow:'1px 1px 2px black', borderRadius:'17px' }}>
                                                         
-                                                        <Box sx={{ my: 3, mx: 2 }}>
+                                                        <Box sx={{ my: 1, mx: 1 }}>
                                                             <Grid container>
                                                                 <Grid item xs>
                                                                     <Button sx={{color:'white',textTransform:'none',borderRadius:'17px'}} size='large' onClick={() => {fetchFilteredAuthor(item?.author.toBase58())}}>
@@ -844,13 +859,16 @@ export function EveView(props: any){
                                                                             <>-NAN-</>
                                                                         }
                                                                     </Button>
-                                                                    <br/>
-                                                                    <Button variant="contained" sx={{borderRadius:'17px',background: 'linear-gradient(to right, #ffffff, rgba(255,255,255,0.5))',color:'black',textTransform:'none',m:0.5,p:0.5}}onClick={() => {fetchFilteredTopic(item?.topic)}}>
-                                                                        <Typography variant='subtitle1' sx={{}}>{item?.topic}</Typography>
-                                                                    </Button>
                                                                 </Grid>
                                                                 <Grid item>
-                                                                    <SocialVotes address={item.publicKey.toBase58()} />
+                                                                    <Grid container>
+                                                                        <Button variant="contained" sx={{borderRadius:'17px',background: 'linear-gradient(to right, #ffffff, rgba(255,255,255,0.5))',color:'black',textTransform:'none',mr:2}}onClick={() => {fetchFilteredTopic(item?.topic)}}>
+                                                                            <Typography variant='subtitle1' sx={{}}>#{item?.topic}</Typography>
+                                                                        </Button>
+
+                                                                        <SocialVotes address={item.publicKey.toBase58()} />
+                                                                    </Grid>
+
                                                                 </Grid>
                                                             </Grid>
                                                         </Box>
@@ -860,6 +878,11 @@ export function EveView(props: any){
                                                         <br/>
                                                         <Box sx={{ m: 2 }}>
                                                             <Typography variant="h5" component='div'>
+                                                                
+                                                                {item?.reply && item?.reply.toBase58() !== new PublicKey(0).toBase58() &&
+                                                                    <Typography component='div' variant="caption"><ReplyIcon fontSize='small' sx={{color:'rgba:(255,255,255,0.5)'}} /> REPLYING TO: {item.reply.toBase58()}</Typography>
+                                                                }
+                                                                {/* make a fetch reply object */}
                                                                 {item?.content} 
                                                                 <Typography component="span" variant="h6" sx={{color:'gray'}}>
                                                                 &nbsp;-&nbsp;{created_ago(+item?.timestamp)}
