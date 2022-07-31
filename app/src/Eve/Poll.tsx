@@ -143,49 +143,56 @@ export function SocialVotes(props: any){
         :
             <>
             {isVoted ?  
-                    <Tooltip title="Remove Yai">
-                        <ButtonGroup
-                            variant="outlined" 
-                            sx={{borderRadius:'17px', color:'white', mr:1}}
-                        >
+                    
+                    <ButtonGroup
+                        variant="outlined" 
+                        sx={{mr:1}}
+                    >
+                        <Tooltip title="Unlike this post">
                             <Button 
                                 onClick={() => likeWalletDisconnect(address)}
+                                sx={{borderTopLeftRadius:'17px', borderBottomLeftRadius:'17px', color:'white'}}
                             >
-                                <ThumbUpIcon sx={{fontSize:'24px', color:'red'}} /> 
+                                <ThumbUpIcon sx={{fontSize:'24px'}} /> 
                             </Button>
-                            <Button>
-                                {followListInfo?.liked && +followListInfo?.liked > 0 ?
-                                    <Typography variant="body2">
-                                        {followListInfo?.liked}
-                                    </Typography>
-                                :<></>}
-                            </Button>
-                        </ButtonGroup>
-                    </Tooltip>
-                :
-                    <Tooltip title="Yai">
-                        <ButtonGroup
-                            variant="outlined" 
-                            sx={{borderRadius:'17px', color:'white', mr:1}}
+                        </Tooltip>
+                        <Button
+                            sx={{borderTopRightRadius:'17px', borderBottomRightRadius:'17px', color:'white'}}
                         >
+                            {followListInfo?.liked && +followListInfo?.liked > 0 ?
+                                <Typography variant="body2">
+                                    {followListInfo?.liked}
+                                </Typography>
+                            :<>0</>}
+                        </Button>
+                    </ButtonGroup>
+                :
+                    <ButtonGroup
+                        variant="outlined" 
+                        sx={{borderRadius:'17px', color:'white', mr:1}}
+                    >
+                        <Tooltip title="Like this post">
                             <Button 
                                 onClick={() => likeWalletConnect(address)}
+                                sx={{borderTopLeftRadius:'17px', borderBottomLeftRadius:'17px', color:'white'}}
                             >
                                 <ThumbUpBorderIcon sx={{fontSize:'24px'}} /> 
                             </Button>
-                            <Button>
-                                {followListInfo?.liked && +followListInfo?.liked > 0 ?
-                                    <Typography variant="caption">
-                                        {followListInfo?.liked && +followListInfo?.liked > 0 ?
-                                            <Typography variant="caption">
-                                                {followListInfo?.liked}???
-                                            </Typography>
-                                        :<></>}
-                                    </Typography>
-                                :<></>}
-                            </Button>
-                        </ButtonGroup>
-                    </Tooltip>
+                        </Tooltip>
+                        <Button
+                            sx={{borderTopRightRadius:'17px', borderBottomRightRadius:'17px', color:'white'}}
+                        >
+                            {followListInfo?.liked && +followListInfo?.liked > 0 ?
+                                <Typography variant="caption">
+                                    {followListInfo?.liked && +followListInfo?.liked > 0 ?
+                                        <Typography variant="caption">
+                                            {followListInfo?.liked}
+                                        </Typography>
+                                    :<>0</>}
+                                </Typography>
+                            :<>0</>}
+                        </Button>
+                    </ButtonGroup>
             }
             </>
         }

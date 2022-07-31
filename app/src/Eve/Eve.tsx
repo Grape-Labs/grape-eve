@@ -836,17 +836,24 @@ export function EveView(props: any){
                                                     <Box sx={{ width: '100%', bgcolor: 'background.paper', borderRadius:'17px' }}>
                                                         
                                                         <Box sx={{ my: 3, mx: 2 }}>
-                                                            <Button sx={{color:'white',textTransform:'none',borderRadius:'17px'}} size='large' onClick={() => {fetchFilteredAuthor(item?.author.toBase58())}}>
-                                                                {item?.author.toBase58() ?
-                                                                    <ConnectedIdentity address={item.author.toBase58()} avatarSize={60} />
-                                                                :
-                                                                    <>-NAN-</>
-                                                                }
-                                                            </Button>
-                                                            <br/>
-                                                            <Button variant="contained" sx={{borderRadius:'17px',background:'rgba(255,255,255,0.5)',color:'black',textTransform:'none',m:0.5,p:0.5}}onClick={() => {fetchFilteredTopic(item?.topic)}}>
-                                                                <Typography variant='subtitle1' sx={{}}>{item?.topic}</Typography>
-                                                            </Button>
+                                                            <Grid container>
+                                                                <Grid item xs>
+                                                                    <Button sx={{color:'white',textTransform:'none',borderRadius:'17px'}} size='large' onClick={() => {fetchFilteredAuthor(item?.author.toBase58())}}>
+                                                                        {item?.author.toBase58() ?
+                                                                            <ConnectedIdentity address={item.author.toBase58()} avatarSize={60} />
+                                                                        :
+                                                                            <>-NAN-</>
+                                                                        }
+                                                                    </Button>
+                                                                    <br/>
+                                                                    <Button variant="contained" sx={{borderRadius:'17px',background:'rgba(255,255,255,0.5)',color:'black',textTransform:'none',m:0.5,p:0.5}}onClick={() => {fetchFilteredTopic(item?.topic)}}>
+                                                                        <Typography variant='subtitle1' sx={{}}>{item?.topic}</Typography>
+                                                                    </Button>
+                                                                </Grid>
+                                                                <Grid item>
+                                                                    <SocialVotes address={item.publicKey.toBase58()} />
+                                                                </Grid>
+                                                            </Grid>
                                                         </Box>
                                                         
                                                         <Divider variant="middle" />
@@ -878,17 +885,13 @@ export function EveView(props: any){
                                                                 
                                                                 {publicKey && publicKey.toBase58() === item?.author.toBase58() ?
                                                                     <Grid item>
-                                                                        
-                                                                        <SocialVotes address={item.publicKey.toBase58()} />
-                                                                        
                                                                         <PostView type={2} thread={item.publicKey} topic={item?.topic} community={item?.community} encrypted={item?.isEncrypted} mr={1} />
                                                                         <PostView type={1} thread={item.publicKey} message={item?.content} topic={item?.topic} community={item?.community} metadata={item?.metadata} encrypted={item?.isEncrypted}  />
                                                                         <DeletePost thread={item.publicKey}/>  
                                                                     </Grid>                                                                      
                                                                 :
                                                                     <Grid>
-                                                                        <SocialVotes address={item.publicKey.toBase58()} />
-                                                                        <PostView type={2} thread={item.publicKey} topic={item?.topic} community={item?.community} encrypted={item?.isEncrypted} />
+                                                                       <PostView type={2} thread={item.publicKey} topic={item?.topic} community={item?.community} encrypted={item?.isEncrypted} />
                                                                     </Grid>
                                                                 }
                                                                 
