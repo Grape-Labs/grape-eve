@@ -20,7 +20,7 @@ var relativeTime = require('dayjs/plugin/relativeTime')
 import { Thread } from '../models'
 
 import { 
-    Provider, Program, web3 
+    AnchorProvider, Program, web3
 } from '@project-serum/anchor'
 
 import { useSnackbar } from 'notistack';
@@ -209,7 +209,7 @@ export function EveView(props: any){
             const connection = new Connection(clusterUrl);
             
             //const provider = new AnchorProvider(
-            const provider = new Provider(
+            const provider = new AnchorProvider(
                     connection, wallet, {
                 commitment: "processed"
             },
