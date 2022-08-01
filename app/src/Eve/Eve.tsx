@@ -2,12 +2,13 @@ import React, { useEffect, useCallback, useRef } from "react";
 import { Link, useParams, useSearchParams } from "react-router-dom";
 //import { ShdwDrive } from "@shadow-drive/sdk";
 import { useConnection, useWallet } from "@solana/wallet-adapter-react";
-import { LAMPORTS_PER_SOL, Connection, PublicKey, Transaction } from '@solana/web3.js';
+import {LAMPORTS_PER_SOL, Connection, PublicKey, Transaction, TransactionInstruction} from '@solana/web3.js';
 import { Schema, deserializeUnchecked, deserialize } from "borsh";
 import { TokenAmount } from '../utils/grapeTools/safe-math';
 import { GrapeEve, IDL } from '../../types/grape_eve';
 import {getCommunity, getThread, EVE_PROGRAM_ID} from "../../types/pdas";
 import tidl from '../../types/grape_eve.json';
+import { v4 as uuidv4 } from 'uuid';
 
 import bs58 from 'bs58';
 import BN from 'bn.js';
@@ -96,6 +97,7 @@ import ReplyIcon from '@mui/icons-material/Reply';
 
 import { buffer } from "node:stream/consumers";
 import { responsiveProperty } from "@mui/material/styles/cssUtils";
+import {createAssociatedTokenAccountInstruction, getAssociatedTokenAddress, NATIVE_MINT} from "@solana/spl-token-v2";
 
 const myTheme = createTheme({
     // Set up your custom MUI theme here
@@ -129,7 +131,7 @@ export function EveView(props: any){
 
     //const client = new LitJsSdk.LitNodeClient();
 	const wallet = useWallet();
-    const {publicKey, sendTransaction, signTransaction} = useWallet();
+    const {publicKey, sendTransaction } = useWallet();
     const [loading, setLoading] = React.useState(false);
     const [loadingThreads, setLoadingThreads] = React.useState(false);
     
@@ -383,17 +385,29 @@ export function EveView(props: any){
         return mptrd;
     }
 
-    const newCommunity = async (title:string, metadata:string, mint:PublicKey, uuid:string) => {
+
+    async function getOrCreateTokenAccountInstruction(mint: PublicKey, user: PublicKey, connection: Connection, payer: PublicKey|null = null): Promise<TransactionInstruction | null> {
+        const userTokenAccountAddress = await getAssociatedTokenAddress(mint, user, false);
+        const userTokenAccount = await connection.getParsedAccountInfo(userTokenAccountAddress);
+        if (userTokenAccount.value === null) {
+            return createAssociatedTokenAccountInstruction(payer ? payer : user, userTokenAccountAddress, user, mint);
+        } else {
+            return null;
+        }
+    }
+
+    const newCommunity = async (title:string, metadata:string, _mint:PublicKey, _uuid: string) => {
         await initWorkspace();
         const { program, connection, wallet } = useWorkspace()
-        
+
+        const uuid = uuidv4().slice(0, 6);
+        console.log(`uuid ${JSON.stringify(uuid, null, 2)}`);
+        console.log(`uuid ${typeof uuid}`)
         const [community] = await getCommunity(uuid);
-        //const community = web3.Keypair.generate()
+        console.log(`community ${community.toBase58()}`)
 
         try{
             enqueueSnackbar(`Preparing to create a new community`,{ variant: 'info' });
-            
-            const uuid = '0';
             const args: IdlTypes<GrapeEve>["CreateCommunityArgs"] = {
                 title: title,
                 metadata: metadata,
@@ -401,116 +415,34 @@ export function EveView(props: any){
             }
             const accounts = {
                 owner: publicKey,
-                mint: mint,
+                mint: NATIVE_MINT,
                 community: community
             }
-
-            console.log("communityPDA: "+community.toBase58())
-            /*
-            console.log("Title: "+title)
-            console.log("Metadata: "+metadata)
-            console.log("uuid: "+uuid)
-            console.log("owner: "+publicKey.toBase58())
-            */
-            console.log("args: "+JSON.stringify(args))
-            console.log("accounts: "+JSON.stringify(accounts))
-
-            /*
-            const signedTransaction = await program.rpc
-                .createCommunity(args,
-                {
-                    accounts:{
-                        owner: publicKey,
-                        mint: mint,
-                        community: community,
-                        systemProgram: web3.SystemProgram.programId,
-                    }
-                },
-            );
-            */
-
-            
-            const transaction = await program.methods
+            const tokenInstruction: TransactionInstruction = await getOrCreateTokenAccountInstruction(NATIVE_MINT, publicKey, connection);
+            const createCommunityInstruction: TransactionInstruction = await program.methods
                 .createCommunity(args)
                 .accounts(accounts)
-                //.signers(publicKey)
-                .transaction()
-            
+                .instruction()
 
-           /*
-            const signedTransaction = await program.methods
-                .createCommunity(args)
-                .accounts(accounts)
-                .signers([publicKey])
-                .rpc();
-                //.transaction()
-            
-            /*
-                .rpc({commitment: "confirmed"});
-            */
-            
-                /*
-            console.log("txn "+JSON.stringify(txn));
-
+            const blockDetails = await connection.getLatestBlockhash();
             const transaction = new Transaction();
-            const instructionsArray = [txn.instructions].flat();            
-            transaction.add(
-                ...instructionsArray
-            ); 
-            */
-            console.log("transaction: "+JSON.stringify(transaction))
-            /*
-            const signedTransaction = await program.rpc
-                .createCommunity(args,
-                {
-                    accounts:{
-                        owner: publicKey,
-                        mint: mint,
-                        community: community,
-                        systemProgram: web3.SystemProgram.programId,
-                    }
-                },
-            );
-            */
-            const signedTransaction = await sendTransaction(transaction, connection);  
+            transaction.recentBlockhash = blockDetails.blockhash;
+            transaction.feePayer = publicKey;
+            for (const i of [tokenInstruction, createCommunityInstruction]) {
+                if (i) {
+                    transaction.add(i);
+                }
+            }
+
+            const signedTransaction = await sendTransaction(transaction, connection, {
+                skipPreflight: true,
+                preflightCommitment: "confirmed"
+            });
+            console.log(`signedTransaction ${signedTransaction}`)
+            const conf = await connection.confirmTransaction(signedTransaction);
+            console.log(`conf ${JSON.stringify(conf, null, 2)}`);
             
-            console.log("signed: "+JSON.stringify(signedTransaction))
-
-            /*
-            const signedTransaction = await program.rpc
-                .createCommunity(args,
-                {
-                    accounts:{
-                        owner: publicKey,
-                        mint: mint,
-                        community: community,
-                        systemProgram: web3.SystemProgram.programId,
-                    }
-                },
-            );
-            */
-            
-
-            console.log("signed...")
-            console.log("Signed Transaction: "+JSON.stringify(signedTransaction));
-
             const communityAccount = await program.account.community.fetch(community);
-
-            console.log("communityAccount: "+JSON.stringify(communityAccount));
-
-            /*
-            const signedTransaction = await program.rpc
-                .createCommunity(args,
-                    {
-                        accounts:{
-                            owner: publicKey,
-                            mint: mint,
-                            community: community
-                        }
-                    },
-                    signers: [publicKey]
-                );
-            */
 
             const snackprogress = (key:any) => (
                 <CircularProgress sx={{padding:'10px'}} />
