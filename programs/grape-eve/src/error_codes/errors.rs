@@ -8,10 +8,6 @@ pub enum Errors {
     IncorrectOwner,
     #[msg("Uninitialized Account")]
     UninitializedAccount,
-    #[msg("Lootbox Closed")]
-    LootboxClosed,
-    #[msg("Invalid Fee")]
-    InvalidFee,
     #[msg("Numerical Overflow")]
     NumericalOverflow,
     #[msg("Unsure Error")]

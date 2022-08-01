@@ -29,7 +29,7 @@ describe('grape-eve', () => {
     const tokenMintAuthority = Keypair.generate();
     let mint: PublicKey;
 
-    it("Airdrop Applicant", async () => {
+    it("Airdrop", async () => {
         for (const i of [community_owner, thread_author, non_thread_author, non_mint_holder, tokenMintAuthority]) {
             await airdrop(program, i.publicKey, LAMPORTS_PER_SOL)
         }
