@@ -399,9 +399,13 @@ export function EveView(props: any){
                 metadata: metadata,
                 uuid: uuid
             }
-            
-            console.log(community.toBase58())
-            console.log("attempting: "+uuid+' : '+metadata+' : '+title)
+
+            console.log("communityPDA: "+community.toBase58())
+            console.log("Title: "+title)
+            console.log("Metadata: "+metadata)
+            console.log("uuid: "+uuid)
+            console.log("owner: "+publicKey.toBase58())
+            console.log("args: "+JSON.stringify(args))
 
             const signedTransaction = await program.methods
                 .createCommunity(args)
@@ -412,8 +416,13 @@ export function EveView(props: any){
                 })
                 .signers([publicKey])
                 .rpc({commitment: "confirmed"});
-
+            
+            console.log("signed...")
             console.log("Signed Transaction: "+JSON.stringify(signedTransaction));
+
+            const communityAccount = await program.account.community.fetch(community);
+
+            console.log("communityAccount: "+JSON.stringify(communityAccount));
 
             /*
             const signedTransaction = await program.rpc

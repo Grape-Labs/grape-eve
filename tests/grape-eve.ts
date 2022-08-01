@@ -86,7 +86,7 @@ describe('grape-eve', () => {
             metadata: COMMUNITY_METADATA,
             uuid: COMMUNITY_UUID
         }
-
+        
         await program.methods
             .createCommunity(args)
             .accounts({
