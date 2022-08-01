@@ -2,7 +2,7 @@ import React, { useEffect, useCallback, useRef } from "react";
 import { Link, useParams, useSearchParams } from "react-router-dom";
 //import { ShdwDrive } from "@shadow-drive/sdk";
 import { useConnection, useWallet } from "@solana/wallet-adapter-react";
-import { LAMPORTS_PER_SOL, Connection, PublicKey } from '@solana/web3.js';
+import { LAMPORTS_PER_SOL, Connection, PublicKey, Transaction } from '@solana/web3.js';
 import { Schema, deserializeUnchecked, deserialize } from "borsh";
 import { TokenAmount } from '../utils/grapeTools/safe-math';
 import { GrapeEve, IDL } from '../../types/grape_eve';
@@ -129,7 +129,7 @@ export function EveView(props: any){
 
     //const client = new LitJsSdk.LitNodeClient();
 	const wallet = useWallet();
-    const {publicKey} = useWallet();
+    const {publicKey, sendTransaction, signTransaction} = useWallet();
     const [loading, setLoading] = React.useState(false);
     const [loadingThreads, setLoadingThreads] = React.useState(false);
     
@@ -385,7 +385,8 @@ export function EveView(props: any){
 
     const newCommunity = async (title:string, metadata:string, mint:PublicKey, uuid:string) => {
         await initWorkspace();
-        const { program } = useWorkspace()
+        const { program, connection, wallet } = useWorkspace()
+        
         const [community] = await getCommunity(uuid);
         //const community = web3.Keypair.generate()
 
@@ -414,14 +415,68 @@ export function EveView(props: any){
             console.log("args: "+JSON.stringify(args))
             console.log("accounts: "+JSON.stringify(accounts))
 
+            /*
+            const signedTransaction = await program.rpc
+                .createCommunity(args,
+                {
+                    accounts:{
+                        owner: publicKey,
+                        mint: mint,
+                        community: community,
+                        systemProgram: web3.SystemProgram.programId,
+                    }
+                },
+            );
+            */
+
+            
+            const transaction = await program.methods
+                .createCommunity(args)
+                .accounts(accounts)
+                //.signers(publicKey)
+                .transaction()
+            
+
+           /*
             const signedTransaction = await program.methods
                 .createCommunity(args)
                 .accounts(accounts)
-                //.signers([publicKey])
-                .rpc({commitment: "confirmed"});
+                .signers([publicKey])
+                .rpc();
+                //.transaction()
             
-
+            /*
+                .rpc({commitment: "confirmed"});
+            */
+            
                 /*
+            console.log("txn "+JSON.stringify(txn));
+
+            const transaction = new Transaction();
+            const instructionsArray = [txn.instructions].flat();            
+            transaction.add(
+                ...instructionsArray
+            ); 
+            */
+            console.log("transaction: "+JSON.stringify(transaction))
+            /*
+            const signedTransaction = await program.rpc
+                .createCommunity(args,
+                {
+                    accounts:{
+                        owner: publicKey,
+                        mint: mint,
+                        community: community,
+                        systemProgram: web3.SystemProgram.programId,
+                    }
+                },
+            );
+            */
+            const signedTransaction = await sendTransaction(transaction, connection);  
+            
+            console.log("signed: "+JSON.stringify(signedTransaction))
+
+            /*
             const signedTransaction = await program.rpc
                 .createCommunity(args,
                 {
@@ -688,7 +743,7 @@ export function EveView(props: any){
         const [community, setCommunity] = React.useState(props?.community || new PublicKey(0));
         const [communityName, setCommunityName] = React.useState(props?.communityName || null);
         const [communityMint, setCommunityMint] = React.useState(props?.communityMint || new PublicKey(0));
-        const [uuid, setUUID] = React.useState(props?.uuid || "nothing");
+        const [uuid, setUUID] = React.useState(props?.uuid || null);
         
         const {publicKey} = useWallet();
 
