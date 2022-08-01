@@ -202,7 +202,8 @@ export function EveView(props: any){
     //export const  initWorkspace = () => {
     async function initWorkspace() {  
         const clusterUrl = 'https://api.devnet.solana.com'; //'https://ssc-dao.genesysgo.net/';//process.env.VUE_APP_CLUSTER_URL
-        const grapeEveId = "2rbW644hAFC43trjcsbrpPQjGvUHz6q3k4D3kZYSZigB";
+        //const grapeEveId = "2rbW644hAFC43trjcsbrpPQjGvUHz6q3k4D3kZYSZigB";
+        const grapeEveId = "BFWcpbojQhtjeuHCLnrz8fMZzExDD4K7YGdJkgpbug9X";
         const programID = new PublicKey(grapeEveId);
         
         const connection = new Connection(clusterUrl)

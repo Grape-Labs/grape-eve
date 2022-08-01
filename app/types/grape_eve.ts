@@ -1,136 +1,270 @@
 export type GrapeEve = {
-  "version": "0.1.2",
+  "version": "0.1.3",
   "name": "grape_eve",
   "instructions": [
     {
-      "name": "sendPost",
+      "name": "createThread",
       "accounts": [
-        {
-          "name": "thread",
-          "isMut": true,
-          "isSigner": true
-        },
         {
           "name": "author",
           "isMut": true,
           "isSigner": true
+        },
+        {
+          "name": "thread",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "mint",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "community",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "authorTokenAccount",
+          "isMut": true,
+          "isSigner": false
         },
         {
           "name": "systemProgram",
           "isMut": false,
           "isSigner": false
+        },
+        {
+          "name": "rent",
+          "isMut": false,
+          "isSigner": false
         }
       ],
       "args": [
         {
-          "name": "topic",
-          "type": "string"
+          "name": "args",
+          "type": {
+            "defined": "CreateThreadArgs"
+          }
+        }
+      ]
+    },
+    {
+      "name": "updateThread",
+      "accounts": [
+        {
+          "name": "author",
+          "isMut": true,
+          "isSigner": true
         },
         {
-          "name": "content",
-          "type": "string"
-        },
-        {
-          "name": "metadata",
-          "type": "string"
-        },
-        {
-          "name": "threadType",
-          "type": "i8"
-        },
-        {
-          "name": "isEncrypted",
-          "type": "i8"
+          "name": "thread",
+          "isMut": true,
+          "isSigner": false
         },
         {
           "name": "community",
-          "type": {
-            "option": "publicKey"
-          }
-        },
-        {
-          "name": "reply",
-          "type": {
-            "option": "publicKey"
-          }
-        }
-      ]
-    },
-    {
-      "name": "updatePost",
-      "accounts": [
-        {
-          "name": "thread",
-          "isMut": true,
+          "isMut": false,
           "isSigner": false
         },
         {
-          "name": "author",
+          "name": "mint",
           "isMut": false,
-          "isSigner": true
+          "isSigner": false
+        },
+        {
+          "name": "authorTokenAccount",
+          "isMut": true,
+          "isSigner": false
         }
       ],
       "args": [
         {
-          "name": "topic",
-          "type": "string"
-        },
-        {
-          "name": "content",
-          "type": "string"
+          "name": "args",
+          "type": {
+            "defined": "UpdateThreadArgs"
+          }
         }
       ]
     },
     {
-      "name": "deletePost",
+      "name": "deleteThread",
       "accounts": [
+        {
+          "name": "author",
+          "isMut": true,
+          "isSigner": true
+        },
         {
           "name": "thread",
           "isMut": true,
           "isSigner": false
         },
         {
-          "name": "author",
+          "name": "community",
           "isMut": false,
-          "isSigner": true
+          "isSigner": false
+        },
+        {
+          "name": "mint",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "authorTokenAccount",
+          "isMut": true,
+          "isSigner": false
         }
       ],
       "args": []
+    },
+    {
+      "name": "createCommunity",
+      "accounts": [
+        {
+          "name": "owner",
+          "isMut": true,
+          "isSigner": true
+        },
+        {
+          "name": "mint",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "community",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "systemProgram",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "rent",
+          "isMut": false,
+          "isSigner": false
+        }
+      ],
+      "args": [
+        {
+          "name": "args",
+          "type": {
+            "defined": "CreateCommunityArgs"
+          }
+        }
+      ]
+    },
+    {
+      "name": "editCommunity",
+      "accounts": [
+        {
+          "name": "owner",
+          "isMut": true,
+          "isSigner": true
+        },
+        {
+          "name": "mint",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "community",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "systemProgram",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "rent",
+          "isMut": false,
+          "isSigner": false
+        }
+      ],
+      "args": [
+        {
+          "name": "args",
+          "type": {
+            "defined": "EditCommunityArgs"
+          }
+        }
+      ]
     }
   ],
   "accounts": [
+    {
+      "name": "community",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "bump",
+            "type": "u8"
+          },
+          {
+            "name": "uuid",
+            "type": "string"
+          },
+          {
+            "name": "mint",
+            "type": "publicKey"
+          },
+          {
+            "name": "owner",
+            "type": "publicKey"
+          },
+          {
+            "name": "title",
+            "type": "string"
+          },
+          {
+            "name": "metadata",
+            "type": "string"
+          }
+        ]
+      }
+    },
     {
       "name": "thread",
       "type": {
         "kind": "struct",
         "fields": [
           {
+            "name": "bump",
+            "type": "u8"
+          },
+          {
             "name": "author",
             "type": "publicKey"
           },
           {
             "name": "timestamp",
-            "type": "i64"
+            "type": "u64"
+          },
+          {
+            "name": "ends",
+            "type": "u64"
           },
           {
             "name": "community",
-            "type": {
-              "option": "publicKey"
-            }
+            "type": "publicKey"
           },
           {
             "name": "reply",
-            "type": {
-              "option": "publicKey"
-            }
+            "type": "publicKey"
           },
           {
             "name": "threadType",
-            "type": "i8"
+            "type": "u8"
           },
           {
             "name": "isEncrypted",
-            "type": "i8"
+            "type": "bool"
           },
           {
             "name": "topic",
@@ -143,6 +277,10 @@ export type GrapeEve = {
           {
             "name": "metadata",
             "type": "string"
+          },
+          {
+            "name": "uuid",
+            "type": "string"
           }
         ]
       }
@@ -150,155 +288,444 @@ export type GrapeEve = {
   ],
   "types": [
     {
-      "name": "ErrorCode",
+      "name": "CreateCommunityArgs",
       "type": {
-        "kind": "enum",
-        "variants": [
+        "kind": "struct",
+        "fields": [
           {
-            "name": "TopicTooLong"
+            "name": "title",
+            "type": "string"
           },
           {
-            "name": "ContentTooLong"
+            "name": "metadata",
+            "type": "string"
+          },
+          {
+            "name": "uuid",
+            "type": "string"
           }
         ]
       }
+    },
+    {
+      "name": "EditCommunityArgs",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "title",
+            "type": "string"
+          },
+          {
+            "name": "metadata",
+            "type": "string"
+          }
+        ]
+      }
+    },
+    {
+      "name": "CreateThreadArgs",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "replyTo",
+            "type": "string"
+          },
+          {
+            "name": "threadType",
+            "type": "u8"
+          },
+          {
+            "name": "isEncrypted",
+            "type": "bool"
+          },
+          {
+            "name": "topic",
+            "type": "string"
+          },
+          {
+            "name": "content",
+            "type": "string"
+          },
+          {
+            "name": "metadata",
+            "type": "string"
+          },
+          {
+            "name": "ends",
+            "type": "u64"
+          },
+          {
+            "name": "uuid",
+            "type": "string"
+          }
+        ]
+      }
+    },
+    {
+      "name": "UpdateThreadArgs",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "replyTo",
+            "type": "string"
+          },
+          {
+            "name": "threadType",
+            "type": "u8"
+          },
+          {
+            "name": "isEncrypted",
+            "type": "bool"
+          },
+          {
+            "name": "topic",
+            "type": "string"
+          },
+          {
+            "name": "content",
+            "type": "string"
+          },
+          {
+            "name": "metadata",
+            "type": "string"
+          },
+          {
+            "name": "ends",
+            "type": "u64"
+          }
+        ]
+      }
+    }
+  ],
+  "errors": [
+    {
+      "code": 6000,
+      "name": "PublicKeyMismatch",
+      "msg": "PublicKey Mismatch"
+    },
+    {
+      "code": 6001,
+      "name": "IncorrectOwner",
+      "msg": "Incorrect Owner"
+    },
+    {
+      "code": 6002,
+      "name": "UninitializedAccount",
+      "msg": "Uninitialized Account"
+    },
+    {
+      "code": 6003,
+      "name": "LootboxClosed",
+      "msg": "Lootbox Closed"
+    },
+    {
+      "code": 6004,
+      "name": "InvalidFee",
+      "msg": "Invalid Fee"
+    },
+    {
+      "code": 6005,
+      "name": "NumericalOverflow",
+      "msg": "Numerical Overflow"
+    },
+    {
+      "code": 6006,
+      "name": "UnsureError",
+      "msg": "Unsure Error"
+    },
+    {
+      "code": 6007,
+      "name": "TopicTooLong",
+      "msg": "The provided topic should be 50 characters long maximum."
+    },
+    {
+      "code": 6008,
+      "name": "ContentTooLong",
+      "msg": "The provided content should be 280 characters long maximum."
+    },
+    {
+      "code": 6009,
+      "name": "NotEnoughBalance",
+      "msg": "You don't hold the needed mint token"
+    },
+    {
+      "code": 6010,
+      "name": "InvalidPubkeyProvided",
+      "msg": "Invalid PubKey provided"
     }
   ]
 };
 
 export const IDL: GrapeEve = {
-  "version": "0.1.2",
+  "version": "0.1.3",
   "name": "grape_eve",
   "instructions": [
     {
-      "name": "sendPost",
+      "name": "createThread",
       "accounts": [
-        {
-          "name": "thread",
-          "isMut": true,
-          "isSigner": true
-        },
         {
           "name": "author",
           "isMut": true,
           "isSigner": true
+        },
+        {
+          "name": "thread",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "mint",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "community",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "authorTokenAccount",
+          "isMut": true,
+          "isSigner": false
         },
         {
           "name": "systemProgram",
           "isMut": false,
           "isSigner": false
+        },
+        {
+          "name": "rent",
+          "isMut": false,
+          "isSigner": false
         }
       ],
       "args": [
         {
-          "name": "topic",
-          "type": "string"
+          "name": "args",
+          "type": {
+            "defined": "CreateThreadArgs"
+          }
+        }
+      ]
+    },
+    {
+      "name": "updateThread",
+      "accounts": [
+        {
+          "name": "author",
+          "isMut": true,
+          "isSigner": true
         },
         {
-          "name": "content",
-          "type": "string"
-        },
-        {
-          "name": "metadata",
-          "type": "string"
-        },
-        {
-          "name": "threadType",
-          "type": "i8"
-        },
-        {
-          "name": "isEncrypted",
-          "type": "i8"
+          "name": "thread",
+          "isMut": true,
+          "isSigner": false
         },
         {
           "name": "community",
-          "type": {
-            "option": "publicKey"
-          }
-        },
-        {
-          "name": "reply",
-          "type": {
-            "option": "publicKey"
-          }
-        }
-      ]
-    },
-    {
-      "name": "updatePost",
-      "accounts": [
-        {
-          "name": "thread",
-          "isMut": true,
+          "isMut": false,
           "isSigner": false
         },
         {
-          "name": "author",
+          "name": "mint",
           "isMut": false,
-          "isSigner": true
+          "isSigner": false
+        },
+        {
+          "name": "authorTokenAccount",
+          "isMut": true,
+          "isSigner": false
         }
       ],
       "args": [
         {
-          "name": "topic",
-          "type": "string"
-        },
-        {
-          "name": "content",
-          "type": "string"
+          "name": "args",
+          "type": {
+            "defined": "UpdateThreadArgs"
+          }
         }
       ]
     },
     {
-      "name": "deletePost",
+      "name": "deleteThread",
       "accounts": [
+        {
+          "name": "author",
+          "isMut": true,
+          "isSigner": true
+        },
         {
           "name": "thread",
           "isMut": true,
           "isSigner": false
         },
         {
-          "name": "author",
+          "name": "community",
           "isMut": false,
-          "isSigner": true
+          "isSigner": false
+        },
+        {
+          "name": "mint",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "authorTokenAccount",
+          "isMut": true,
+          "isSigner": false
         }
       ],
       "args": []
+    },
+    {
+      "name": "createCommunity",
+      "accounts": [
+        {
+          "name": "owner",
+          "isMut": true,
+          "isSigner": true
+        },
+        {
+          "name": "mint",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "community",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "systemProgram",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "rent",
+          "isMut": false,
+          "isSigner": false
+        }
+      ],
+      "args": [
+        {
+          "name": "args",
+          "type": {
+            "defined": "CreateCommunityArgs"
+          }
+        }
+      ]
+    },
+    {
+      "name": "editCommunity",
+      "accounts": [
+        {
+          "name": "owner",
+          "isMut": true,
+          "isSigner": true
+        },
+        {
+          "name": "mint",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "community",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "systemProgram",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "rent",
+          "isMut": false,
+          "isSigner": false
+        }
+      ],
+      "args": [
+        {
+          "name": "args",
+          "type": {
+            "defined": "EditCommunityArgs"
+          }
+        }
+      ]
     }
   ],
   "accounts": [
+    {
+      "name": "community",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "bump",
+            "type": "u8"
+          },
+          {
+            "name": "uuid",
+            "type": "string"
+          },
+          {
+            "name": "mint",
+            "type": "publicKey"
+          },
+          {
+            "name": "owner",
+            "type": "publicKey"
+          },
+          {
+            "name": "title",
+            "type": "string"
+          },
+          {
+            "name": "metadata",
+            "type": "string"
+          }
+        ]
+      }
+    },
     {
       "name": "thread",
       "type": {
         "kind": "struct",
         "fields": [
           {
+            "name": "bump",
+            "type": "u8"
+          },
+          {
             "name": "author",
             "type": "publicKey"
           },
           {
             "name": "timestamp",
-            "type": "i64"
+            "type": "u64"
+          },
+          {
+            "name": "ends",
+            "type": "u64"
           },
           {
             "name": "community",
-            "type": {
-              "option": "publicKey"
-            }
+            "type": "publicKey"
           },
           {
             "name": "reply",
-            "type": {
-              "option": "publicKey"
-            }
+            "type": "publicKey"
           },
           {
             "name": "threadType",
-            "type": "i8"
+            "type": "u8"
           },
           {
             "name": "isEncrypted",
-            "type": "i8"
+            "type": "bool"
           },
           {
             "name": "topic",
@@ -311,6 +738,10 @@ export const IDL: GrapeEve = {
           {
             "name": "metadata",
             "type": "string"
+          },
+          {
+            "name": "uuid",
+            "type": "string"
           }
         ]
       }
@@ -318,18 +749,173 @@ export const IDL: GrapeEve = {
   ],
   "types": [
     {
-      "name": "ErrorCode",
+      "name": "CreateCommunityArgs",
       "type": {
-        "kind": "enum",
-        "variants": [
+        "kind": "struct",
+        "fields": [
           {
-            "name": "TopicTooLong"
+            "name": "title",
+            "type": "string"
           },
           {
-            "name": "ContentTooLong"
+            "name": "metadata",
+            "type": "string"
+          },
+          {
+            "name": "uuid",
+            "type": "string"
           }
         ]
       }
+    },
+    {
+      "name": "EditCommunityArgs",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "title",
+            "type": "string"
+          },
+          {
+            "name": "metadata",
+            "type": "string"
+          }
+        ]
+      }
+    },
+    {
+      "name": "CreateThreadArgs",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "replyTo",
+            "type": "string"
+          },
+          {
+            "name": "threadType",
+            "type": "u8"
+          },
+          {
+            "name": "isEncrypted",
+            "type": "bool"
+          },
+          {
+            "name": "topic",
+            "type": "string"
+          },
+          {
+            "name": "content",
+            "type": "string"
+          },
+          {
+            "name": "metadata",
+            "type": "string"
+          },
+          {
+            "name": "ends",
+            "type": "u64"
+          },
+          {
+            "name": "uuid",
+            "type": "string"
+          }
+        ]
+      }
+    },
+    {
+      "name": "UpdateThreadArgs",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "replyTo",
+            "type": "string"
+          },
+          {
+            "name": "threadType",
+            "type": "u8"
+          },
+          {
+            "name": "isEncrypted",
+            "type": "bool"
+          },
+          {
+            "name": "topic",
+            "type": "string"
+          },
+          {
+            "name": "content",
+            "type": "string"
+          },
+          {
+            "name": "metadata",
+            "type": "string"
+          },
+          {
+            "name": "ends",
+            "type": "u64"
+          }
+        ]
+      }
+    }
+  ],
+  "errors": [
+    {
+      "code": 6000,
+      "name": "PublicKeyMismatch",
+      "msg": "PublicKey Mismatch"
+    },
+    {
+      "code": 6001,
+      "name": "IncorrectOwner",
+      "msg": "Incorrect Owner"
+    },
+    {
+      "code": 6002,
+      "name": "UninitializedAccount",
+      "msg": "Uninitialized Account"
+    },
+    {
+      "code": 6003,
+      "name": "LootboxClosed",
+      "msg": "Lootbox Closed"
+    },
+    {
+      "code": 6004,
+      "name": "InvalidFee",
+      "msg": "Invalid Fee"
+    },
+    {
+      "code": 6005,
+      "name": "NumericalOverflow",
+      "msg": "Numerical Overflow"
+    },
+    {
+      "code": 6006,
+      "name": "UnsureError",
+      "msg": "Unsure Error"
+    },
+    {
+      "code": 6007,
+      "name": "TopicTooLong",
+      "msg": "The provided topic should be 50 characters long maximum."
+    },
+    {
+      "code": 6008,
+      "name": "ContentTooLong",
+      "msg": "The provided content should be 280 characters long maximum."
+    },
+    {
+      "code": 6009,
+      "name": "NotEnoughBalance",
+      "msg": "You don't hold the needed mint token"
+    },
+    {
+      "code": 6010,
+      "name": "InvalidPubkeyProvided",
+      "msg": "Invalid PubKey provided"
     }
   ]
 };

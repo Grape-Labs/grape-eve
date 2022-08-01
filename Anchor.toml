@@ -2,7 +2,7 @@
 grape_eve = "2rbW644hAFC43trjcsbrpPQjGvUHz6q3k4D3kZYSZigB"
 
 [programs.devnet]
-grape_eve = "2rbW644hAFC43trjcsbrpPQjGvUHz6q3k4D3kZYSZigB"
+grape_eve = "BFWcpbojQhtjeuHCLnrz8fMZzExDD4K7YGdJkgpbug9X"
 
 [programs.mainnet]
 grape_eve = "7pjxFfT8Md94mbsujhdSvHYApKzLjVZLbH5dsZHfy6xN"
@@ -11,7 +11,7 @@ grape_eve = "7pjxFfT8Md94mbsujhdSvHYApKzLjVZLbH5dsZHfy6xN"
 url = "https://anchor.projectserum.com"
 
 [provider]
-cluster = "localnet"
+cluster = "devnet"
 wallet = "~/.config/solana/id.json"
 
 [scripts]
