@@ -6,6 +6,7 @@ import { LAMPORTS_PER_SOL, Connection, PublicKey } from '@solana/web3.js';
 import { Schema, deserializeUnchecked, deserialize } from "borsh";
 import { TokenAmount } from '../utils/grapeTools/safe-math';
 import { GrapeEve, IDL } from '../../types/grape_eve';
+import {getCommunity, getThread, EVE_PROGRAM_ID} from "../../types/pdas";
 import tidl from '../../idl/grape_eve.json';
 
 import bs58 from 'bs58';
@@ -20,7 +21,7 @@ var relativeTime = require('dayjs/plugin/relativeTime')
 import { Thread } from '../models'
 
 import { 
-    AnchorProvider, Program, web3
+    AnchorProvider, Program, web3, IdlTypes
 } from '@project-serum/anchor'
 
 import { useSnackbar } from 'notistack';
@@ -203,7 +204,7 @@ export function EveView(props: any){
     async function initWorkspace() {  
         const clusterUrl = 'https://api.devnet.solana.com'; //'https://ssc-dao.genesysgo.net/';//process.env.VUE_APP_CLUSTER_URL
         //const grapeEveId = "2rbW644hAFC43trjcsbrpPQjGvUHz6q3k4D3kZYSZigB";
-        const grapeEveId = "BFWcpbojQhtjeuHCLnrz8fMZzExDD4K7YGdJkgpbug9X";
+        const grapeEveId = EVE_PROGRAM_ID;
         const programID = new PublicKey(grapeEveId);
         
         const connection = new Connection(clusterUrl)
@@ -383,7 +384,85 @@ export function EveView(props: any){
         return mptrd;
     }
 
-    const newPost = async (topic:string, content:string, metadata: string, threadType: number, encrypted: number, community:PublicKey, reply: PublicKey ) => {
+    const newCommunity = async (title:string, metadata:string, mint:PublicKey, uuid:string) => {
+        await initWorkspace();
+        const { wallet, provider, program } = useWorkspace()
+        const [community] = await getCommunity(uuid);
+        //const community = web3.Keypair.generate()
+
+        try{
+            enqueueSnackbar(`Preparing to create a new community`,{ variant: 'info' });
+            
+            const uuid = '0';
+            const args: IdlTypes<GrapeEve>["CreateCommunityArgs"] = {
+                title: title,
+                metadata: metadata,
+                uuid: uuid
+            }
+            
+            console.log(community.toBase58())
+            console.log("attempting: "+uuid+' : '+metadata+' : '+title)
+
+            const signedTransaction = await program.methods
+                .createCommunity(args)
+                .accounts({
+                    owner: publicKey,
+                    mint: mint,
+                    community: community
+                })
+                .signers([publicKey])
+                .rpc({commitment: "confirmed"});
+
+            console.log("Signed Transaction: "+JSON.stringify(signedTransaction));
+
+            /*
+            const signedTransaction = await program.rpc
+                .createCommunity(args,
+                    {
+                        accounts:{
+                            owner: publicKey,
+                            mint: mint,
+                            community: community
+                        }
+                    },
+                    signers: [publicKey]
+                );
+            */
+
+            const snackprogress = (key:any) => (
+                <CircularProgress sx={{padding:'10px'}} />
+            );
+            const cnfrmkey = enqueueSnackbar(`Confirming...`,{ variant: 'info', action:snackprogress, persist: true });
+            const latestBlockHash = await geconnection.getLatestBlockhash();
+            await geconnection.confirmTransaction({
+                blockhash: latestBlockHash.blockhash,
+                lastValidBlockHeight: latestBlockHash.lastValidBlockHeight,
+                signature: signedTransaction}, 
+                'finalized'
+            );
+            closeSnackbar(cnfrmkey);
+            
+            const snackaction = (key:any) => (
+                <Button href={`https://explorer.solana.com/tx/${signedTransaction}`} target='_blank'  sx={{color:'white'}}>
+                    {signedTransaction}
+                </Button>
+            );
+            enqueueSnackbar(`Community created`,{ variant: 'success', action:snackaction });
+            
+            // do a refresh this is not efficient we should simply 
+            // do a dynamic push/popup on the object and avoid the additional rpc call
+            fetchThreads();
+        } catch(e:any){
+            closeSnackbar();
+            enqueueSnackbar(e.message ? `${e.name}: ${e.message}` : e.name, { variant: 'error' });
+            //enqueueSnackbar(`Error: ${e}`,{ variant: 'error' });
+            console.log("Error: "+e);
+            //console.log("Error: "+JSON.stringify(e));
+        } 
+        
+    }
+
+    const newPost = async (topic:string, content:string, metadata: string, threadType: number, encrypted: boolean, community:PublicKey, reply: PublicKey, ends: BN ) => {
         await initWorkspace();
         const { wallet, provider, program } = useWorkspace()
         
@@ -393,12 +472,35 @@ export function EveView(props: any){
             enqueueSnackbar(`Preparing to create a new post`,{ variant: 'info' });
             
             console.log("community: "+(community && community.toBase58()))
+            const uuid = '0';
 
-            const signedTransaction = await program.rpc.sendPost(topic, content, metadata, threadType, encrypted, community, reply, {
+            const args: IdlTypes<GrapeEve>["CreateThreadArgs"] = {
+                replyTo: reply.toBase58(),
+                threadType: threadType,
+                isEncrypted: false,
+                topic: topic,
+                content: content,
+                metadata: metadata,
+                uuid: uuid,
+                ends: new BN(0),
+            };
+
+            const signedTransaction = await program.rpc.createThread(
+                args, {
                 accounts: {
                     author: publicKey,
                     thread: thread.publicKey,
                     systemProgram: web3.SystemProgram.programId,
+                
+
+                    /*
+                    author: thread_author.publicKey,
+                    mint: mint,
+                    community: community,
+                    authorTokenAccount: author_token_account,
+                    thread: thread
+                    */
+                    
                 },
                 signers: [thread]
             })
@@ -547,6 +649,150 @@ export function EveView(props: any){
             </Button>
         )
     }
+
+    function CommunityView(props:any){
+        const ml = props?.ml || 0;
+        const mr = props?.mr || 0;
+        const type = props?.type;
+        const [openPreviewDialog, setOpenPreviewDialog] = React.useState(false);
+
+        const [community, setCommunity] = React.useState(props?.community || new PublicKey(0));
+        const [communityName, setCommunityName] = React.useState(props?.communityName || null);
+        const [communityMint, setCommunityMint] = React.useState(props?.communityMint || new PublicKey(0));
+        const [uuid, setUUID] = React.useState(props?.uuid || null);
+        
+        const {publicKey} = useWallet();
+
+        const handleClickOpenPreviewDialog = () => {
+            setOpenPreviewDialog(true);
+        };
+        
+        const handleClosePreviewDialog = () => {
+            setOpenPreviewDialog(false);
+        };
+
+        async function handlePostNow(event: any) {
+            event.preventDefault();
+            handleClosePreviewDialog();
+            
+            //console.log("posting: ("+topic+") "+message);
+            
+            if (type === 0){
+
+                const metadata = 'TEST METADATA';
+                const thiscommunity = await newCommunity(communityName, metadata, communityMint, uuid || communityMint);
+                console.log("New: "+JSON.stringify(thiscommunity));
+            } else {
+                //const thisthread = await editCommunity(thread, topic, message, community, encrypted);
+                //console.log("Edit: "+JSON.stringify(thisthread));
+            }
+        }
+
+        return (
+
+            <>
+                {publicKey &&
+                <Button
+                    variant="outlined"
+                    //component={Link} to={`${GRAPE_PREVIEW}${item.mint}`}
+                    onClick={handleClickOpenPreviewDialog}
+                    sx={{borderRadius:'17px',mr:mr,ml:ml,color:'white'}}
+                >
+                    {type === 0 ?
+                        <><AddCircleIcon sx={{mr:1}} /> Community</>
+                    :
+                        <><EditIcon sx={{mr:1}}/> Community</>
+                    }
+                </Button>
+                }
+                <BootstrapDialog 
+                    fullWidth={true}
+                    maxWidth={"lg"}
+                    open={openPreviewDialog} onClose={handleClosePreviewDialog}
+                    PaperProps={{
+                        style: {
+                            background: '#13151C',
+                            border: '1px solid rgba(255,255,255,0.05)',
+                            borderTop: '1px solid rgba(255,255,255,0.1)',
+                            borderRadius: '20px'
+                        }
+                    }}
+                >
+                    <form onSubmit={handlePostNow}>
+                        <DialogContent>
+
+                            {community &&
+                                <Typography variant='h6'>
+                                    {type === 0 ?
+                                     <>Add Community</>
+                                    :
+                                        <>
+                                            <>Editing</>
+                                            &nbsp;{community.toBase58()}
+                                        </>
+                                    }
+                                </Typography>
+                            }
+                            <br/>
+                            
+                            <FormControl fullWidth sx={{m:1,mt:2}}>
+                                <TextField 
+                                    fullWidth 
+                                    label="Community Name" 
+                                    id="fullWidth" 
+                                    value={communityName}
+                                    onChange={(e: any) => {
+                                        if (e.target.value.length <= 50)
+                                            setCommunityName(e.target.value)}
+                                    }/>
+                                <Typography>{50 - (communityName?.length | 0)} left</Typography>
+                            </FormControl>
+                            
+                            <FormControl fullWidth sx={{m:1,mt:2}}>
+                                <TextField 
+                                    fullWidth 
+                                    label="Community Mint" 
+                                    id="fullWidth" 
+                                    value={communityMint}
+                                    onChange={(e: any) => {
+                                        if (e.target.value.length <= 32)
+                                            setCommunityMint(e.target.value)}
+                                    }/>
+                                <Typography>{32 - (communityMint?.length | 0)} left</Typography>
+                            </FormControl>
+
+                            {/*
+                            <FormControl fullWidth>
+                                <TextField 
+                                    fullWidth 
+                                    label="Reply" 
+                                    id="fullWidth" 
+                                    value={reply}
+                                    onChange={(e: any) => {
+                                        setReply(e.target.value)}
+                                    }/>
+                            </FormControl>
+                            */}
+                        </DialogContent>
+                        <DialogActions>
+                            <Button variant="text" onClick={handleClosePreviewDialog}>Cancel</Button>
+                            <Button 
+                                type="submit"
+                                variant="text" 
+                                disabled={
+                                    (+communityName?.length > 50) || (+communityName?.length <= 0)
+                                }
+                                title="Submit">
+                                SUBMIT
+                            </Button>
+                        </DialogActions>
+                    </form>
+                </BootstrapDialog>
+
+            </>
+
+        )
+    }
     
     function PostView(props:any){
         const ml = props?.ml || 0;
@@ -554,7 +800,7 @@ export function EveView(props: any){
         const type = props?.type;
         const thread = props?.thread;
         const [openPreviewDialog, setOpenPreviewDialog] = React.useState(false);
-        const [encrypted, setEncrypted] = React.useState(props?.encrypted || 0);
+        const [encrypted, setEncrypted] = React.useState(props?.encrypted || false);
         const [message, setMessage] = React.useState(props?.message || null);
         const [topic, setTopic] = React.useState(props?.topic || null);
         const [community, setCommunity] = React.useState((props?.community && new PublicKey(props.community)) || new PublicKey(0));
@@ -577,7 +823,7 @@ export function EveView(props: any){
             
             if (type === 0){
                 const metadata = '';
-                const thisthread = await newPost(topic, message, metadata, 1, encrypted, community, reply);
+                const thisthread = await newPost(topic, message, metadata, 1, encrypted, community, reply, new BN(0));
                 console.log("New: "+JSON.stringify(thisthread));
             } else if (type === 1){
                 const thisthread = await editPost(thread, topic, message, community, encrypted);
@@ -585,7 +831,7 @@ export function EveView(props: any){
             } else if (type === 2){
                 const metadata = '';
                 console.log("reply: "+reply.toBase58())
-                const thisthread = await newPost(topic, message, metadata, 1, encrypted, community, reply);
+                const thisthread = await newPost(topic, message, metadata, 1, encrypted, community, reply, new BN(0));
                 console.log("Reply: "+JSON.stringify(thisthread));
             }
         }
@@ -656,7 +902,7 @@ export function EveView(props: any){
                                 </Select>
                             </FormControl>
                             
-                            <FormControl fullWidth sx={{m:1}}>
+                            <FormControl fullWidth sx={{m:1,mt:2}}>
                                 <TextField 
                                     fullWidth 
                                     label="Topic" 
@@ -668,7 +914,7 @@ export function EveView(props: any){
                                     }/>
                                 <Typography>{50 - (topic?.length | 0)} left</Typography>
                             </FormControl>
-                            <FormControl fullWidth sx={{m:1}}>
+                            <FormControl fullWidth sx={{m:1,mt:2}}>
                                 <TextField
                                     id="filled-multiline-static"
                                     label="Start a discussion"
@@ -682,7 +928,7 @@ export function EveView(props: any){
                                 <Typography>{280 - (message?.length | 0)} left</Typography>
                             </FormControl>
                             
-                            
+                            {/*
                             <FormControl fullWidth sx={{m:1}}>
                                 <MUIRichTextEditor
                                     label="Type something here..."
@@ -693,6 +939,7 @@ export function EveView(props: any){
                                 />
                                 
                             </FormControl>
+                            */}
                             
                             <br/><br/>
 
@@ -835,6 +1082,8 @@ export function EveView(props: any){
                                                         
                                                     </Button>
                                                     <PostView type={0} />
+
+                                                    <CommunityView type={0} ml={1} />
                                                 </Grid>
                                             </Grid>
                                         </Typography>
