@@ -17,11 +17,11 @@ pub struct CreateCommunityContext<'info> {
     pub owner: Signer<'info>,
     pub mint: Box<Account<'info, Mint>>,
     #[account(
-    init,
-    seeds=[COMMUNITY.as_bytes(), args.uuid.as_bytes()],
-    payer=owner,
-    space=Community::SIZE,
-    bump
+        init,
+        seeds=[COMMUNITY.as_bytes(), args.uuid.as_bytes()],
+        payer=owner,
+        space=Community::SIZE,
+        bump
     )]
     pub community: Account<'info, Community>,
     pub system_program: Program<'info, System>,

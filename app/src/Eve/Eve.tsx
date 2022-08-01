@@ -203,7 +203,6 @@ export function EveView(props: any){
     //export const  initWorkspace = () => {
     async function initWorkspace() {  
         const clusterUrl = 'https://api.devnet.solana.com'; //'https://ssc-dao.genesysgo.net/';//process.env.VUE_APP_CLUSTER_URL
-        //const grapeEveId = "2rbW644hAFC43trjcsbrpPQjGvUHz6q3k4D3kZYSZigB";
         const grapeEveId = EVE_PROGRAM_ID;
         const programID = new PublicKey(grapeEveId);
         
@@ -386,7 +385,7 @@ export function EveView(props: any){
 
     const newCommunity = async (title:string, metadata:string, mint:PublicKey, uuid:string) => {
         await initWorkspace();
-        const { wallet, provider, program } = useWorkspace()
+        const { program } = useWorkspace()
         const [community] = await getCommunity(uuid);
         //const community = web3.Keypair.generate()
 
@@ -399,24 +398,45 @@ export function EveView(props: any){
                 metadata: metadata,
                 uuid: uuid
             }
+            const accounts = {
+                owner: publicKey,
+                mint: mint,
+                community: community
+            }
 
             console.log("communityPDA: "+community.toBase58())
+            /*
             console.log("Title: "+title)
             console.log("Metadata: "+metadata)
             console.log("uuid: "+uuid)
             console.log("owner: "+publicKey.toBase58())
+            */
             console.log("args: "+JSON.stringify(args))
+            console.log("accounts: "+JSON.stringify(accounts))
 
+            
             const signedTransaction = await program.methods
                 .createCommunity(args)
-                .accounts({
-                    owner: publicKey,
-                    mint: mint,
-                    community: community
-                })
+                .accounts(accounts)
                 .signers([publicKey])
                 .rpc({commitment: "confirmed"});
             
+
+                /*
+            const signedTransaction = await program.rpc
+                .createCommunity(args,
+                {
+                    accounts:{
+                        owner: publicKey,
+                        mint: mint,
+                        community: community,
+                        systemProgram: web3.SystemProgram.programId,
+                    }
+                },
+            );
+            */
+            
+
             console.log("signed...")
             console.log("Signed Transaction: "+JSON.stringify(signedTransaction));
 
@@ -493,12 +513,13 @@ export function EveView(props: any){
                 uuid: uuid,
                 ends: new BN(0),
             };
-
+            
             const signedTransaction = await program.rpc.createThread(
                 args, {
                 accounts: {
                     author: publicKey,
                     thread: thread.publicKey,
+                    rent:0.1,
                     systemProgram: web3.SystemProgram.programId,
                 
 
@@ -668,7 +689,7 @@ export function EveView(props: any){
         const [community, setCommunity] = React.useState(props?.community || new PublicKey(0));
         const [communityName, setCommunityName] = React.useState(props?.communityName || null);
         const [communityMint, setCommunityMint] = React.useState(props?.communityMint || new PublicKey(0));
-        const [uuid, setUUID] = React.useState(props?.uuid || null);
+        const [uuid, setUUID] = React.useState(props?.uuid || "nothing");
         
         const {publicKey} = useWallet();
 
@@ -689,7 +710,7 @@ export function EveView(props: any){
             if (type === 0){
 
                 const metadata = 'TEST METADATA';
-                const thiscommunity = await newCommunity(communityName, metadata, communityMint, uuid || communityMint);
+                const thiscommunity = await newCommunity(communityName, metadata, communityMint, uuid);
                 console.log("New: "+JSON.stringify(thiscommunity));
             } else {
                 //const thisthread = await editCommunity(thread, topic, message, community, encrypted);

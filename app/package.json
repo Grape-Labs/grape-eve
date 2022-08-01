@@ -92,6 +92,7 @@
         "react-scripts": "^5.0.1",
         "react-share": "^4.4.0",
         "react-simple-image-viewer": "^1.1.1",
+        "ts-mocha": "^10.0.0",
         "tweetnacl": "^1.0.3",
         "web-vitals": "^1.1.2",
         "web3modal": "^1.9.5",
