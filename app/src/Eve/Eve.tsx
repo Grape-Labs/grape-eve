@@ -7,7 +7,7 @@ import { Schema, deserializeUnchecked, deserialize } from "borsh";
 import { TokenAmount } from '../utils/grapeTools/safe-math';
 import { GrapeEve, IDL } from '../../types/grape_eve';
 import {getCommunity, getThread, EVE_PROGRAM_ID} from "../../types/pdas";
-import tidl from '../../idl/grape_eve.json';
+import tidl from '../../types/grape_eve.json';
 
 import bs58 from 'bs58';
 import BN from 'bn.js';
@@ -414,7 +414,6 @@ export function EveView(props: any){
             console.log("args: "+JSON.stringify(args))
             console.log("accounts: "+JSON.stringify(accounts))
 
-            
             const signedTransaction = await program.methods
                 .createCommunity(args)
                 .accounts(accounts)
