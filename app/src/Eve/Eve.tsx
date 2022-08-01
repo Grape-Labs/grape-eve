@@ -418,7 +418,7 @@ export function EveView(props: any){
             const signedTransaction = await program.methods
                 .createCommunity(args)
                 .accounts(accounts)
-                .signers([publicKey])
+                //.signers([publicKey])
                 .rpc({commitment: "confirmed"});
             
 
