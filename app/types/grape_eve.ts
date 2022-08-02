@@ -194,6 +194,22 @@ export type GrapeEve = {
           }
         }
       ]
+    },
+    {
+      "name": "deleteCommunity",
+      "accounts": [
+        {
+          "name": "community",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "author",
+          "isMut": false,
+          "isSigner": true
+        }
+      ],
+      "args": []
     }
   ],
   "accounts": [
@@ -418,41 +434,31 @@ export type GrapeEve = {
     },
     {
       "code": 6003,
-      "name": "LootboxClosed",
-      "msg": "Lootbox Closed"
-    },
-    {
-      "code": 6004,
-      "name": "InvalidFee",
-      "msg": "Invalid Fee"
-    },
-    {
-      "code": 6005,
       "name": "NumericalOverflow",
       "msg": "Numerical Overflow"
     },
     {
-      "code": 6006,
+      "code": 6004,
       "name": "UnsureError",
       "msg": "Unsure Error"
     },
     {
-      "code": 6007,
+      "code": 6005,
       "name": "TopicTooLong",
       "msg": "The provided topic should be 50 characters long maximum."
     },
     {
-      "code": 6008,
+      "code": 6006,
       "name": "ContentTooLong",
       "msg": "The provided content should be 280 characters long maximum."
     },
     {
-      "code": 6009,
+      "code": 6007,
       "name": "NotEnoughBalance",
       "msg": "You don't hold the needed mint token"
     },
     {
-      "code": 6010,
+      "code": 6008,
       "name": "InvalidPubkeyProvided",
       "msg": "Invalid PubKey provided"
     }
@@ -655,6 +661,22 @@ export const IDL: GrapeEve = {
           }
         }
       ]
+    },
+    {
+      "name": "deleteCommunity",
+      "accounts": [
+        {
+          "name": "community",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "author",
+          "isMut": false,
+          "isSigner": true
+        }
+      ],
+      "args": []
     }
   ],
   "accounts": [
@@ -879,41 +901,31 @@ export const IDL: GrapeEve = {
     },
     {
       "code": 6003,
-      "name": "LootboxClosed",
-      "msg": "Lootbox Closed"
-    },
-    {
-      "code": 6004,
-      "name": "InvalidFee",
-      "msg": "Invalid Fee"
-    },
-    {
-      "code": 6005,
       "name": "NumericalOverflow",
       "msg": "Numerical Overflow"
     },
     {
-      "code": 6006,
+      "code": 6004,
       "name": "UnsureError",
       "msg": "Unsure Error"
     },
     {
-      "code": 6007,
+      "code": 6005,
       "name": "TopicTooLong",
       "msg": "The provided topic should be 50 characters long maximum."
     },
     {
-      "code": 6008,
+      "code": 6006,
       "name": "ContentTooLong",
       "msg": "The provided content should be 280 characters long maximum."
     },
     {
-      "code": 6009,
+      "code": 6007,
       "name": "NotEnoughBalance",
       "msg": "You don't hold the needed mint token"
     },
     {
-      "code": 6010,
+      "code": 6008,
       "name": "InvalidPubkeyProvided",
       "msg": "Invalid PubKey provided"
     }

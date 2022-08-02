@@ -37,4 +37,8 @@ pub mod grape_eve {
     ) -> Result<()> {
         edit_community::edit_community(ctx, args)
     }
+
+    pub fn delete_community(ctx: Context<DeleteCommunity>) -> Result<()> {
+        delete_community::delete_community(ctx)
+    }
 }

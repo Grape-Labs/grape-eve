@@ -7,7 +7,7 @@ import { Schema, deserializeUnchecked, deserialize } from "borsh";
 import { TokenAmount } from '../utils/grapeTools/safe-math';
 import { GrapeEve, IDL } from '../../types/grape_eve';
 import {getCommunity, getThread, EVE_PROGRAM_ID} from "../../types/pdas";
-import tidl from '../../types/grape_eve.json';
+import tidl from '../../idl/grape_eve.json';
 import { v4 as uuidv4 } from 'uuid';
 
 import bs58 from 'bs58';
@@ -380,6 +380,70 @@ export function EveView(props: any){
         } 
         
     }
+    
+    function DeleteCommunity(props:any){
+        const community = props.community;
+        
+        const deleteCommunity = async () => {
+            await initWorkspace();
+            const { wallet, provider, program } = useWorkspace()
+    
+            console.log("deleting: "+community.toBase58() + " from: "+publicKey.toBase58());
+
+            try{
+                enqueueSnackbar(`Preparing to delete post`,{ variant: 'info' });
+                const signedTransaction = await program.rpc.deleteCommunity({
+                    accounts: {
+                        author: publicKey,
+                        community: community,
+                    },
+                })
+
+                const snackprogress = (key:any) => (
+                    <CircularProgress sx={{padding:'10px'}} />
+                );
+                const cnfrmkey = enqueueSnackbar(`Confirming...`,{ variant: 'info', action:snackprogress, persist: true });
+                const latestBlockHash = await geconnection.getLatestBlockhash();
+                await geconnection.confirmTransaction({
+                    blockhash: latestBlockHash.blockhash,
+                    lastValidBlockHeight: latestBlockHash.lastValidBlockHeight,
+                    signature: signedTransaction}, 
+                    'finalized'
+                );
+                closeSnackbar(cnfrmkey);
+        
+                const snackaction = (key:any) => (
+                    <Button href={`https://explorer.solana.com/tx/${signedTransaction}`} target='_blank'  sx={{color:'white'}}>
+                        {signedTransaction}
+                    </Button>
+                );
+                enqueueSnackbar(`Deleting community`,{ variant: 'success', action:snackaction });
+            
+                console.log("signature: "+JSON.stringify(signedTransaction));
+                // do a refresh this is not efficient we should simply 
+                // do a dynamic push/popup on the object and avoid the additional rpc call
+                fetchThreads();
+            } catch(e:any){
+                closeSnackbar();
+                enqueueSnackbar(e.message ? `${e.name}: ${e.message}` : e.name, { variant: 'error' });
+                //enqueueSnackbar(`Error: ${e}`,{ variant: 'error' });
+                console.log("Error: "+e);
+                //console.log("Error: "+JSON.stringify(e));
+            } 
+        }
+
+        return (
+
+            <Button
+                variant="outlined"
+                onClick={deleteCommunity}
+                sx={{borderRadius:'17px',ml:1}}
+                color="error"
+            >
+                    <DeleteIcon />
+            </Button>
+        )
+    }
 
     const newPost = async (topic:string, content:string, metadata: string, threadType: number, encrypted: boolean, community:PublicKey, reply: PublicKey, ends: BN ) => {
         await initWorkspace();
@@ -542,7 +606,7 @@ export function EveView(props: any){
                         {signedTransaction}
                     </Button>
                 );
-                enqueueSnackbar(`Post created`,{ variant: 'success', action:snackaction });
+                enqueueSnackbar(`Deleting post`,{ variant: 'success', action:snackaction });
             
                 console.log("signature: "+JSON.stringify(signedTransaction));
                 // do a refresh this is not efficient we should simply 
@@ -1154,9 +1218,7 @@ export function EveView(props: any){
                                                         </Button>
                                                         
                                                         {publicKey && community.account.owner.toBase58() === publicKey.toBase58() &&
-                                                            <Button variant="contained" sx={{borderRadius:'17px',background: 'linear-gradient(to right, #ffffff, #2e1437)',color:'black',textTransform:'none'}}onClick={() => {fetchFilteredCommunity(community.publicKey, community.account.mint, community.account.owner)}}>
-                                                                <DeleteIcon sx={{color:'red'}} />
-                                                            </Button>
+                                                            <DeleteCommunity community={community.publicKey}/> 
                                                         }
                                                     </ButtonGroup>
                                                 </>
