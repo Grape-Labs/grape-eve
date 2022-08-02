@@ -87,6 +87,7 @@ import GrapeIcon from "../components/static/GrapeIcon";
 import SolanaIcon from "../components/static/SolIcon";
 import SolCurrencyIcon from '../components/static/SolCurrencyIcon';
 
+import HubIcon from '@mui/icons-material/Hub';
 import ThumbUpIcon from '@mui/icons-material/ThumbUp';
 import LinkIcon from '@mui/icons-material/Link';
 import AddCircleIcon from '@mui/icons-material/AddCircle';
@@ -134,6 +135,7 @@ export function EveView(props: any){
     const {publicKey, sendTransaction } = useWallet();
     const [loading, setLoading] = React.useState(false);
     const [loadingThreads, setLoadingThreads] = React.useState(false);
+    const [loadingCommunities, setLoadingCommunities] = React.useState(false);
     
     const [filterThread, setFilterThread] = React.useState(null);
     const {handlekey} = useParams<{ handlekey: string }>();
@@ -144,6 +146,8 @@ export function EveView(props: any){
     const [threadCount, setThreadCount] = React.useState(0);
     const [postCount, setPostCount] = React.useState(0);
     const [replyCount, setReplyCount] = React.useState(0);
+
+    const [communities, setCommunities] = React.useState(null);
 
     const { enqueueSnackbar, closeSnackbar } = useSnackbar();
 
@@ -283,107 +287,7 @@ export function EveView(props: any){
       }
     */
 
-    const threadFilter = async (pubkey: string) => {
-        if (pubkey && pubkey.length){
-            setLoadingThreads(true);
-            await initWorkspace();
-            const { program } = await useWorkspace()
-            
-            //const threadlen = await program.account.thread.all.length
-            
-            const thread = await program.account.thread.fetch(pubkey);
-
-            console.log("t: "+JSON.stringify(thread));
-            //return thread;
-            thread.publicKey = new PublicKey(pubkey);
-
-            setThreads([thread]);
-            setLoadingThreads(false);     
-            return [thread];
-        } else{
-            fetchThreads();
-        }
-        
-    }
-
-    const communityFilter = communityBase58PublicKey => ([
-        {
-            memcmp: {
-                offset: 8 + // Discriminator.
-                        32 + // Author
-                        8, // Timestamp  
-                bytes: bs58.encode((new BN(1, 'le')).toArray()),
-            }
-        },
-        {
-            memcmp: {
-                offset: 8 + // Discriminator.
-                32 + // Author
-                8 + // Timestamp
-                1, //+ // community
-                bytes: communityBase58PublicKey,
-            }
-        }
-    ])
-
-    const authorFilter = authorBase58PublicKey => ({
-        memcmp: {
-            offset: 8, // Discriminator.
-            bytes: authorBase58PublicKey,
-        }
-    })
-
-    const genericThreadFilter = nullBase58PublicKey => ({
-        memcmp: {
-            offset: 8, // Discriminator.
-            bytes: new PublicKey(0),
-        }
-    })
     
-    const topicFilter = (topic:string) => ({
-        memcmp: {
-            offset: 8 + // Discriminator.
-                    32 + // Author public key.
-                    8 + // Timestamp.
-                    32 + 1 + // Community
-                    32 + 1 + // Reply
-                    1 + //
-                    1 + // 
-                    4, // prefix
-            bytes: bs58.encode(Buffer.from(topic)),
-        }
-    })
-
-    const fetchThreads = async (filters = []) => {
-        setLoadingThreads(true);
-        await initWorkspace();
-        const { program } = await useWorkspace()
-
-        if (filters === null){
-            console.log("null filters")
-        }
-
-        const thread = await program.account.thread.all(filters);
-
-        console.log("t: "+JSON.stringify(thread));
-        //return thread;
-        const mptrd = thread.map((thread:any) => new Thread(thread.publicKey, thread.account))
-        mptrd.sort((a:any,b:any) => (a.timestamp < b.timestamp) ? 1 : -1);
-
-        let tcnt = 0;
-        for (var x of mptrd){
-            if (x.reply.toBase58() !== (new PublicKey(0)).toBase58())
-                tcnt++;
-        }
-
-        setThreadCount(tcnt);
-        setPostCount(mptrd.length);
-        setReplyCount(mptrd.length - tcnt);
-
-        setThreads(mptrd);
-        setLoadingThreads(false);     
-        return mptrd;
-    }
 
 
     async function getOrCreateTokenAccountInstruction(mint: PublicKey, user: PublicKey, connection: Connection, payer: PublicKey|null = null): Promise<TransactionInstruction | null> {
@@ -443,7 +347,7 @@ export function EveView(props: any){
             console.log(`conf ${JSON.stringify(conf, null, 2)}`);
             
             const communityAccount = await program.account.community.fetch(community);
-
+            
             const snackprogress = (key:any) => (
                 <CircularProgress sx={{padding:'10px'}} />
             );
@@ -466,7 +370,7 @@ export function EveView(props: any){
             
             // do a refresh this is not efficient we should simply 
             // do a dynamic push/popup on the object and avoid the additional rpc call
-            fetchThreads();
+            fetchCommunities();
         } catch(e:any){
             closeSnackbar();
             enqueueSnackbar(e.message ? `${e.name}: ${e.message}` : e.name, { variant: 'error' });
@@ -994,6 +898,146 @@ export function EveView(props: any){
         )
     }
 
+    const communityFilter = (topic:string) => ({
+        memcmp: {
+            offset: 8 + // Discriminator.
+                    32 + // Author public key.
+                    8 + // Timestamp.
+                    32 + 1 + // Community
+                    32 + 1 + // Reply
+                    1 + //
+                    1 + // 
+                    4, // prefix
+            bytes: bs58.encode(Buffer.from(topic)),
+        }
+    })
+    const fetchFilteredCommunity = (publicKey:any, mint:any, owner:any) => {
+        const filter = [communityFilter(publicKey)]
+        fetchCommunities(filter);
+    }
+
+    const threadFilter = async (pubkey: string) => {
+        if (pubkey && pubkey.length){
+            setLoadingThreads(true);
+            await initWorkspace();
+            const { program } = await useWorkspace()
+            
+            //const threadlen = await program.account.thread.all.length
+            
+            const thread = await program.account.thread.fetch(pubkey);
+
+            console.log("t: "+JSON.stringify(thread));
+            //return thread;
+            thread.publicKey = new PublicKey(pubkey);
+
+            setThreads([thread]);
+            setLoadingThreads(false);     
+            return [thread];
+        } else{
+            fetchThreads();
+        }
+        
+    }
+
+    const fetchCommunities = async (filters = []) => {
+        setLoadingCommunities(true);
+        await initWorkspace();
+        const { program } = await useWorkspace()
+
+        if (filters === null){
+            console.log("null filters")
+        }
+
+        const these_communities = await program.account.community.all(filters);
+
+        console.log("t: "+JSON.stringify(these_communities));
+        
+        setCommunities(these_communities);
+        setLoadingCommunities(false);     
+        return these_communities;
+    }
+
+    
+    const communityThreadFilter = communityBase58PublicKey => ([
+        {
+            memcmp: {
+                offset: 8 + // Discriminator.
+                        32 + // Author
+                        8, // Timestamp  
+                bytes: bs58.encode((new BN(1, 'le')).toArray()),
+            }
+        },
+        {
+            memcmp: {
+                offset: 8 + // Discriminator.
+                32 + // Author
+                8 + // Timestamp
+                1, //+ // community
+                bytes: communityBase58PublicKey,
+            }
+        }
+    ])
+    
+
+    const authorFilter = authorBase58PublicKey => ({
+        memcmp: {
+            offset: 8, // Discriminator.
+            bytes: authorBase58PublicKey,
+        }
+    })
+
+    const genericThreadFilter = nullBase58PublicKey => ({
+        memcmp: {
+            offset: 8, // Discriminator.
+            bytes: new PublicKey(0),
+        }
+    })
+    
+    const topicFilter = (topic:string) => ({
+        memcmp: {
+            offset: 8 + // Discriminator.
+                    32 + // Author public key.
+                    8 + // Timestamp.
+                    32 + 1 + // Community
+                    32 + 1 + // Reply
+                    1 + //
+                    1 + // 
+                    4, // prefix
+            bytes: bs58.encode(Buffer.from(topic)),
+        }
+    })
+    
+    const fetchThreads = async (filters = []) => {
+        setLoadingThreads(true);
+        await initWorkspace();
+        const { program } = await useWorkspace()
+
+        if (filters === null){
+            console.log("null filters")
+        }
+
+        const thread = await program.account.thread.all(filters);
+
+        console.log("t: "+JSON.stringify(thread));
+        //return thread;
+        const mptrd = thread.map((thread:any) => new Thread(thread.publicKey, thread.account))
+        mptrd.sort((a:any,b:any) => (a.timestamp < b.timestamp) ? 1 : -1);
+
+        let tcnt = 0;
+        for (var x of mptrd){
+            if (x.reply.toBase58() !== (new PublicKey(0)).toBase58())
+                tcnt++;
+        }
+
+        setThreadCount(tcnt);
+        setPostCount(mptrd.length);
+        setReplyCount(mptrd.length - tcnt);
+
+        setThreads(mptrd);
+        setLoadingThreads(false);     
+        return mptrd;
+    }
+
     const fetchFilteredAuthor = (author:any) => {
         //console.log("filtering by author: "+author);
         const filter = [authorFilter(author)]
@@ -1009,12 +1053,6 @@ export function EveView(props: any){
         threadFilter(thread);
     }
 
-    const fetchFilteredCommunity = (community:any) => {
-        //console.log("with: "+community)
-        const filter = communityFilter(community)
-        fetchThreads(filter);
-    }
-
     React.useEffect(() => { 
         if (urlParams){
             // show unique thread with params
@@ -1024,6 +1062,7 @@ export function EveView(props: any){
         } else{
             //???
             setLoading(true);
+            fetchCommunities();
             fetchFilteredThread(null);
             //console.log("threads: "+JSON.stringify(thrds))
             setLoading(false);
@@ -1106,6 +1145,24 @@ export function EveView(props: any){
                                         
                                         <List sx={{ width: '100%' }}>
                                         
+                                        {communities && communities.map((community:any,key:number) => {
+                                            return (
+                                                <>
+                                                    <ButtonGroup sx={{mr:2}}>
+                                                        <Button variant="contained" sx={{borderRadius:'17px',background: 'linear-gradient(to right, #2e1437, #ffffff)',color:'black',textTransform:'none'}}onClick={() => {fetchFilteredCommunity(community.publicKey, community.account.mint, community.account.owner)}}>
+                                                            <HubIcon sx={{mr:1}} /><Typography sx={{}}>{community.account.title}</Typography>
+                                                        </Button>
+                                                        
+                                                        {publicKey && community.account.owner.toBase58() === publicKey.toBase58() &&
+                                                            <Button variant="contained" sx={{borderRadius:'17px',background: 'linear-gradient(to right, #ffffff, #2e1437)',color:'black',textTransform:'none'}}onClick={() => {fetchFilteredCommunity(community.publicKey, community.account.mint, community.account.owner)}}>
+                                                                <DeleteIcon sx={{color:'red'}} />
+                                                            </Button>
+                                                        }
+                                                    </ButtonGroup>
+                                                </>
+                                            );
+                                        })}
+
                                         {threads.map((item:any, key:number) => {
                                             return (
                                                 <>
