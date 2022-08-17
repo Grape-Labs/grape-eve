@@ -343,10 +343,10 @@ export function EveView(props: any){
                 preflightCommitment: "confirmed"
             });
             console.log(`signedTransaction ${signedTransaction}`)
-            const conf = await connection.confirmTransaction(signedTransaction);
-            console.log(`conf ${JSON.stringify(conf, null, 2)}`);
+            //const conf = await connection.confirmTransaction(signedTransaction);
+            //console.log(`conf ${JSON.stringify(conf, null, 2)}`);
             
-            const communityAccount = await program.account.community.fetch(community);
+            //const communityAccount = await program.account.community.fetch(community);
             
             const snackprogress = (key:any) => (
                 <CircularProgress sx={{padding:'10px'}} />
@@ -663,7 +663,7 @@ export function EveView(props: any){
             
             if (type === 0){
 
-                const metadata = 'TEST METADATA';
+                const metadata = '';
                 const thiscommunity = await newCommunity(communityName, metadata, communityMint, uuid);
                 console.log("New: "+JSON.stringify(thiscommunity));
             } else {
@@ -739,10 +739,10 @@ export function EveView(props: any){
                                     id="fullWidth" 
                                     value={communityMint}
                                     onChange={(e: any) => {
-                                        if (e.target.value.length <= 32)
-                                            setCommunityMint(e.target.value)}
+                                        //if (e.target.value.length <= 32)
+                                        setCommunityMint(e.target.value)}
                                     }/>
-                                <Typography>{32 - (communityMint?.length | 0)} left</Typography>
+                                <Typography>{44 - (communityMint?.length | 0)} left</Typography>
                             </FormControl>
 
                             {/*
@@ -1213,7 +1213,7 @@ export function EveView(props: any){
                                             return (
                                                 <>
                                                     <ButtonGroup sx={{mr:2}}>
-                                                        <Button variant="contained" sx={{borderRadius:'17px',background: 'linear-gradient(to right, #2e1437, #ffffff)',color:'black',textTransform:'none'}}onClick={() => {fetchFilteredCommunity(community.publicKey, community.account.mint, community.account.owner)}}>
+                                                        <Button variant="outlined" sx={{borderRadius:'17px',color:'white',textTransform:'none'}}onClick={() => {fetchFilteredCommunity(community.publicKey, community.account.mint, community.account.owner)}}>
                                                             <HubIcon sx={{mr:1}} /><Typography sx={{}}>{community.account.title}</Typography>
                                                         </Button>
                                                         
