@@ -447,16 +447,20 @@ export function EveView(props: any){
 
     const newPost = async (topic:string, content:string, metadata: string, threadType: number, encrypted: boolean, community:PublicKey, reply: PublicKey, ends: BN ) => {
         await initWorkspace();
-        const { wallet, provider, program } = useWorkspace()
-        
-        const thread = web3.Keypair.generate()
-        //console.log("posting: "+topic+" - "+content+" - "+metadata+" - "+community+" - "+threadType+" - "+encrypted+" - "+(reply))
+        const { program, connection, wallet } = useWorkspace()
+
+        const uuid = uuidv4().slice(0, 6);
+        const [thread] = await getThread(uuid);
+        //const [thread] = await getThread(THREAD_UUID);
+        //const thread_author = web3.Keypair.generate();
+        //const thread = web3.Keypair.generate()
+        console.log("posting: "+topic+" - "+content+" - "+metadata+" - "+community+" - "+threadType+" - "+encrypted+" - "+(reply))
         try{
             enqueueSnackbar(`Preparing to create a new post`,{ variant: 'info' });
             
             console.log("community: "+(community && community.toBase58()))
-            const uuid = '0';
-
+            const communityAccount = await program.account.community.fetch(community);
+            const author_token_account = await getAssociatedTokenAddress(communityAccount.mint, publicKey);
             const args: IdlTypes<GrapeEve>["CreateThreadArgs"] = {
                 replyTo: reply.toBase58(),
                 threadType: threadType,
@@ -466,29 +470,76 @@ export function EveView(props: any){
                 metadata: metadata,
                 uuid: uuid,
                 ends: new BN(0),
-            };
+            }
+            const accounts = {
+                author: publicKey,
+                mint: communityAccount.mint,
+                community: community,
+                authorTokenAccount: author_token_account,
+                thread: thread,
+                rent: web3.SYSVAR_RENT_PUBKEY,
+                systemProgram: web3.SystemProgram.programId,
+            }
+            const tokenInstruction: TransactionInstruction = await getOrCreateTokenAccountInstruction(NATIVE_MINT, publicKey, connection);
+            const createThreadInstruction: TransactionInstruction = await program.methods
+                .createThread(args)
+                .accounts(accounts)
+                .instruction()
             
-            const signedTransaction = await program.rpc.createThread(
+            const blockDetails = await connection.getLatestBlockhash();
+            const transaction = new Transaction();
+            transaction.recentBlockhash = blockDetails.blockhash;
+            transaction.feePayer = publicKey;
+            for (const i of [tokenInstruction, createThreadInstruction]) {
+                if (i) {
+                    transaction.add(i);
+                }
+            }
+
+            const signedTransaction = await sendTransaction(transaction, connection, {
+                skipPreflight: true,
+                preflightCommitment: "confirmed"
+            });
+            console.log(`signedTransaction ${signedTransaction}`)
+            /*const args: IdlTypes<GrapeEve>["CreateThreadArgs"] = {
+                replyTo: reply.toBase58(),
+                threadType: threadType,
+                isEncrypted: false,
+                topic: topic,
+                content: content,
+                metadata: metadata,
+                uuid: uuid,
+                ends: new BN(0),
+            };*/
+            //const transferAuthority = web3.Keypair.generate();
+            //const signers = true ? [] : [transferAuthority];
+            //const signers = [];
+            //const signers = [transferAuthority];
+            //console.log('signers:',signers);
+            //const communityAccount = await program.account.community.fetch(community);
+            //const author_token_account = await getAssociatedTokenAddress(communityAccount.mint, publicKey);
+            /*const signedTransaction = await program.rpc.createThread(
                 args, {
                 accounts: {
                     author: publicKey,
-                    thread: thread.publicKey,
-                    rent:0.1,
-                    systemProgram: web3.SystemProgram.programId,
-                
-
-                    /*
-                    author: thread_author.publicKey,
-                    mint: mint,
+                    //author: thread_author.publicKey,
+                    mint: communityAccount.mint,
                     community: community,
                     authorTokenAccount: author_token_account,
-                    thread: thread
-                    */
+                    //thread: thread.publicKey,
+                    thread: thread,
+                    rent: web3.SYSVAR_RENT_PUBKEY,
+                    //rent:1.0,
+                    systemProgram: web3.SystemProgram.programId,
                     
-                },
-                signers: [thread]
+                //},
+                signers: [thread],
+
             })
-        
+            //console.log('1');
+            */
+
+
             const snackprogress = (key:any) => (
                 <CircularProgress sx={{padding:'10px'}} />
             );
@@ -883,6 +934,7 @@ export function EveView(props: any){
                                 >
                                     <MenuItem value={`8upjSpvjcdpuzhfR1zriwg5NXkwDruejqNE9WNbPRtyA`}>Grape</MenuItem>
                                     <MenuItem value={`So11111111111111111111111111111111111111112`}>Solana</MenuItem>
+                                    <MenuItem value={'Aw9S9d7WbSRtqEnFJLhKoAiJsiPiBqUPuhG7gzF4r7hc'}>test test test</MenuItem>
                                 </Select>
                             </FormControl>
                             
