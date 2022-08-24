@@ -501,6 +501,7 @@ export function EveView(props: any){
                 preflightCommitment: "confirmed"
             });
             console.log(`signedTransaction ${signedTransaction}`)
+            
             /*const args: IdlTypes<GrapeEve>["CreateThreadArgs"] = {
                 replyTo: reply.toBase58(),
                 threadType: threadType,
