@@ -573,23 +573,57 @@ export function EveView(props: any){
         } 
     }
 
-    const editPost = async (thread: PublicKey, topic:string, content:string, community:PublicKey, encrypted:number) => {
+    const editPost = async (thread: PublicKey, topic:string, content:string, metadata:string, threadType:number, community:PublicKey, encrypted:number, reply:PublicKey) => {
         await initWorkspace();
-        const { wallet, provider, program } = useWorkspace()
+        const { program, connection, wallet } = useWorkspace()
+        console.log('reply PK:', reply.toBase58());
         try{
             //const thread = web3.Keypair.generate()
-            
+            //const uuid = uuidv4().slice(0, 6);
             enqueueSnackbar(`Preparing to edit post`,{ variant: 'info' });
             //enqueueSnackbar(`Preparing to edit post ${publicKey.toBase58()} from ${thread.toBase58()})`,{ variant: 'info' });
             //enqueueSnackbar(`${topic} - Message ${content})`,{ variant: 'info' });
+            const communityAccount = await program.account.community.fetch(community);
+            const author_token_account = await getAssociatedTokenAddress(communityAccount.mint, publicKey);
+            const args: IdlTypes<GrapeEve>["UpdateThreadArgs"] = {
+                replyTo: reply.toBase58(),
+                threadType: threadType,
+                isEncrypted: false,
+                topic: topic,
+                content: content,
+                metadata: metadata,
+                ends: new BN(0),
+            }
+            const accounts = {
+                author: publicKey,
+                mint: communityAccount.mint,
+                community: community,
+                authorTokenAccount: author_token_account,
+                thread: thread,
+                rent: web3.SYSVAR_RENT_PUBKEY,
+                systemProgram: web3.SystemProgram.programId,
+            }
+            const tokenInstruction: TransactionInstruction = await getOrCreateTokenAccountInstruction(NATIVE_MINT, publicKey, connection);
+            const updateThreadInstruction: TransactionInstruction = await program.methods
+                .updateThread(args)
+                .accounts(accounts)
+                .instruction()
+            const blockDetails = await connection.getLatestBlockhash();
+            const transaction = new Transaction();
+            transaction.recentBlockhash = blockDetails.blockhash;
+            transaction.feePayer = publicKey;
+            for (const i of [tokenInstruction, updateThreadInstruction]) {
+                if (i) {
+                    transaction.add(i);
+                }
+            }
             
-            const signedTransaction = await program.rpc.updatePost(topic, content, {
-                accounts: {
-                    author: publicKey,
-                    thread: thread,
-                },
-            })
-        
+            const signedTransaction = await sendTransaction(transaction, connection, {
+                skipPreflight: true,
+                preflightCommitment: "confirmed"
+            });
+            console.log(`signedTransaction ${signedTransaction}`)
+
             const snackprogress = (key:any) => (
                 <CircularProgress sx={{padding:'10px'}} />
             );
@@ -624,21 +658,53 @@ export function EveView(props: any){
 
     function DeletePost(props:any){
         const thread = props.thread;
+        const community = props.community;
         
         const deletePost = async () => {
             await initWorkspace();
-            const { wallet, provider, program } = useWorkspace()
+            //const { wallet, provider, program } = useWorkspace()
+            const { program, connection, wallet } = useWorkspace()
     
             console.log("deleting: "+thread.toBase58() + " from: "+publicKey.toBase58());
 
             try{
                 enqueueSnackbar(`Preparing to delete post`,{ variant: 'info' });
-                const signedTransaction = await program.rpc.deletePost({
+                /*const signedTransaction = await program.rpc.deletePost({
                     accounts: {
                         author: publicKey,
                         thread: thread,
                     },
-                })
+                })*/
+                const communityAccount = await program.account.community.fetch(community);
+                const author_token_account = await getAssociatedTokenAddress(communityAccount.mint, publicKey);
+                const accounts = {
+                    author: publicKey,
+                    thread: thread,
+                    community: community,
+                    mint: communityAccount.mint,
+                    authorTokenAccount: author_token_account,
+                }
+                const tokenInstruction: TransactionInstruction = await getOrCreateTokenAccountInstruction(NATIVE_MINT, publicKey, connection);
+                const deleteThreadInstruction: TransactionInstruction = await program.methods
+                .deleteThread()
+                .accounts(accounts)
+                .instruction()
+
+                const blockDetails = await connection.getLatestBlockhash();
+                const transaction = new Transaction();
+                transaction.recentBlockhash = blockDetails.blockhash;
+                transaction.feePayer = publicKey;
+                for (const i of [tokenInstruction, deleteThreadInstruction]) {
+                    if (i) {
+                        transaction.add(i);
+                    }
+                }
+
+                const signedTransaction = await sendTransaction(transaction, connection, {
+                    skipPreflight: true,
+                    preflightCommitment: "confirmed"
+                });
+                console.log(`signedTransaction ${signedTransaction}`)
 
                 const snackprogress = (key:any) => (
                     <CircularProgress sx={{padding:'10px'}} />
@@ -840,7 +906,11 @@ export function EveView(props: any){
         const [message, setMessage] = React.useState(props?.message || null);
         const [topic, setTopic] = React.useState(props?.topic || null);
         const [community, setCommunity] = React.useState((props?.community && new PublicKey(props.community)) || new PublicKey(0));
-        const [reply, setReply] = React.useState((type=== 2 && props?.thread && new PublicKey(props.thread)) || new PublicKey(0));
+        const [reply, setReply] = React.useState(((type=== 2 || type===1) && props?.thread && new PublicKey(props.thread)) || new PublicKey(0));
+        /*const [replyPk, getReply] = React.useState((type===2 && props?.reply && new PublicKey(props.reply)) || 
+                                                    (type===1 && props?.reply && new PublicKey(props.reply) != new PublicKey(0) && new PublicKey(props.reply)) ||
+                                                    new PublicKey(0));*/
+        const [replyPk, getReply] = React.useState(((type=== 2 || type===1) && props?.reply && new PublicKey(props.reply)) );
         const {publicKey} = useWallet();
 
         const handleClickOpenPreviewDialog = () => {
@@ -859,15 +929,18 @@ export function EveView(props: any){
             
             if (type === 0){
                 const metadata = '';
-                const thisthread = await newPost(topic, message, metadata, 1, encrypted, community, reply, new BN(0));
+                console.log("new post: "+reply.toBase58())
+                const thisthread = await newPost(topic, message, metadata, 0, encrypted, community, reply, new BN(0));
                 console.log("New: "+JSON.stringify(thisthread));
             } else if (type === 1){
-                const thisthread = await editPost(thread, topic, message, community, encrypted);
+                const metadata = '';
+                console.log("edit post: "+replyPk.toBase58())
+                const thisthread = await editPost(thread, topic, message, metadata, 1, community, encrypted, replyPk);
                 console.log("Edit: "+JSON.stringify(thisthread));
             } else if (type === 2){
                 const metadata = '';
-                console.log("reply: "+reply.toBase58())
-                const thisthread = await newPost(topic, message, metadata, 1, encrypted, community, reply, new BN(0));
+                console.log("reply to post: "+reply.toBase58())
+                const thisthread = await newPost(topic, message, metadata, 2, encrypted, community, reply, new BN(0));
                 console.log("Reply: "+JSON.stringify(thisthread));
             }
         }
@@ -913,12 +986,12 @@ export function EveView(props: any){
 
                             {thread &&
                                 <Typography variant='h6'>
-                                    {reply && reply.toBase58() !== new PublicKey(0).toBase58() ? 
-                                        <>Replying to</>
-                                    :
-                                        <>Editing</>
+                                    {reply && reply.toBase58() !== new PublicKey(0).toBase58() && type===2 ? 
+                                        <>Replying to {thread.toBase58()}</>
+                                    :   
+                                        <> {replyPk.toBase58() != new PublicKey(0).toBase58() ? <>Editing reply to {replyPk.toBase58()} </>: <>Editiing</>}</>
+
                                     }
-                                    &nbsp;{thread.toBase58()}
                                 </Typography>
                             }
                             <br/>
@@ -1345,13 +1418,13 @@ export function EveView(props: any){
                                                                 
                                                                 {publicKey && publicKey.toBase58() === item?.author.toBase58() ?
                                                                     <Grid item>
-                                                                        <PostView type={2} thread={item.publicKey} topic={item?.topic} community={item?.community} encrypted={item?.isEncrypted} mr={1} />
-                                                                        <PostView type={1} thread={item.publicKey} message={item?.content} topic={item?.topic} community={item?.community} metadata={item?.metadata} encrypted={item?.isEncrypted}  />
-                                                                        <DeletePost thread={item.publicKey}/>  
+                                                                        <PostView type={2} thread={item.publicKey} topic={item?.topic} community={item?.community} encrypted={item?.isEncrypted} mr={1} reply={item?.reply}/>
+                                                                        <PostView type={1} thread={item.publicKey} message={item?.content} topic={item?.topic} community={item?.community} metadata={item?.metadata} encrypted={item?.isEncrypted}  reply={item?.reply}/>
+                                                                        <DeletePost thread={item.publicKey} community={item?.community}/>  
                                                                     </Grid>                                                                      
                                                                 :
                                                                     <Grid>
-                                                                       <PostView type={2} thread={item.publicKey} topic={item?.topic} community={item?.community} encrypted={item?.isEncrypted} />
+                                                                       <PostView type={2} thread={item.publicKey} topic={item?.topic} community={item?.community} encrypted={item?.isEncrypted} reply={item?.reply}/>
                                                                     </Grid>
                                                                 }
                                                                 
