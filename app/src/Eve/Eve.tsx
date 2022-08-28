@@ -1009,6 +1009,7 @@ export function EveView(props: any){
                                     <MenuItem value={`8upjSpvjcdpuzhfR1zriwg5NXkwDruejqNE9WNbPRtyA`}>Grape</MenuItem>
                                     <MenuItem value={`So11111111111111111111111111111111111111112`}>Solana</MenuItem>
                                     <MenuItem value={'Aw9S9d7WbSRtqEnFJLhKoAiJsiPiBqUPuhG7gzF4r7hc'}>test test test</MenuItem>
+                                    <MenuItem value={'35NFCR7jPiVS2b7zV2mnyW5CpznWTQQJPkXHfxGbm53t'}>my man</MenuItem>
                                 </Select>
                             </FormControl>
                             
@@ -1088,21 +1089,19 @@ export function EveView(props: any){
         )
     }
 
-    const communityFilter = (topic:string) => ({
+    const communityFilter = community58PublicKey => ({
         memcmp: {
             offset: 8 + // Discriminator.
+                    1 + //bump
                     32 + // Author public key.
-                    8 + // Timestamp.
-                    32 + 1 + // Community
-                    32 + 1 + // Reply
-                    1 + //
-                    1 + // 
-                    4, // prefix
-            bytes: bs58.encode(Buffer.from(topic)),
+                    8, // Timestamp
+            bytes: community58PublicKey,
         }
     })
+
     const fetchFilteredCommunity = (publicKey:any, mint:any, owner:any) => {
-        const filter = [communityFilter(publicKey)]
+        //console.log('community publicKey:', publicKey.toBase58());
+        const filter = [communityFilter(publicKey.toBase58())]
         fetchCommunities(filter);
     }
 
@@ -1140,7 +1139,7 @@ export function EveView(props: any){
 
         const these_communities = await program.account.community.all(filters);
 
-        console.log("t: "+JSON.stringify(these_communities));
+        console.log("communities: "+JSON.stringify(these_communities));
         
         setCommunities(these_communities);
         setLoadingCommunities(false);     
@@ -1148,21 +1147,13 @@ export function EveView(props: any){
     }
 
     
-    const communityThreadFilter = communityBase58PublicKey => ([
+    const communityThreadsFilter = communityBase58PublicKey => ([
         {
             memcmp: {
                 offset: 8 + // Discriminator.
-                        32 + // Author
-                        8, // Timestamp  
-                bytes: bs58.encode((new BN(1, 'le')).toArray()),
-            }
-        },
-        {
-            memcmp: {
-                offset: 8 + // Discriminator.
-                32 + // Author
-                8 + // Timestamp
-                1, //+ // community
+                1 + //bump
+                32 + // Author public key.
+                8, // Timestamp
                 bytes: communityBase58PublicKey,
             }
         }
@@ -1171,7 +1162,8 @@ export function EveView(props: any){
 
     const authorFilter = authorBase58PublicKey => ({
         memcmp: {
-            offset: 8, // Discriminator.
+            offset: 8 + // Discriminator.
+            1, //bump
             bytes: authorBase58PublicKey,
         }
     })
@@ -1186,12 +1178,14 @@ export function EveView(props: any){
     const topicFilter = (topic:string) => ({
         memcmp: {
             offset: 8 + // Discriminator.
+                    1 + //bump
                     32 + // Author public key.
                     8 + // Timestamp.
-                    32 + 1 + // Community
-                    32 + 1 + // Reply
-                    1 + //
-                    1 + // 
+                    8 + //ends,
+                    32 + // Community
+                    32 + // Reply
+                    1 + // thread_type
+                    1 + // is_encrypted
                     4, // prefix
             bytes: bs58.encode(Buffer.from(topic)),
         }
@@ -1226,6 +1220,12 @@ export function EveView(props: any){
         setThreads(mptrd);
         setLoadingThreads(false);     
         return mptrd;
+    }
+
+    const fetchFilteredCommunityThreads = (community:any) => {
+        console.log("filtering by community: "+community.toBase58());
+        const filter = [communityThreadsFilter(community.toBase58())]
+        fetchThreads(filter);
     }
 
     const fetchFilteredAuthor = (author:any) => {
@@ -1339,7 +1339,10 @@ export function EveView(props: any){
                                             return (
                                                 <>
                                                     <ButtonGroup sx={{mr:2}}>
-                                                        <Button variant="outlined" sx={{borderRadius:'17px',color:'white',textTransform:'none'}}onClick={() => {fetchFilteredCommunity(community.publicKey, community.account.mint, community.account.owner)}}>
+                                                        <Button variant="outlined" sx={{borderRadius:'17px',color:'white',textTransform:'none'}}onClick={() => 
+                                                            {/*fetchFilteredCommunity(community.publicKey, community.account.mint, community.account.owner)*/
+                                                            fetchFilteredCommunityThreads(community.publicKey)
+                                                            }}>
                                                             <HubIcon sx={{mr:1}} /><Typography sx={{}}>{community.account.title}</Typography>
                                                         </Button>
                                                         
