@@ -98,7 +98,7 @@ import ReplyIcon from '@mui/icons-material/Reply';
 
 import { buffer } from "node:stream/consumers";
 import { responsiveProperty } from "@mui/material/styles/cssUtils";
-import {createAssociatedTokenAccountInstruction, getAssociatedTokenAddress, NATIVE_MINT} from "@solana/spl-token-v2";
+import {createAssociatedTokenAccountInstruction, getAssociatedTokenAddress, NATIVE_MINT} from "@solana/spl-token";
 
 const myTheme = createTheme({
     // Set up your custom MUI theme here
