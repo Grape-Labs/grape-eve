@@ -1147,17 +1147,16 @@ export function EveView(props: any){
     }
 
     
-    const communityThreadsFilter = communityBase58PublicKey => ([
-        {
-            memcmp: {
-                offset: 8 + // Discriminator.
-                1 + //bump
-                32 + // Author public key.
-                8, // Timestamp
-                bytes: communityBase58PublicKey,
-            }
+    const communityThreadsFilter = communityBase58PublicKey => ({
+        memcmp: {
+            offset: 8 + // Discriminator
+                    1 + //bump
+                    32 + // Author public key
+                    8 + //Timestamp
+                    8, //ends
+            bytes: communityBase58PublicKey,
         }
-    ])
+    })
     
 
     const authorFilter = authorBase58PublicKey => ({
@@ -1181,7 +1180,7 @@ export function EveView(props: any){
                     1 + //bump
                     32 + // Author public key.
                     8 + // Timestamp.
-                    8 + //ends,
+                    8 + //ends
                     32 + // Community
                     32 + // Reply
                     1 + // thread_type
