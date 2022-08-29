@@ -15,3 +15,5 @@ export const TWITTER_PROXY = process.env.REACT_APP_API_TWITTER_PROXY || null;
 export const GRAPE_DRIVE = '/?storage=';
 export const GRAPE_TREASURY = 'GrapevviL94JZRiZwn2LjpWtmDacXU8QhAJvzpUMMFdL';
 export const MARKET_LOGO = STATIC_LOGO;
+
+export const THREAD_UUID = "thread_uuid";
