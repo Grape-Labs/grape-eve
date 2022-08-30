@@ -8,6 +8,7 @@ import {
     tryGetName,
 } from '@cardinal/namespaces';
 */
+
 import * as React from 'react';
 import BN from 'bn.js';
 import { styled, useTheme } from '@mui/material/styles';
@@ -72,8 +73,9 @@ export const ConnectedIdentity = (props:any) => {
 
     const fetchSolanaDomain = async () => {
         
-        /*
+        
         console.log("fetching tryGetName: "+address);
+        /*
         const cardinal_registration = await tryGetName(
             ggoconnection, 
             new PublicKey(address)
