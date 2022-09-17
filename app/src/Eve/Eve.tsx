@@ -391,7 +391,7 @@ export function EveView(props: any){
             console.log("deleting: "+community.toBase58() + " from: "+publicKey.toBase58());
 
             try{
-                enqueueSnackbar(`Preparing to delete post`,{ variant: 'info' });
+                enqueueSnackbar(`Preparing to delete community`,{ variant: 'info' });
                 const signedTransaction = await program.rpc.deleteCommunity({
                     accounts: {
                         author: publicKey,
@@ -1006,9 +1006,14 @@ export function EveView(props: any){
                                         setCommunity(new PublicKey(e.target.value))}
                                     }
                                 >
+                                    
+                                    <MenuItem value={`9DQyjEcmWccVUHkqUxXAiv9itSaWHEoFkYGV6eR8TXRU`}>Grape</MenuItem>
+                                    <MenuItem value={`9tL494wZXJ3eP6UK56bjNsz3NnpMUynapGMjfQg3AiE5`}>Solana</MenuItem>
+                                    
+                                    {/*
                                     <MenuItem value={`8upjSpvjcdpuzhfR1zriwg5NXkwDruejqNE9WNbPRtyA`}>Grape</MenuItem>
                                     <MenuItem value={`So11111111111111111111111111111111111111112`}>Solana</MenuItem>
-                                    {/*<MenuItem value={'Aw9S9d7WbSRtqEnFJLhKoAiJsiPiBqUPuhG7gzF4r7hc'}>test test test</MenuItem>
+                                    <MenuItem value={'Aw9S9d7WbSRtqEnFJLhKoAiJsiPiBqUPuhG7gzF4r7hc'}>test test test</MenuItem>
                                     <MenuItem value={'35NFCR7jPiVS2b7zV2mnyW5CpznWTQQJPkXHfxGbm53t'}>my man</MenuItem>*/}
                                 </Select>
                             </FormControl>
