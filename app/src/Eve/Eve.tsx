@@ -1036,7 +1036,7 @@ export function EveView(props: any){
                                         setMessage(e.target.value)}
                                     }
                                     />
-                                <Typography>{280 - (message?.length | 0)} left</Typography>
+                                <Typography>{160 - (message?.length | 0)} left</Typography>
                             </FormControl>
                             
                             {/*
