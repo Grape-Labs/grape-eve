@@ -1008,8 +1008,8 @@ export function EveView(props: any){
                                 >
                                     <MenuItem value={`8upjSpvjcdpuzhfR1zriwg5NXkwDruejqNE9WNbPRtyA`}>Grape</MenuItem>
                                     <MenuItem value={`So11111111111111111111111111111111111111112`}>Solana</MenuItem>
-                                    <MenuItem value={'Aw9S9d7WbSRtqEnFJLhKoAiJsiPiBqUPuhG7gzF4r7hc'}>test test test</MenuItem>
-                                    <MenuItem value={'35NFCR7jPiVS2b7zV2mnyW5CpznWTQQJPkXHfxGbm53t'}>my man</MenuItem>
+                                    {/*<MenuItem value={'Aw9S9d7WbSRtqEnFJLhKoAiJsiPiBqUPuhG7gzF4r7hc'}>test test test</MenuItem>
+                                    <MenuItem value={'35NFCR7jPiVS2b7zV2mnyW5CpznWTQQJPkXHfxGbm53t'}>my man</MenuItem>*/}
                                 </Select>
                             </FormControl>
                             

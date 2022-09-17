@@ -13,7 +13,7 @@ pub struct Community {
 }
 
 const COMMUNITY_LENGTH: usize = 32 + 1;
-const METADATA_LENGTH: usize = 280 * 4;
+const METADATA_LENGTH: usize = 100 * 4;
 const UUID_LENGTH: usize = 16;
 
 impl Community {

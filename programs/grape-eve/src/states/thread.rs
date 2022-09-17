@@ -19,8 +19,8 @@ pub struct Thread {
 }
 
 pub const MAX_TOPIC_LENGTH: usize = 50 * 4; // 50 chars max.
-pub const MAX_CONTENT_LENGTH: usize = 280 * 4; // 280 chars max.
-pub const METADATA_LENGTH: usize = 280 * 4;
+pub const MAX_CONTENT_LENGTH: usize = 160 * 4; // 160 chars max.
+pub const METADATA_LENGTH: usize = 100 * 4;
 pub const UUID_LENGTH: usize = 16;
 
 impl Thread {
