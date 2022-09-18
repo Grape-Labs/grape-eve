@@ -387,7 +387,8 @@ export function EveView(props: any){
         const deleteCommunity = async () => {
             await initWorkspace();
             const { wallet, provider, program } = useWorkspace()
-    
+            const filter = [communityThreadsFilter(community.toBase58())]
+            const existingThreads = await fetchThreads(filter);
             console.log("deleting: "+community.toBase58() + " from: "+publicKey.toBase58());
 
            try{
