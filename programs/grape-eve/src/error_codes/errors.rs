@@ -19,5 +19,7 @@ pub enum Errors {
     #[msg("You don't hold the needed mint token")]
     NotEnoughBalance,
     #[msg("Invalid PubKey provided")]
-    InvalidPubkeyProvided
+    InvalidPubkeyProvided,
+    #[msg("To delete the community, the associated threads must first be deleted.")]
+    ThreadsExist
 }
