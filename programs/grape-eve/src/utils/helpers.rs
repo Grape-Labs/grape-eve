@@ -95,3 +95,27 @@ pub fn transfer_token<'a>(
     )?;
     Ok(())
 }
+
+/*pub fn check_thread_exists(
+    community: AccountInfo,
+) -> Result<()> {
+    if community.key{
+        return Err(Errors::ThreadsExist.into());
+    }
+    Ok(())
+}*/
+
+/*pub fn check_thread_exists(ctx: Context<ThreadExists>, 
+    communityPk: Pubkey
+) -> Result<()> {
+//pub fn check_thread_exists(communityPk: Pubkey,) -> Result<()> {
+    //let thread= &mut ctx.accounts.thread;
+    let thread = &mut ctx.accounts.thread;
+    let mut iter = thread.community.iter();
+    //let mut iter = thread.community.iter();
+    if iter.any(|&v| v == communityPk) {
+        return Err(Errors::ThreadsExist.into());
+    }
+
+    Ok(())
+}*/
