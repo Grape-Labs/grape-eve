@@ -390,39 +390,43 @@ export function EveView(props: any){
     
             console.log("deleting: "+community.toBase58() + " from: "+publicKey.toBase58());
 
-            try{
-                enqueueSnackbar(`Preparing to delete community`,{ variant: 'info' });
-                const signedTransaction = await program.rpc.deleteCommunity({
-                    accounts: {
-                        author: publicKey,
-                        community: community,
-                    },
-                })
+           try{
+                if (existingThreads.length === 0){
+                    enqueueSnackbar(`Preparing to delete community`,{ variant: 'info' });
+                    const signedTransaction = await program.rpc.deleteCommunity({
+                        accounts: {
+                            author: publicKey,
+                            community: community,
+                        },
+                    })
 
-                const snackprogress = (key:any) => (
-                    <CircularProgress sx={{padding:'10px'}} />
-                );
-                const cnfrmkey = enqueueSnackbar(`Confirming...`,{ variant: 'info', action:snackprogress, persist: true });
-                const latestBlockHash = await geconnection.getLatestBlockhash();
-                await geconnection.confirmTransaction({
-                    blockhash: latestBlockHash.blockhash,
-                    lastValidBlockHeight: latestBlockHash.lastValidBlockHeight,
-                    signature: signedTransaction}, 
-                    'finalized'
-                );
-                closeSnackbar(cnfrmkey);
-        
-                const snackaction = (key:any) => (
-                    <Button href={`https://explorer.solana.com/tx/${signedTransaction}`} target='_blank'  sx={{color:'white'}}>
-                        {signedTransaction}
-                    </Button>
-                );
-                enqueueSnackbar(`Deleting community`,{ variant: 'success', action:snackaction });
+                    const snackprogress = (key:any) => (
+                        <CircularProgress sx={{padding:'10px'}} />
+                    );
+                    const cnfrmkey = enqueueSnackbar(`Confirming...`,{ variant: 'info', action:snackprogress, persist: true });
+                    const latestBlockHash = await geconnection.getLatestBlockhash();
+                    await geconnection.confirmTransaction({
+                        blockhash: latestBlockHash.blockhash,
+                        lastValidBlockHeight: latestBlockHash.lastValidBlockHeight,
+                        signature: signedTransaction}, 
+                        'finalized'
+                    );
+                    closeSnackbar(cnfrmkey);
             
-                console.log("signature: "+JSON.stringify(signedTransaction));
-                // do a refresh this is not efficient we should simply 
-                // do a dynamic push/popup on the object and avoid the additional rpc call
-                fetchThreads();
+                    const snackaction = (key:any) => (
+                        <Button href={`https://explorer.solana.com/tx/${signedTransaction}`} target='_blank'  sx={{color:'white'}}>
+                            {signedTransaction}
+                        </Button>
+                    );
+                    enqueueSnackbar(`Deleting community`,{ variant: 'success', action:snackaction });
+                
+                    console.log("signature: "+JSON.stringify(signedTransaction));
+                    // do a refresh this is not efficient we should simply 
+                    // do a dynamic push/popup on the object and avoid the additional rpc call
+                    fetchThreads();
+                } else {
+                    enqueueSnackbar(`Unable to delete community.  Associated community posts exist`,{ variant: 'error' });
+                }
             } catch(e:any){
                 closeSnackbar();
                 enqueueSnackbar(e.message ? `${e.name}: ${e.message}` : e.name, { variant: 'error' });
