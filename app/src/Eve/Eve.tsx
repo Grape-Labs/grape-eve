@@ -391,7 +391,7 @@ export function EveView(props: any){
             console.log("deleting: "+community.toBase58() + " from: "+publicKey.toBase58());
 
             try{
-                enqueueSnackbar(`Preparing to delete post`,{ variant: 'info' });
+                enqueueSnackbar(`Preparing to delete community`,{ variant: 'info' });
                 const signedTransaction = await program.rpc.deleteCommunity({
                     accounts: {
                         author: publicKey,
@@ -906,6 +906,7 @@ export function EveView(props: any){
         const [message, setMessage] = React.useState(props?.message || null);
         const [topic, setTopic] = React.useState(props?.topic || null);
         const [community, setCommunity] = React.useState((props?.community && new PublicKey(props.community)) || new PublicKey(0));
+        const communities = props.communities || null;
         const [reply, setReply] = React.useState(((type=== 2 || type===1) && props?.thread && new PublicKey(props.thread)) || new PublicKey(0));
         /*const [replyPk, getReply] = React.useState((type===2 && props?.reply && new PublicKey(props.reply)) || 
                                                     (type===1 && props?.reply && new PublicKey(props.reply) != new PublicKey(0) && new PublicKey(props.reply)) ||
@@ -954,6 +955,7 @@ export function EveView(props: any){
                     //component={Link} to={`${GRAPE_PREVIEW}${item.mint}`}
                     onClick={handleClickOpenPreviewDialog}
                     sx={{borderRadius:'17px',mr:mr,ml:ml,color:'white'}}
+                    disabled={!communities}
                 >
                     {type === 0 ?
                         <><AddCircleIcon /></>
@@ -1006,10 +1008,13 @@ export function EveView(props: any){
                                         setCommunity(new PublicKey(e.target.value))}
                                     }
                                 >
-                                    <MenuItem value={`8upjSpvjcdpuzhfR1zriwg5NXkwDruejqNE9WNbPRtyA`}>Grape</MenuItem>
-                                    <MenuItem value={`So11111111111111111111111111111111111111112`}>Solana</MenuItem>
-                                    <MenuItem value={'Aw9S9d7WbSRtqEnFJLhKoAiJsiPiBqUPuhG7gzF4r7hc'}>test test test</MenuItem>
-                                    <MenuItem value={'35NFCR7jPiVS2b7zV2mnyW5CpznWTQQJPkXHfxGbm53t'}>my man</MenuItem>
+                                    
+
+                                    {communities && communities.map((community:any,key:number) => {
+                                        return (
+                                            <MenuItem value={community.publicKey.toBase58()} key={key}>{community.account.title}</MenuItem>
+                                        );
+                                    })}
                                 </Select>
                             </FormControl>
                             
@@ -1036,7 +1041,7 @@ export function EveView(props: any){
                                         setMessage(e.target.value)}
                                     }
                                     />
-                                <Typography>{280 - (message?.length | 0)} left</Typography>
+                                <Typography>{160 - (message?.length | 0)} left</Typography>
                             </FormControl>
                             
                             {/*
@@ -1325,7 +1330,7 @@ export function EveView(props: any){
                                                         }
                                                         
                                                     </Button>
-                                                    <PostView type={0} />
+                                                    <PostView type={0} communities={communities} />
 
                                                     <CommunityView type={0} ml={1} />
                                                 </Grid>
@@ -1420,13 +1425,13 @@ export function EveView(props: any){
                                                                 
                                                                 {publicKey && publicKey.toBase58() === item?.author.toBase58() ?
                                                                     <Grid item>
-                                                                        <PostView type={2} thread={item.publicKey} topic={item?.topic} community={item?.community} encrypted={item?.isEncrypted} mr={1} reply={item?.reply}/>
-                                                                        <PostView type={1} thread={item.publicKey} message={item?.content} topic={item?.topic} community={item?.community} metadata={item?.metadata} encrypted={item?.isEncrypted}  reply={item?.reply}/>
+                                                                        <PostView communities={communities} type={2} thread={item.publicKey} topic={item?.topic} community={item?.community} encrypted={item?.isEncrypted} mr={1} reply={item?.reply}/>
+                                                                        <PostView communities={communities} type={1} thread={item.publicKey} message={item?.content} topic={item?.topic} community={item?.community} metadata={item?.metadata} encrypted={item?.isEncrypted}  reply={item?.reply}/>
                                                                         <DeletePost thread={item.publicKey} community={item?.community}/>  
                                                                     </Grid>                                                                      
                                                                 :
                                                                     <Grid>
-                                                                       <PostView type={2} thread={item.publicKey} topic={item?.topic} community={item?.community} encrypted={item?.isEncrypted} reply={item?.reply}/>
+                                                                       <PostView communities={communities} type={2} thread={item.publicKey} topic={item?.topic} community={item?.community} encrypted={item?.isEncrypted} reply={item?.reply}/>
                                                                     </Grid>
                                                                 }
                                                                 
