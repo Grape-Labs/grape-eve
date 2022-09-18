@@ -388,19 +388,21 @@ export function EveView(props: any){
             await initWorkspace();
             const { wallet, provider, program } = useWorkspace()
             const filter = [communityThreadsFilter(community.toBase58())]
-            const existingThreads = await fetchThreads(filter);
+            const existingThreads = await fetchThreads(filter, true);
+
             console.log("deleting: "+community.toBase58() + " from: "+publicKey.toBase58());
 
            try{
                 if (existingThreads.length === 0){
                     enqueueSnackbar(`Preparing to delete community`,{ variant: 'info' });
+                    
                     const signedTransaction = await program.rpc.deleteCommunity({
                         accounts: {
                             author: publicKey,
                             community: community,
                         },
                     })
-
+                    
                     const snackprogress = (key:any) => (
                         <CircularProgress sx={{padding:'10px'}} />
                     );
@@ -413,7 +415,7 @@ export function EveView(props: any){
                         'finalized'
                     );
                     closeSnackbar(cnfrmkey);
-            
+                    
                     const snackaction = (key:any) => (
                         <Button href={`https://explorer.solana.com/tx/${signedTransaction}`} target='_blank'  sx={{color:'white'}}>
                             {signedTransaction}
@@ -424,9 +426,9 @@ export function EveView(props: any){
                     console.log("signature: "+JSON.stringify(signedTransaction));
                     // do a refresh this is not efficient we should simply 
                     // do a dynamic push/popup on the object and avoid the additional rpc call
-                    fetchThreads();
+                    fetchCommunities();
                 } else {
-                    enqueueSnackbar(`Unable to delete community.  Associated community posts exist`,{ variant: 'error' });
+                    enqueueSnackbar(`Unable to delete! this can be deleted once all posts have been deleted`,{ variant: 'error' });
                 }
             } catch(e:any){
                 closeSnackbar();
@@ -459,7 +461,7 @@ export function EveView(props: any){
         //const [thread] = await getThread(THREAD_UUID);
         //const thread_author = web3.Keypair.generate();
         //const thread = web3.Keypair.generate()
-        console.log("posting: "+topic+" - "+content+" - "+metadata+" - "+community+" - "+threadType+" - "+encrypted+" - "+(reply))
+        //console.log("posting: "+topic+" - "+content+" - "+metadata+" - "+community+" - "+threadType+" - "+encrypted+" - "+(reply))
         try{
             enqueueSnackbar(`Preparing to create a new post`,{ variant: 'info' });
             
@@ -568,7 +570,7 @@ export function EveView(props: any){
             
             // do a refresh this is not efficient we should simply 
             // do a dynamic push/popup on the object and avoid the additional rpc call
-            fetchThreads();
+            fetchThreads(null, false);
         } catch(e:any){
             closeSnackbar();
             enqueueSnackbar(e.message ? `${e.name}: ${e.message}` : e.name, { variant: 'error' });
@@ -651,7 +653,7 @@ export function EveView(props: any){
             
             // do a refresh this is not efficient we should simply 
             // do a dynamic push/popup on the object and avoid the additional rpc call
-            fetchThreads();
+            fetchThreads(null, false);
         } catch(e:any){
             closeSnackbar();
             enqueueSnackbar(e.message ? `${e.name}: ${e.message}` : e.name, { variant: 'error' });
@@ -734,7 +736,7 @@ export function EveView(props: any){
                 console.log("signature: "+JSON.stringify(signedTransaction));
                 // do a refresh this is not efficient we should simply 
                 // do a dynamic push/popup on the object and avoid the additional rpc call
-                fetchThreads();
+                fetchThreads(null, false);
             } catch(e:any){
                 closeSnackbar();
                 enqueueSnackbar(e.message ? `${e.name}: ${e.message}` : e.name, { variant: 'error' });
@@ -1133,7 +1135,7 @@ export function EveView(props: any){
             setLoadingThreads(false);     
             return [thread];
         } else{
-            fetchThreads();
+            fetchThreads(null, false);
         }
         
     }
@@ -1200,7 +1202,7 @@ export function EveView(props: any){
         }
     })
     
-    const fetchThreads = async (filters = []) => {
+    const fetchThreads = async (filters = [], ignoreSetters:boolean) => {
         setLoadingThreads(true);
         await initWorkspace();
         const { program } = await useWorkspace()
@@ -1221,31 +1223,33 @@ export function EveView(props: any){
             if (x.reply.toBase58() !== (new PublicKey(0)).toBase58())
                 tcnt++;
         }
+        
+        if (!ignoreSetters){
+            setThreadCount(tcnt);
+            setPostCount(mptrd.length);
+            setReplyCount(mptrd.length - tcnt);
 
-        setThreadCount(tcnt);
-        setPostCount(mptrd.length);
-        setReplyCount(mptrd.length - tcnt);
-
-        setThreads(mptrd);
-        setLoadingThreads(false);     
+            setThreads(mptrd);
+            setLoadingThreads(false);     
+        }
         return mptrd;
     }
 
     const fetchFilteredCommunityThreads = (community:any) => {
         console.log("filtering by community: "+community.toBase58());
         const filter = [communityThreadsFilter(community.toBase58())]
-        fetchThreads(filter);
+        fetchThreads(filter, false);
     }
 
     const fetchFilteredAuthor = (author:any) => {
         //console.log("filtering by author: "+author);
         const filter = [authorFilter(author)]
-        fetchThreads(filter);
+        fetchThreads(filter, false);
     }
 
     const fetchFilteredTopic = (topic:any) => {
         const filter = [topicFilter(topic)]
-        fetchThreads(filter);
+        fetchThreads(filter, false);
     }
 
     const fetchFilteredThread = (thread:any) => {
@@ -1325,7 +1329,7 @@ export function EveView(props: any){
                                                     <Button 
                                                         variant='outlined'
                                                         disabled={loadingThreads}
-                                                        onClick={() => {fetchThreads()}}
+                                                        onClick={() => {fetchThreads(null, false)}}
                                                         sx={{borderRadius:'17px', mr:1,color:'white'}}
                                                     >
                                                         {loadingThreads ?
@@ -1405,6 +1409,7 @@ export function EveView(props: any){
                                                                 {item?.reply && item?.reply.toBase58() !== new PublicKey(0).toBase58() &&
                                                                     <Typography component='div' variant="caption"><ReplyIcon fontSize='small' sx={{color:'rgba:(255,255,255,0.5)'}} /> REPLYING TO: {item.reply.toBase58()}</Typography>
                                                                 }
+
                                                                 {/* make a fetch reply object */}
                                                                 {item?.content} 
                                                                 <Typography component="span" variant="h6" sx={{color:'gray'}}>
