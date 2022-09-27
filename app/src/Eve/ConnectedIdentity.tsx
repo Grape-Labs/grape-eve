@@ -49,6 +49,7 @@ import {
 export const ConnectedIdentity = (props:any) => {
     const address = props.address;
     const avatarSize = props.avatarSize;
+    const hidePubKey = props.hidePubKey || false;
     const [loadingpicture, setLoadingPicture] = React.useState(false);
     const [solanaDomain, setSolanaDomain] = React.useState(null);
     const [profilePictureUrl, setProfilePictureUrl] = React.useState(null);
@@ -131,9 +132,11 @@ export const ConnectedIdentity = (props:any) => {
                         <CircularProgress size="1rem" />
                     </Avatar>
                 </Grid>
+                {!hidePubKey &&
                 <Grid item sx={{ml:1}}>
                     <Typography variant="h6" sx={{}}>{trimAddress(address,6)}</Typography>
                 </Grid>
+                }
             </Grid>
         )
     }else{
@@ -145,6 +148,7 @@ export const ConnectedIdentity = (props:any) => {
                             {address.substr(0,2)}
                         </Avatar>
                     </Grid>
+                    {!hidePubKey &&
                     <Grid item sx={{ml:1}}>
                         <Grid item sx={{textAlign:'left'}}>
                             {solanaDomain}
@@ -156,6 +160,7 @@ export const ConnectedIdentity = (props:any) => {
                             </Grid>
                         </Grid>
                     </Grid>
+                    }
                 </Grid>
             );
         

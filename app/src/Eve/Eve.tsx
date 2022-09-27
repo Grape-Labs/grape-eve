@@ -83,6 +83,20 @@ import {
     Stack
 } from '@mui/material';
 
+import {
+    Timeline,
+    TimelineItem,
+    TimelineSeparator,
+    TimelineConnector,
+    TimelineContent,
+    TimelineDot,
+    TimelineOppositeContent,
+} from '@mui/lab';
+
+import {
+    timelineOppositeContentClasses,
+} from '@mui/lab/TimelineOppositeContent';
+
 import GrapeIcon from "../components/static/GrapeIcon";
 import SolanaIcon from "../components/static/SolIcon";
 import SolCurrencyIcon from '../components/static/SolCurrencyIcon';
@@ -142,6 +156,7 @@ export function EveView(props: any){
     const [searchParams, setSearchParams] = useSearchParams();
     const urlParams = searchParams.get("thread") || searchParams.get("address") || handlekey;
     const [threads, setThreads] = React.useState(null);
+    const [threadReplies, setThreadReplies] = React.useState(null);
 
     const [threadCount, setThreadCount] = React.useState(0);
     const [postCount, setPostCount] = React.useState(0);
@@ -428,7 +443,7 @@ export function EveView(props: any){
                     // do a dynamic push/popup on the object and avoid the additional rpc call
                     fetchCommunities();
                 } else {
-                    enqueueSnackbar(`Unable to delete! this can be deleted once all posts have been deleted`,{ variant: 'error' });
+                    enqueueSnackbar(`Unable to delete! Communities can be deleted once all posts have been removed`,{ variant: 'error' });
                 }
             } catch(e:any){
                 closeSnackbar();
@@ -998,7 +1013,7 @@ export function EveView(props: any){
                                     {reply && reply.toBase58() !== new PublicKey(0).toBase58() && type===2 ? 
                                         <>Replying to {thread.toBase58()}</>
                                     :   
-                                        <> {replyPk.toBase58() != new PublicKey(0).toBase58() ? <>Editing reply to {replyPk.toBase58()} </>: <>Editiing</>}</>
+                                        <> {replyPk.toBase58() != new PublicKey(0).toBase58() ? <>Editing reply to {replyPk.toBase58()} </>: <>Editing</>}</>
 
                                     }
                                 </Typography>
@@ -1011,6 +1026,7 @@ export function EveView(props: any){
                                     id="demo-simple-select"
                                     label="Community"
                                     value={community}
+                                    disabled={reply && reply.toBase58() !== new PublicKey(0).toBase58() && type===2 ? true : false}
                                     onChange={(e: any) => {
                                         setCommunity(new PublicKey(e.target.value))}
                                     }
@@ -1030,17 +1046,19 @@ export function EveView(props: any){
                                     fullWidth 
                                     label="Topic" 
                                     id="fullWidth" 
+                                    disabled={reply && reply.toBase58() !== new PublicKey(0).toBase58() && type===2 ? true : false}
                                     value={topic}
                                     onChange={(e: any) => {
                                         if (e.target.value.length <= 50)
                                             setTopic(e.target.value)}
                                     }/>
-                                <Typography>{50 - (topic?.length | 0)} left</Typography>
+                                
+                                {reply && reply.toBase58() !== new PublicKey(0).toBase58() && type===2 ? <></> : <Typography>{50 - (topic?.length | 0)} left</Typography>}
                             </FormControl>
                             <FormControl fullWidth sx={{m:1,mt:2}}>
                                 <TextField
                                     id="filled-multiline-static"
-                                    label="Start a discussion"
+                                    label={reply && reply.toBase58() !== new PublicKey(0).toBase58() && type===2 ? "Reply to this thread" : "Start a discussion"}
                                     multiline
                                     rows={4}
                                     value={message}
@@ -1130,6 +1148,11 @@ export function EveView(props: any){
             console.log("t: "+JSON.stringify(thread));
             //return thread;
             thread.publicKey = new PublicKey(pubkey);
+
+            // here we can split the threads to primary and responses
+            //if (thread.replyTo)
+            //{item?.reply && item?.reply.toBase58() !== new PublicKey(0).toBase58() &&
+            setThreadReplies([thread]);
 
             setThreads([thread]);
             setLoadingThreads(false);     
@@ -1228,10 +1251,9 @@ export function EveView(props: any){
             setThreadCount(tcnt);
             setPostCount(mptrd.length);
             setReplyCount(mptrd.length - tcnt);
-
             setThreads(mptrd);
-            setLoadingThreads(false);     
         }
+        setLoadingThreads(false); 
         return mptrd;
     }
 
@@ -1271,6 +1293,45 @@ export function EveView(props: any){
             setLoading(false);
         }
     }, [urlParams]);
+
+    function ReplyView(props:any){
+        const thread = props.thread;
+        const allThreads = props.allThreads;
+
+        //console.log("thread: "+JSON.stringify(thread));
+        return (
+            <>   
+                {thread && allThreads && allThreads.map((item:any, key:number) => {
+                    return (
+                        <>
+                        {item?.reply && item.reply.toBase58() === thread.publicKey.toBase58() &&
+                            <Timeline
+                                sx={{
+                                [`& .${timelineOppositeContentClasses.root}`]: {
+                                    flex: 0.2,
+                                },
+                                }}
+                            >
+                                <TimelineItem>
+                                    <TimelineOppositeContent color="textSecondary">
+                                        {created_ago(+item?.timestamp)}
+                                    </TimelineOppositeContent>
+                                    <TimelineSeparator>
+                                        <TimelineDot>
+                                            <ConnectedIdentity hidePubKey={true} address={item.author.toBase58()} avatarSize={30} />
+                                        </TimelineDot>
+                                        <TimelineConnector />
+                                    </TimelineSeparator>
+                                    <TimelineContent>{item?.content} - {item.author.toBase58()}</TimelineContent>
+                                </TimelineItem>
+                            </Timeline>
+                            }
+                        </>
+                    )
+                })}
+            </>
+        )
+    }
 	
     return (
         <>
@@ -1368,88 +1429,97 @@ export function EveView(props: any){
                                         })}
 
                                         {threads.map((item:any, key:number) => {
+                                            
                                             return (
                                                 <>
                                                 {key > 0 &&
                                                     <></>
                                                 }
-                                                <ListItem alignItems="flex-start" key={key}>
-                                                    <Box sx={{ width: '100%', background: 'linear-gradient(to right, #111111, rgba(0,0,0,0.5))', boxShadow:'1px 1px 2px black', borderRadius:'17px' }}>
-                                                        
-                                                        <Box sx={{ my: 1, mx: 1 }}>
-                                                            <Grid container>
-                                                                <Grid item xs>
-                                                                    <Button sx={{color:'white',textTransform:'none',borderRadius:'17px'}} size='large' onClick={() => {fetchFilteredAuthor(item?.author.toBase58())}}>
-                                                                        {item?.author.toBase58() ?
-                                                                            <ConnectedIdentity address={item.author.toBase58()} avatarSize={60} />
-                                                                        :
-                                                                            <>-NAN-</>
-                                                                        }
-                                                                    </Button>
-                                                                </Grid>
-                                                                <Grid item>
-                                                                    <Grid container>
-                                                                        <Button variant="contained" sx={{borderRadius:'17px',background: 'linear-gradient(to right, #ffffff, rgba(255,255,255,0.5))',color:'black',textTransform:'none',mr:2}}onClick={() => {fetchFilteredTopic(item?.topic)}}>
-                                                                            <Typography variant='subtitle1' sx={{}}>#{item?.topic}</Typography>
+                                                
+                                                {item?.reply && item?.reply.toBase58() !== new PublicKey(0).toBase58() ?
+                                                    <></>
+                                                :
+                                                    <ListItem alignItems="flex-start" key={key}>
+                                                        <Box sx={{ width: '100%', background: 'linear-gradient(to right, #111111, rgba(0,0,0,0.5))', boxShadow:'1px 1px 2px black', borderRadius:'17px' }}>
+                                                            
+                                                            <Box sx={{ my: 1, mx: 1 }}>
+                                                                <Grid container>
+                                                                    <Grid item xs>
+                                                                        <Button sx={{color:'white',textTransform:'none',borderRadius:'17px'}} size='large' onClick={() => {fetchFilteredAuthor(item?.author.toBase58())}}>
+                                                                            {item?.author.toBase58() ?
+                                                                                <ConnectedIdentity address={item.author.toBase58()} avatarSize={60} />
+                                                                            :
+                                                                                <>-NAN-</>
+                                                                            }
                                                                         </Button>
-
-                                                                        <SocialVotes address={item.publicKey.toBase58()} />
                                                                     </Grid>
-
-                                                                </Grid>
-                                                            </Grid>
-                                                        </Box>
-                                                        
-                                                        <Divider variant="middle" />
-                                                        
-                                                        <br/>
-                                                        <Box sx={{ m: 2 }}>
-                                                            <Typography variant="h5" component='div'>
-                                                                
-                                                                {item?.reply && item?.reply.toBase58() !== new PublicKey(0).toBase58() &&
-                                                                    <Typography component='div' variant="caption"><ReplyIcon fontSize='small' sx={{color:'rgba:(255,255,255,0.5)'}} /> REPLYING TO: {item.reply.toBase58()}</Typography>
-                                                                }
-
-                                                                {/* make a fetch reply object */}
-                                                                {item?.content} 
-                                                                <Typography component="span" variant="h6" sx={{color:'gray'}}>
-                                                                &nbsp;-&nbsp;{created_ago(+item?.timestamp)}
-                                                                </Typography>
-                                                            </Typography>
-                                                        </Box>
-
-                                                        {/*
-                                                        <Button onClick={() => {fetchFilteredCommunity(item?.community.toBase58())}}>{item.community.toBase58()}</Button>
-                                                        {item?.threadType}
-                                                        {item?.metadata}
-                                                        {item?.isEncrypted}
-                                                        {item.publicKey}
-                                                        */}
-
-                                                        <br/>
-                                                        <Box sx={{ m: 2 }}>
-                                                            <Grid container direction="row">
-                                                                <Grid item xs>
-                                                                    <ShareSocialURL url={'https://grape-eve.vercel.app/'+item.publicKey.toBase58()} title={`Topic: ${item?.topic}`} />
-                                                                </Grid>
-                                                                
-                                                                {publicKey && publicKey.toBase58() === item?.author.toBase58() ?
                                                                     <Grid item>
-                                                                        <PostView communities={communities} type={2} thread={item.publicKey} topic={item?.topic} community={item?.community} encrypted={item?.isEncrypted} mr={1} reply={item?.reply}/>
-                                                                        <PostView communities={communities} type={1} thread={item.publicKey} message={item?.content} topic={item?.topic} community={item?.community} metadata={item?.metadata} encrypted={item?.isEncrypted}  reply={item?.reply}/>
-                                                                        <DeletePost thread={item.publicKey} community={item?.community}/>  
-                                                                    </Grid>                                                                      
-                                                                :
-                                                                    <Grid>
-                                                                       <PostView communities={communities} type={2} thread={item.publicKey} topic={item?.topic} community={item?.community} encrypted={item?.isEncrypted} reply={item?.reply}/>
-                                                                    </Grid>
-                                                                }
-                                                                
-                                                            </Grid>
-                                                        </Box>
-                                                    </Box>
+                                                                        <Grid container>
+                                                                            <Button variant="contained" sx={{borderRadius:'17px',background: 'linear-gradient(to right, #ffffff, rgba(255,255,255,0.5))',color:'black',textTransform:'none',mr:2}}onClick={() => {fetchFilteredTopic(item?.topic)}}>
+                                                                                <Typography variant='subtitle1' sx={{}}>#{item?.topic}</Typography>
+                                                                            </Button>
 
-                                                </ListItem>
+                                                                            <SocialVotes address={item.publicKey.toBase58()} />
+                                                                        </Grid>
+
+                                                                    </Grid>
+                                                                </Grid>
+                                                            </Box>
+                                                            
+                                                            <Divider variant="middle" />
+                                                            
+                                                            <br/>
+                                                            <Box sx={{ m: 2 }}>
+                                                                <Typography variant="h5" component='div'>
+                                                                    
+                                                                    {item?.reply && item?.reply.toBase58() !== new PublicKey(0).toBase58() &&
+                                                                        <Typography component='div' variant="caption"><ReplyIcon fontSize='small' sx={{color:'rgba:(255,255,255,0.5)'}} /> REPLYING TO: {item.reply.toBase58()}</Typography>
+                                                                    }
+
+                                                                    {/* make a fetch reply object */}
+                                                                    {item?.content} 
+                                                                    <Typography component="span" variant="h6" sx={{color:'gray'}}>
+                                                                    &nbsp;-&nbsp;{created_ago(+item?.timestamp)}
+                                                                    </Typography>
+                                                                </Typography>
+                                                            </Box>
+
+                                                            {/*
+                                                            <Button onClick={() => {fetchFilteredCommunity(item?.community.toBase58())}}>{item.community.toBase58()}</Button>
+                                                            {item?.threadType}
+                                                            {item?.metadata}
+                                                            {item?.isEncrypted}
+                                                            {item.publicKey}
+                                                            */}
+
+                                                            <br/>
+                                                            <Box sx={{ m: 2 }}>
+                                                                <Grid container direction="row">
+                                                                    <Grid item xs>
+                                                                        <ShareSocialURL url={'https://grape-eve.vercel.app/'+item.publicKey.toBase58()} title={`Topic: ${item?.topic}`} />
+                                                                    </Grid>
+                                                                    
+                                                                    {publicKey && publicKey.toBase58() === item?.author.toBase58() ?
+                                                                        <Grid item>
+                                                                            <PostView communities={communities} type={2} thread={item.publicKey} topic={item?.topic} community={item?.community} encrypted={item?.isEncrypted} mr={1} reply={item?.reply}/>
+                                                                            <PostView communities={communities} type={1} thread={item.publicKey} message={item?.content} topic={item?.topic} community={item?.community} metadata={item?.metadata} encrypted={item?.isEncrypted}  reply={item?.reply}/>
+                                                                            <DeletePost thread={item.publicKey} community={item?.community}/>  
+                                                                        </Grid>                                                                      
+                                                                    :
+                                                                        <Grid>
+                                                                        <PostView communities={communities} type={2} thread={item.publicKey} topic={item?.topic} community={item?.community} encrypted={item?.isEncrypted} reply={item?.reply}/>
+                                                                        </Grid>
+                                                                    }
+                                                                    
+                                                                </Grid>
+                                                            </Box>
+                                                            
+                                                            <ReplyView allThreads={threads} thread={item} />
+                                                    
+                                                        </Box>
+
+                                                    </ListItem>
+                                                }
                                                 </>
                                             )
                                         })}
