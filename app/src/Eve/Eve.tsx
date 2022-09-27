@@ -1322,7 +1322,29 @@ export function EveView(props: any){
                                         </TimelineDot>
                                         <TimelineConnector />
                                     </TimelineSeparator>
-                                    <TimelineContent>{item?.content} - {item.author.toBase58()}</TimelineContent>
+                                    <TimelineContent>{item?.content}
+                                        <Typography component="span" variant="caption" sx={{color:'gray'}}>
+                                            &nbsp;-&nbsp;
+                                            {item.author.toBase58()}
+                                        </Typography>
+
+                                        <Box sx={{ m: 2 }}>
+                                            <Grid container direction="row">
+                                                {publicKey && publicKey.toBase58() === item?.author.toBase58() ?
+                                                    <Grid item>
+                                                        <PostView communities={communities} type={1} thread={item.publicKey} message={item?.content} topic={item?.topic} community={item?.community} metadata={item?.metadata} encrypted={item?.isEncrypted}  reply={item?.reply}/>
+                                                        <DeletePost thread={item.publicKey} community={item?.community}/>  
+                                                    </Grid>                                                                      
+                                                :
+                                                    <Grid>
+                                                        <PostView communities={communities} type={2} thread={item.publicKey} topic={item?.topic} community={item?.community} encrypted={item?.isEncrypted} reply={item?.reply}/>
+                                                    </Grid>
+                                                }
+                                                
+                                            </Grid>
+                                        </Box>
+
+                                    </TimelineContent>
                                 </TimelineItem>
                             </Timeline>
                             }
