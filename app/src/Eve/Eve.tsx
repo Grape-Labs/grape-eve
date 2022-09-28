@@ -1357,31 +1357,7 @@ export function EveView(props: any){
 	
     return (
         <>
-            <Box
-                sx={{ 
-                    p: 1, 
-                    mt: 6,
-                    mb: 3, 
-                    width: '100%',
-                    backgroundColor:'rgba(0,0,0,0.5)',
-                    borderRadius:'24px'
-                }}
-            > 
-                <Grid 
-                    container 
-                    direction="column" 
-                    spacing={2} 
-                    alignItems="center"
-                    justifyContent={'center'}
-                    rowSpacing={8}
-                    sx={{ width: '100%' }}
-                >
-                    
-                    <Grid 
-                        item sm={12}
-                        alignItems="center"
-                        sx={{ width: '100%' }}
-                    >
+            
 
                         {loading ?
                             <Box 
@@ -1400,34 +1376,48 @@ export function EveView(props: any){
                             <>
                                 {threads &&
                                     <>
-                                        <Typography>
-                                            
-                                            <Grid container direction="row">
-                                                <Grid item xs>
-                                                    <Typography sx={{mr:1}}>
-                                                        {threadCount} threads / {replyCount} replies / {postCount} total posts
-                                                    </Typography>
-                                                </Grid>
-                                                <Grid item>
-                                                    <Button 
-                                                        variant='outlined'
-                                                        disabled={loadingThreads}
-                                                        onClick={() => {fetchThreads(null, false)}}
-                                                        sx={{borderRadius:'17px', mr:1,color:'white'}}
-                                                    >
-                                                        {loadingThreads ?
-                                                            <>loading...</>
-                                                        :
-                                                            <RefreshIcon />
-                                                        }
-                                                        
-                                                    </Button>
-                                                    <PostView type={0} communities={communities} />
 
-                                                    <CommunityView type={0} ml={1} />
+                                      <Box
+                                        sx={{ 
+                                            p: 1, 
+                                            mt: 6,
+                                            mb: 3, 
+                                            width: '100%',
+                                            backgroundColor:'rgba(0,0,0,0.5)',
+                                            borderRadius:'24px'
+                                        }}
+                                        > 
+                                            <Grid 
+                                                container 
+                                                direction="column" 
+                                                spacing={2} 
+                                                alignItems="center"
+                                                justifyContent={'center'}
+                                                rowSpacing={8}
+                                                sx={{ width: '100%' }}
+                                            >
+                                                
+                                                <Grid 
+                                                    item sm={12}
+                                                    alignItems="center"
+                                                    sx={{ width: '100%' }}
+                                                >  
+                                            
+                                                    <Grid container direction="row">
+                                                        <Grid item xs>
+                                                            <Typography variant='h5' sx={{ml:1}}>
+                                                                {threadCount} threads / {replyCount} replies / {postCount} total posts
+                                                            </Typography>
+                                                        </Grid>
+                                                        <Grid item>
+
+                                                            <CommunityView type={0} ml={1} />
+                                                        </Grid>
+                                                    </Grid>
                                                 </Grid>
                                             </Grid>
-                                        </Typography>
+                                        </Box>
+                                        
                                         
                                         <List sx={{ width: '100%' }}>
                                         
@@ -1450,109 +1440,156 @@ export function EveView(props: any){
                                             );
                                         })}
 
-                                        {threads.map((item:any, key:number) => {
-                                            
-                                            return (
-                                                <>
-                                                {key > 0 &&
-                                                    <></>
-                                                }
-                                                
-                                                {item?.reply && item?.reply.toBase58() !== new PublicKey(0).toBase58() ?
-                                                    <></>
-                                                :
-                                                    <ListItem alignItems="flex-start" key={key}>
-                                                        <Box sx={{ width: '100%', background: 'linear-gradient(to right, #111111, rgba(0,0,0,0.5))', boxShadow:'1px 1px 2px black', borderRadius:'17px' }}>
-                                                            
-                                                            <Box sx={{ my: 1, mx: 1 }}>
-                                                                <Grid container>
-                                                                    <Grid item xs>
-                                                                        <Button sx={{color:'white',textTransform:'none',borderRadius:'17px'}} size='large' onClick={() => {fetchFilteredAuthor(item?.author.toBase58())}}>
-                                                                            {item?.author.toBase58() ?
-                                                                                <ConnectedIdentity address={item.author.toBase58()} avatarSize={60} />
-                                                                            :
-                                                                                <>-NAN-</>
-                                                                            }
-                                                                        </Button>
-                                                                    </Grid>
-                                                                    <Grid item>
-                                                                        <Grid container>
-                                                                            <Button variant="contained" sx={{borderRadius:'17px',background: 'linear-gradient(to right, #ffffff, rgba(255,255,255,0.5))',color:'black',textTransform:'none',mr:2}}onClick={() => {fetchFilteredTopic(item?.topic)}}>
-                                                                                <Typography variant='subtitle1' sx={{}}>#{item?.topic}</Typography>
-                                                                            </Button>
-
-                                                                            <SocialVotes address={item.publicKey.toBase58()} />
-                                                                        </Grid>
-
-                                                                    </Grid>
-                                                                </Grid>
-                                                            </Box>
-                                                            
-                                                            <Divider variant="middle" />
-                                                            
-                                                            <br/>
-                                                            <Box sx={{ m: 2 }}>
-                                                                <Typography variant="h5" component='div'>
-                                                                    
-                                                                    {item?.reply && item?.reply.toBase58() !== new PublicKey(0).toBase58() &&
-                                                                        <Typography component='div' variant="caption"><ReplyIcon fontSize='small' sx={{color:'rgba:(255,255,255,0.5)'}} /> REPLYING TO: {item.reply.toBase58()}</Typography>
-                                                                    }
-
-                                                                    {/* make a fetch reply object */}
-                                                                    {item?.content} 
-                                                                    <Typography component="span" variant="h6" sx={{color:'gray'}}>
-                                                                    &nbsp;-&nbsp;{created_ago(+item?.timestamp)}
-                                                                    </Typography>
-                                                                </Typography>
-                                                            </Box>
-
-                                                            {/*
-                                                            <Button onClick={() => {fetchFilteredCommunity(item?.community.toBase58())}}>{item.community.toBase58()}</Button>
-                                                            {item?.threadType}
-                                                            {item?.metadata}
-                                                            {item?.isEncrypted}
-                                                            {item.publicKey}
-                                                            */}
-
-                                                            <br/>
-                                                            <Box sx={{ m: 2 }}>
-                                                                <Grid container direction="row">
-                                                                    <Grid item xs>
-                                                                        <ShareSocialURL url={'https://grape-eve.vercel.app/'+item.publicKey.toBase58()} title={`Topic: ${item?.topic}`} />
-                                                                    </Grid>
-                                                                    
-                                                                    {publicKey && publicKey.toBase58() === item?.author.toBase58() ?
-                                                                        <Grid item>
-                                                                            <PostView communities={communities} type={2} thread={item.publicKey} topic={item?.topic} community={item?.community} encrypted={item?.isEncrypted} mr={1} reply={item?.reply}/>
-                                                                            <PostView communities={communities} type={1} thread={item.publicKey} message={item?.content} topic={item?.topic} community={item?.community} metadata={item?.metadata} encrypted={item?.isEncrypted}  reply={item?.reply}/>
-                                                                            <DeletePost thread={item.publicKey} community={item?.community}/>  
-                                                                        </Grid>                                                                      
-                                                                    :
-                                                                        <Grid>
-                                                                        <PostView communities={communities} type={2} thread={item.publicKey} topic={item?.topic} community={item?.community} encrypted={item?.isEncrypted} reply={item?.reply}/>
-                                                                        </Grid>
-                                                                    }
-                                                                    
-                                                                </Grid>
-                                                            </Box>
-                                                            
-                                                            <ReplyView allThreads={threads} thread={item} />
+                                            <Box
+                                                sx={{ 
+                                                    p: 1, 
+                                                    mt: 6,
+                                                    mb: 3, 
+                                                    width: '100%',
+                                                    backgroundColor:'rgba(0,0,0,0.5)',
+                                                    borderRadius:'24px'
+                                                }}
+                                            > 
+                                                <Grid 
+                                                    container 
+                                                    direction="column" 
+                                                    spacing={2} 
+                                                    alignItems="center"
+                                                    justifyContent={'center'}
+                                                    rowSpacing={8}
+                                                    sx={{ width: '100%' }}
+                                                >
                                                     
-                                                        </Box>
+                                                    <Grid 
+                                                        item sm={12}
+                                                        alignItems="center"
+                                                        sx={{ width: '100%' }}
+                                                    >  
 
-                                                    </ListItem>
-                                                }
-                                                </>
-                                            )
-                                        })}
+                                                        <Grid container direction="row">
+                                                            <Grid item xs>
+                                                            </Grid>
+                                                            <Grid item>
+                                                                <Button 
+                                                                    variant='outlined'
+                                                                    disabled={loadingThreads}
+                                                                    onClick={() => {fetchThreads(null, false)}}
+                                                                    sx={{borderRadius:'17px', mr:1,color:'white'}}
+                                                                >
+                                                                    {loadingThreads ?
+                                                                        <>loading...</>
+                                                                    :
+                                                                        <RefreshIcon />
+                                                                    }
+                                                                    
+                                                                </Button>
+                                                                <PostView type={0} communities={communities} />
+                                                            </Grid>
+                                                        </Grid>
+
+                                                        {threads.map((item:any, key:number) => {
+                                                            
+                                                            return (
+                                                                <>
+                                                                {key > 0 &&
+                                                                    <></>
+                                                                }
+                                                                
+                                                                {item?.reply && item?.reply.toBase58() !== new PublicKey(0).toBase58() ?
+                                                                    <></>
+                                                                :
+                                                                    <ListItem alignItems="flex-start" key={key}>
+                                                                        <Box sx={{ width: '100%', background: 'linear-gradient(to right, #111111, rgba(0,0,0,0.5))', boxShadow:'1px 1px 2px black', borderRadius:'17px' }}>
+                                                                            
+                                                                            <Box sx={{ my: 1, mx: 1 }}>
+                                                                                <Grid container>
+                                                                                    <Grid item xs>
+                                                                                        <Button sx={{color:'white',textTransform:'none',borderRadius:'17px'}} size='large' onClick={() => {fetchFilteredAuthor(item?.author.toBase58())}}>
+                                                                                            {item?.author.toBase58() ?
+                                                                                                <ConnectedIdentity address={item.author.toBase58()} avatarSize={60} />
+                                                                                            :
+                                                                                                <>-NAN-</>
+                                                                                            }
+                                                                                        </Button>
+                                                                                    </Grid>
+                                                                                    <Grid item>
+                                                                                        <Grid container>
+                                                                                            <Button variant="contained" sx={{borderRadius:'17px',background: 'linear-gradient(to right, #ffffff, rgba(255,255,255,0.5))',color:'black',textTransform:'none',mr:2}}onClick={() => {fetchFilteredTopic(item?.topic)}}>
+                                                                                                <Typography variant='subtitle1' sx={{}}>#{item?.topic}</Typography>
+                                                                                            </Button>
+
+                                                                                            <SocialVotes address={item.publicKey.toBase58()} />
+                                                                                        </Grid>
+
+                                                                                    </Grid>
+                                                                                </Grid>
+                                                                            </Box>
+                                                                            
+                                                                            <Divider variant="middle" />
+                                                                            
+                                                                            <br/>
+                                                                            <Box sx={{ m: 2 }}>
+                                                                                <Typography variant="h5" component='div'>
+                                                                                    
+                                                                                    {item?.reply && item?.reply.toBase58() !== new PublicKey(0).toBase58() &&
+                                                                                        <Typography component='div' variant="caption"><ReplyIcon fontSize='small' sx={{color:'rgba:(255,255,255,0.5)'}} /> REPLYING TO: {item.reply.toBase58()}</Typography>
+                                                                                    }
+
+                                                                                    {/* make a fetch reply object */}
+                                                                                    {item?.content} 
+                                                                                    <Typography component="span" variant="h6" sx={{color:'gray'}}>
+                                                                                    &nbsp;-&nbsp;{created_ago(+item?.timestamp)}
+                                                                                    </Typography>
+                                                                                </Typography>
+                                                                            </Box>
+
+                                                                            {/*
+                                                                            <Button onClick={() => {fetchFilteredCommunity(item?.community.toBase58())}}>{item.community.toBase58()}</Button>
+                                                                            {item?.threadType}
+                                                                            {item?.metadata}
+                                                                            {item?.isEncrypted}
+                                                                            {item.publicKey}
+                                                                            */}
+
+                                                                            <br/>
+                                                                            <Box sx={{ m: 2 }}>
+                                                                                <Grid container direction="row">
+                                                                                    <Grid item xs>
+                                                                                        <ShareSocialURL url={'https://grape-eve.vercel.app/'+item.publicKey.toBase58()} title={`Topic: ${item?.topic}`} />
+                                                                                    </Grid>
+                                                                                    
+                                                                                    {publicKey && publicKey.toBase58() === item?.author.toBase58() ?
+                                                                                        <Grid item>
+                                                                                            <PostView communities={communities} type={2} thread={item.publicKey} topic={item?.topic} community={item?.community} encrypted={item?.isEncrypted} mr={1} reply={item?.reply}/>
+                                                                                            <PostView communities={communities} type={1} thread={item.publicKey} message={item?.content} topic={item?.topic} community={item?.community} metadata={item?.metadata} encrypted={item?.isEncrypted}  reply={item?.reply}/>
+                                                                                            <DeletePost thread={item.publicKey} community={item?.community}/>  
+                                                                                        </Grid>                                                                      
+                                                                                    :
+                                                                                        <Grid>
+                                                                                        <PostView communities={communities} type={2} thread={item.publicKey} topic={item?.topic} community={item?.community} encrypted={item?.isEncrypted} reply={item?.reply}/>
+                                                                                        </Grid>
+                                                                                    }
+                                                                                    
+                                                                                </Grid>
+                                                                            </Box>
+                                                                            
+                                                                            <ReplyView allThreads={threads} thread={item} />
+                                                                    
+                                                                        </Box>
+
+                                                                    </ListItem>
+                                                                }
+                                                                </>
+                                                            )
+                                                        })}
+                                                    </Grid>
+                                                </Grid>
+                                            </Box>
                                         </List>
                                     </>
                                 }
                             </>
                         }
-                    </Grid>
-                </Grid>
-            </Box>
         </>
 	)
 }

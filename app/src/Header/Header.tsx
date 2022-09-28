@@ -49,6 +49,8 @@ import {
 } from '@mui/material';
 
 import RateReviewIcon from '@mui/icons-material/RateReview';
+import PeopleIcon from '@mui/icons-material/People';
+import HubIcon from '@mui/icons-material/Hub';
 import DashboardOutlinedIcon from '@mui/icons-material/DashboardOutlined';
 import SearchIcon from '@mui/icons-material/Search';
 
@@ -305,6 +307,7 @@ export function Header(props: any) {
                     </Typography>
                 </Button>
                 <Tooltip title={`Grape Eve`}><IconButton sx={{borderRadius:'17px'}}><RateReviewIcon/></IconButton></Tooltip>
+                <Tooltip title={`Communities`}><IconButton sx={{borderRadius:'17px'}}><HubIcon/></IconButton></Tooltip>
             </Box>
             <HeaderChat />
             <div className="grape-wallet-adapter">
