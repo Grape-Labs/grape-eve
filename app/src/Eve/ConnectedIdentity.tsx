@@ -149,17 +149,17 @@ export const ConnectedIdentity = (props:any) => {
                         </Avatar>
                     </Grid>
                     {!hidePubKey &&
-                    <Grid item sx={{ml:1}}>
-                        <Grid item sx={{textAlign:'left'}}>
-                            {solanaDomain}
-                        </Grid>
-                        
-                        <Grid item sx={{}}>
+                        <Grid item sx={{ml:1}}>
                             <Grid item sx={{textAlign:'left'}}>
-                                <Typography variant="h6" sx={{}}>{trimAddress(address,6)}</Typography>
+                                {solanaDomain}
+                            </Grid>
+                            
+                            <Grid item sx={{}}>
+                                <Grid item sx={{textAlign:'left'}}>
+                                    <Typography variant="h6" sx={{}}>{trimAddress(address,6)}</Typography>
+                                </Grid>
                             </Grid>
                         </Grid>
-                    </Grid>
                     }
                 </Grid>
             );
@@ -170,7 +170,9 @@ export const ConnectedIdentity = (props:any) => {
                 {jsNumberForAddress(address) ?
                     <Grid container direction="row">
                         <Grid item alignItems="center">
-                            <Jazzicon diameter={avatarSize} seed={jsNumberForAddress(address)} />
+                            <Avatar sx={{ width: avatarSize, height: avatarSize, bgcolor: 'rgb(0, 0, 0)' }}>
+                                <Jazzicon diameter={avatarSize} seed={jsNumberForAddress(address)} />
+                            </Avatar>
                         </Grid>
                         {!hidePubKey &&
                         <Grid item sx={{ml:1}}>
@@ -189,19 +191,23 @@ export const ConnectedIdentity = (props:any) => {
                 :
                     <Grid container direction="row">
                         <Grid item alignItems="center">
-                            <Jazzicon diameter={avatarSize} seed={Math.round(Math.random() * 10000000)} />
+                            <Avatar sx={{ width: avatarSize, height: avatarSize, bgcolor: 'rgb(0, 0, 0)' }}>
+                                <Jazzicon diameter={avatarSize} seed={Math.round(Math.random() * 10000000)} />
+                            </Avatar>
                         </Grid>
-                        <Grid item sx={{ml:1}}>
-                            <Grid item sx={{textAlign:'left'}}>
-                                {solanaDomain}
-                            </Grid>
-                            
-                            <Grid item sx={{}}>
+                        {!hidePubKey &&
+                            <Grid item sx={{ml:1}}>
                                 <Grid item sx={{textAlign:'left'}}>
-                                    <Typography variant="h6" sx={{}}>{trimAddress(address,6)}</Typography>
+                                    {solanaDomain}
+                                </Grid>
+                                
+                                <Grid item sx={{}}>
+                                    <Grid item sx={{textAlign:'left'}}>
+                                        <Typography variant="h6" sx={{}}>{trimAddress(address,6)}</Typography>
+                                    </Grid>
                                 </Grid>
                             </Grid>
-                        </Grid>
+                        }
                     </Grid>
                 }
                 </>

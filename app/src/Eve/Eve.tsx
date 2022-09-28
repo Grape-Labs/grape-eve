@@ -1540,6 +1540,8 @@ export function EveView(props: any){
                                                                                             </Button>
 
                                                                                             <SocialVotes address={item.publicKey.toBase58()} />
+
+                                                                                            <ShareSocialURL url={'https://grape-eve.vercel.app/'+item.publicKey.toBase58()} title={`Topic: ${item?.topic}`} />
                                                                                         </Grid>
 
                                                                                     </Grid>
@@ -1576,7 +1578,7 @@ export function EveView(props: any){
                                                                             <Box sx={{ m: 2 }}>
                                                                                 <Grid container direction="row">
                                                                                     <Grid item xs>
-                                                                                        <ShareSocialURL url={'https://grape-eve.vercel.app/'+item.publicKey.toBase58()} title={`Topic: ${item?.topic}`} />
+                                                                                        {/*<ShareSocialURL url={'https://grape-eve.vercel.app/'+item.publicKey.toBase58()} title={`Topic: ${item?.topic}`} />*/}
                                                                                     </Grid>
                                                                                     
                                                                                     {publicKey && publicKey.toBase58() === item?.author.toBase58() ?
