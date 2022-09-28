@@ -307,7 +307,9 @@ export function Header(props: any) {
                     </Typography>
                 </Button>
                 <Tooltip title={`Grape Eve`}><IconButton sx={{borderRadius:'17px'}}><RateReviewIcon/></IconButton></Tooltip>
+                {/*
                 <Tooltip title={`Communities`}><IconButton sx={{borderRadius:'17px'}}><HubIcon/></IconButton></Tooltip>
+                */}
             </Box>
             <HeaderChat />
             <div className="grape-wallet-adapter">

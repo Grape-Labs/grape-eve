@@ -1026,7 +1026,10 @@ export function EveView(props: any){
                                     id="demo-simple-select"
                                     label="Community"
                                     value={community}
-                                    disabled={reply && reply.toBase58() !== new PublicKey(0).toBase58() && type===2 ? true : false}
+                                    disabled={(reply && reply.toBase58() !== new PublicKey(0).toBase58() && type===2) || (replyPk && replyPk.toBase58() != new PublicKey(0).toBase58()) ? 
+                                        true :
+                                        false
+                                    }
                                     onChange={(e: any) => {
                                         setCommunity(new PublicKey(e.target.value))}
                                     }
@@ -1046,7 +1049,7 @@ export function EveView(props: any){
                                     fullWidth 
                                     label="Topic" 
                                     id="fullWidth" 
-                                    disabled={reply && reply.toBase58() !== new PublicKey(0).toBase58() && type===2 ? true : false}
+                                    disabled={(reply && reply.toBase58() !== new PublicKey(0).toBase58() && type===2) || (replyPk && replyPk.toBase58() != new PublicKey(0).toBase58()) ? true : false}
                                     value={topic}
                                     onChange={(e: any) => {
                                         if (e.target.value.length <= 50)
