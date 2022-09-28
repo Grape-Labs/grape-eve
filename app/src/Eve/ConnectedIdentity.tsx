@@ -172,6 +172,7 @@ export const ConnectedIdentity = (props:any) => {
                         <Grid item alignItems="center">
                             <Jazzicon diameter={avatarSize} seed={jsNumberForAddress(address)} />
                         </Grid>
+                        {!hidePubKey &&
                         <Grid item sx={{ml:1}}>
                             <Grid item sx={{textAlign:'left'}}>
                                 {solanaDomain}
@@ -183,6 +184,7 @@ export const ConnectedIdentity = (props:any) => {
                                 </Grid>
                             </Grid>
                         </Grid>
+                        }
                     </Grid>
                 :
                     <Grid container direction="row">
