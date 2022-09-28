@@ -144,7 +144,8 @@ export function EveView(props: any){
     const geconnection = new Connection("https://api.devnet.solana.com", "confirmed");
     //const { connection } = useConnection();
 
-    //const client = new LitJsSdk.LitNodeClient();
+    const client = new LitJsSdk.LitNodeClient();
+    
 	const wallet = useWallet();
     const {publicKey, sendTransaction } = useWallet();
     const [loading, setLoading] = React.useState(false);
@@ -223,6 +224,10 @@ export function EveView(props: any){
 
     //export const  initWorkspace = () => {
     async function initWorkspace() {  
+        
+        await client.connect();
+        window.litNodeClient = client;
+
         const clusterUrl = 'https://api.devnet.solana.com'; //'https://ssc-dao.genesysgo.net/';//process.env.VUE_APP_CLUSTER_URL
         const grapeEveId = EVE_PROGRAM_ID;
         const programID = new PublicKey(grapeEveId);
