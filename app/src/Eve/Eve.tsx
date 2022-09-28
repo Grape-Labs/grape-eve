@@ -1161,7 +1161,8 @@ export function EveView(props: any){
             setLoadingThreads(false);     
             return [thread];
         } else{
-            fetchThreads(null, false);
+            //fetchThreads(null, false);
+            fetchThreads([onlyTopicsFilter(new PublicKey(0).toBase58())],false);
         }
         
     }
@@ -1225,6 +1226,18 @@ export function EveView(props: any){
                     1 + // is_encrypted
                     4, // prefix
             bytes: bs58.encode(Buffer.from(topic)),
+        }
+    })
+
+    const onlyTopicsFilter = replyBase58PublicKey => ({
+        memcmp: {
+            offset: 8 + // Discriminator.
+            1+ //bump
+            32 + // Author public key.
+            8 + // Timestamp.
+            8 + //ends
+            32,
+            bytes: replyBase58PublicKey,
         }
     })
     
