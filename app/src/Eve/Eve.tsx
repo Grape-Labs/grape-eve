@@ -222,12 +222,74 @@ export function EveView(props: any){
         }
     }
 
+    const litNodeClient = new LitJsSdk.LitNodeClient();
+    litNodeClient.connect(); 
+    const chain = "solana";
+    const GRAPE_TOKEN = '8upjSpvjcdpuzhfR1zriwg5NXkwDruejqNE9WNbPRtyA';
+    const USDC_TOKEN = 'EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v';
+
+    const solRpcConditions = [
+    {
+        method: "balanceOfToken",
+        params: [GRAPE_TOKEN],
+        pdaParams: [],
+        pdaInterface: { offset: 0, fields: {} },
+        pdaKey: "",
+        chain,
+        returnValueTest: {
+        key: "$.amount",
+        comparator: ">",
+        value: "0",
+        },
+    },
+    ];
+
+    const provisionAndSign = async (accessControlConditions) => {
+
+        const authSig = JSON.parse("{\"sig\":\"0x18a173d68d2f78cc5c13da0dfe36eec2a293285bee6d42547b9577bf26cdc985660ed3dddc4e75d422366cac07e8a9fc77669b10373bef9c7b8e4280252dfddf1b\",\"derivedVia\":\"web3.eth.personal.sign\",\"signedMessage\":\"I am creating an account to use LITs at 2021-08-04T20:14:04.918Z\",\"address\":\"0xdbd360f30097fb6d938dcc8b7b62854b36160b45\"}")
+        const resourceId = {
+          baseUrl: 'https://my-dynamic-content-server.com',
+          path: "/" + Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15),
+          orgId: ""
+        }
+      
+        await litNodeClient.saveSigningCondition({
+          accessControlConditions,
+          chain,
+          authSig,
+          resourceId
+        })
+      
+      
+        const jwt = await litNodeClient.getSignedToken({
+          accessControlConditions,
+          chain,
+          authSig,
+          resourceId
+        })
+      
+        console.log(jwt)
+      
+        if (jwt) {
+          return true
+        }
+        return false
+      }
+
+      const runTests = async () => {
+        for (let i = 0; i < solRpcConditions.length; i++) {
+          const res = await provisionAndSign(solRpcConditions[i])
+          if (res === false) {
+            console.log('Error on access control conditions: ', solRpcConditions[i])
+            process.exit(1)
+          }
+        }
+      }
+
     //export const  initWorkspace = () => {
     async function initWorkspace() {  
+        //runTests();
         
-        await client.connect();
-        window.litNodeClient = client;
-
         const clusterUrl = 'https://api.devnet.solana.com'; //'https://ssc-dao.genesysgo.net/';//process.env.VUE_APP_CLUSTER_URL
         const grapeEveId = EVE_PROGRAM_ID;
         const programID = new PublicKey(grapeEveId);
@@ -1166,8 +1228,8 @@ export function EveView(props: any){
             setLoadingThreads(false);     
             return [thread];
         } else{
-            //fetchThreads(null, false);
-            fetchThreads([onlyTopicsFilter(new PublicKey(0).toBase58())],false);
+            fetchThreads(null, false);
+            //fetchThreads([onlyTopicsFilter(new PublicKey(0).toBase58())],false);
         }
         
     }
@@ -1358,7 +1420,7 @@ export function EveView(props: any){
                                                     </Grid>                                                                      
                                                 :
                                                     <Grid>
-                                                        <PostView communities={communities} type={2} thread={item.publicKey} topic={item?.topic} community={item?.community} encrypted={item?.isEncrypted} reply={item?.reply}/>
+                                                        {/*<PostView communities={communities} type={2} thread={item.publicKey} topic={item?.topic} community={item?.community} encrypted={item?.isEncrypted} reply={item?.reply}/>*/}
                                                     </Grid>
                                                 }
                                                 
@@ -1427,7 +1489,9 @@ export function EveView(props: any){
                                                     <Grid container direction="row">
                                                         <Grid item xs>
                                                             <Typography variant='h5' sx={{ml:1}}>
+                                                                {/*
                                                                 {threadCount} threads / {replyCount} replies / {postCount} total posts
+                                                                */}
                                                             </Typography>
                                                         </Grid>
                                                         <Grid item>
